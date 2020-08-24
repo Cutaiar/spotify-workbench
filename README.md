@@ -1,4 +1,15 @@
+# Album Cover Wallpaper Generator
+
+This project generates a phone background using all of your album covers.
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+## Quickstart
+
+- Clone the repo
+- run `npm install`
+- run `npm start`
+- fix the code so it works
 
 ## Available Scripts
 
