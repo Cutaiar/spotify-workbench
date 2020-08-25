@@ -1,0 +1,17 @@
+{
+  "name": "wp-service",
+  "version": "1.0.0",
+  "description": "convert images (usually album covers) into larger image for use as wallpaper",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "Cutaiar",
+  "license": "ISC",
+  "dependencies": {
+    "canvas": "^2.6.1",
+    "merge-images": "^2.0.0"
+  },
+  "type": "module"
+}
