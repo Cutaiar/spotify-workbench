@@ -3,6 +3,7 @@ import "./App.css";
 import * as querystring from "query-string";
 import SpotifyWebApi from "spotify-web-api-js";
 import yoinkImage from "./yoink.jpg";
+import cover_b64 from "./cover.js"
 
 const spotifyApi = new SpotifyWebApi();
 
@@ -83,6 +84,7 @@ function App() {
         Generate Phone Wallpaper
       </button>
       {showWallpaper && <img src={yoinkImage} height="100px" />}
+      {showWallpaper && <img src={cover_b64} height="100px"/>}
     </div>
   );
 }
