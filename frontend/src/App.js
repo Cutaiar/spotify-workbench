@@ -83,6 +83,7 @@ function App() {
       <button className="Button" onClick={_onGenerateClick}>
         Generate Phone Wallpaper
       </button>
+      <br></br><br></br>
       {showWallpaper && <img src={yoinkImage} height="100px" />}
       {showWallpaper && <img src={cover_b64} height="100px"/>}
     </div>
