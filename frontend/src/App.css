@@ -1,11 +1,21 @@
 .App {
   text-align: center;
-  background: linear-gradient(to left, rgb(182, 0, 0), rgb(15, 15, 15) 50%, rgb(2, 2, 2) 100%);
+  /* background: linear-gradient(to top, rgb(182, 0, 0), rgb(15, 15, 15) 50%, rgb(2, 2, 2) 100%); */
+  background: linear-gradient(to top, rgb(2, 2, 2), rgb(182, 10, 0) 20%, rgb(2, 2, 2) 100%);
+
   color: white;
+  height:100vh;
+  overflow:hidden;
+
 
 } 
 
 .Button {
   background-color: #1db954;
   border-radius: 10px;
+}
+
+body {
+  height:100vh;
+  overflow:  hidden;
 }
