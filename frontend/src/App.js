@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Component, useEffect, useState } from "react";
 import "./App.css";
 import * as querystring from "query-string";
 import SpotifyWebApi from "spotify-web-api-js";
@@ -7,105 +7,73 @@ import cover_b64 from "./cover.js"
 import { authEndpoint, clientId, redirectUri, scopes } from "./config";
 import hash from "./hash";
 
-const spotifyApi = new SpotifyWebApi();
 
-function App() {
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
 
-
-
-  ///NOTE I DONT THINK WE NEED ANY OF THE BELOW CODE IN TH BETWEEN THESE LINES
-  //-----------------------------------------------------------------------------------------------
-
-
-  // Set up state to hold token for l8r and a bool for showing the final wallpaper
-  const [token, setToken] = useState("fake UNSET token");
-  const [showWallpaper, setShowWallpaper] = useState(false);
-
-  // Some url constants
-  const proxyUrl = "https://cors-anywhere.herokuapp.com/";
-  const authUrl = "https://accounts.spotify.com/authorize";
-
-  const _onAuthClick = async (props) => {
-    // Define the necessary q params as an object
-    const queryParams = {
-      client_id: "244e59e5133546b3ab9ccb2d7f5800b3",
-      response_type: "code",
-      redirect_uri: "albumcoverwallpaper://afterlogin",
+      token: null,
+      listItems: [],
+      showWallpaper: false
     };
+    this.spotifyApi = new SpotifyWebApi();
+  }
 
-    // convert q params object into a string
-    const queryParamsString = querystring.stringify(queryParams);
-    //console.log(queryParamsString);
+  componentDidMount() {
+    // Set token
+    let _token = hash.access_token;
+    if (_token) {
+      // Set token
+      this.setState({
+        token: _token
+      });
+      console.log(_token)
+      this.spotifyApi.setAccessToken(_token);
 
-    // tac the q param string onto the base auth url and then add a cors proxy
-    const urlWithParams = authUrl + `?${queryParamsString}`;
-    const proxiedUrlWithParams = proxyUrl + urlWithParams;
-    //console.log(proxiedUrlWithParams);
+    }
+  }
 
-    // Use final ulr in a new window to attempt to get an auth toke from spotify. This is hard. There is an error rn
-    window.open(proxiedUrlWithParams); // this will give: Missing required request header. Must specify one of: origin,x-requested-with
 
-    // Commented code: idk maybe we make this call with fetch
-    //   const response = fetch(proxiedUrlWithParams, {
-    //     method: "GET",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     mode: "cors", // no-cors, *cors, same-origin
-    //   })
-    //     .then((resp) => {
-    //       console.log("success" + resp);
-    //       console.log(resp);
-    //     })
-    //     .catch((error) => {
-    //       console.log("fail" + error);
-    //     });
-    // };
+  onGenerateClick = () => {
+    const fetchData = async () => {
+      const response = await this.spotifyApi.getMyTopTracks()
+      let imageURIs = []
+      console.log(response)
+      response['items'].forEach(item => {
+        imageURIs.push(item['album']['images'][0]['url'])
+      })
 
-    // Set our state to have an auth token once we get one
-    setToken("fake SET token");
-    //spotifyApi.setToken("the token we just got");
+      this.setState({
+        listItems: imageURIs,
+        showWallpaper: true
+      });
+    };
+    fetchData();
   };
 
-  const _onGenerateClick = (props) => {
-    console.log("Generate Clicked");
-    
-    // Use spotifyApi to yoink all album objects
-    
-    // extract image links from resposnse
-    
-    // send image links in a separate object to our image-generation service
-    
-    // get back the finished image
-    
-    // update screen with downloadable/copyable image
-    setShowWallpaper(true);
-  };
+  render() {
+    return (
+      <div className="App">
+        <h1>Album Cover Wallpaper Generator</h1>
 
-
-  
-//-----------------------------------------------------------------------------------------------
-let token2 = hash.access_token;  
-return (
-    <div className="App">
-      <h1>Album Cover Wallpaper Generator</h1>
-      {/* <button className="Button" onClick={_onAuthClick}>
-        Connect To Spotify
-      </button> */}
-      <a className="btn btn--loginApp-link"
-        href={`${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join(
-          "%20"
-        )}&response_type=token&show_dialog=true`}>
-        Login to Spotify</a>
-      <p>Token: {token2}</p>
-      <button className="btn2 btn--loginApp-link" onClick={_onGenerateClick}>
-        Generate Phone Wallpaper
+        <a className="btn btn--loginApp-link"
+          href={`${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join(
+            "%20"
+          )}&response_type=token&show_dialog=true`}>
+          Login to Spotify</a>
+        <p>Token: {this.state.token}</p>
+        <button className="btn2 btn--loginApp-link" onClick={this.onGenerateClick}>
+          Generate Phone Wallpaper
       </button>
-      <br></br><br></br>
-      {showWallpaper && <img src={yoinkImage} height="100px" />}
-      {showWallpaper && <img src={cover_b64} height="100px" />}
-    </div>
-  );
+        <br></br><br></br>
+        {this.state.showWallpaper &&
+          this.state.listItems.map(function(item){
+            return <img src={item} height="100px" />
+          })
+        }
+      </div>
+    );
+  }
 }
-
 export default App;
