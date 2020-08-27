@@ -1,14 +1,12 @@
 import React, { Component, useEffect, useState } from "react";
 import "./App.css";
-import * as querystring from "query-string";
 import SpotifyWebApi from "spotify-web-api-js";
-import yoinkImage from "./yoink.jpg";
+
 import cover_b64 from "./cover.js"
 import { authEndpoint, clientId, redirectUri, scopes } from "./config";
 import hash from "./hash";
-import mergeImages from 'merge-images';
 
-
+import axios from "axios"
 class App extends Component {
   constructor(props) {
     super(props);
@@ -29,7 +27,6 @@ class App extends Component {
       this.setState({
         token: _token
       });
-      console.log(_token)
       this.spotifyApi.setAccessToken(_token);
 
     }
@@ -37,21 +34,35 @@ class App extends Component {
 
 
   onGenerateClick = () => {
-    const fetchData = async () => {
-      let imageURIs = []
+    let promises = []
+    let responseLength = 0;
+    let imageURIs = []
 
-      const response = await this.spotifyApi.getMyTopTracks({ limit: 50, offset: 0 })
-      response['items'].forEach(item => {
-        imageURIs.push(item['album']['images'][0]['url'])
+    for (let i = responseLength; i < 4; i++) {
+      promises.push(axios.get('https://api.spotify.com/v1/me/tracks', {
+        headers: { Authorization: "Bearer " + this.state.token },
+        params: {
+          offset: i * 50,
+          limit: 50
+        }
+      }))
+    }
+    axios.all(promises).then(axios.spread((...responses) => {
+      responses.forEach(response => {
+        console.log(response)
+        response['data']['items'].forEach(item => {
+          imageURIs.push(item['track']['album']['images'][0]['url'])
+        })
       })
-
-
       this.setState({
-        listItems: imageURIs,
+        listItems  : imageURIs,
         showWallpaper: true
-      });
-    };
-    fetchData();
+      })
+      
+      
+    })).catch(errors => {
+      console.error(errors)
+    })
 
 
   };
