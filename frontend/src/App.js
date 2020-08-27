@@ -6,6 +6,7 @@ import yoinkImage from "./yoink.jpg";
 import cover_b64 from "./cover.js"
 import { authEndpoint, clientId, redirectUri, scopes } from "./config";
 import hash from "./hash";
+import mergeImages from 'merge-images';
 
 
 class App extends Component {
@@ -37,12 +38,13 @@ class App extends Component {
 
   onGenerateClick = () => {
     const fetchData = async () => {
-      const response = await this.spotifyApi.getMyTopTracks()
       let imageURIs = []
-      console.log(response)
+
+      const response = await this.spotifyApi.getMyTopTracks({ limit: 50, offset: 0 })
       response['items'].forEach(item => {
         imageURIs.push(item['album']['images'][0]['url'])
       })
+
 
       this.setState({
         listItems: imageURIs,
@@ -50,6 +52,8 @@ class App extends Component {
       });
     };
     fetchData();
+
+
   };
 
   render() {
@@ -68,7 +72,7 @@ class App extends Component {
       </button>
         <br></br><br></br>
         {this.state.showWallpaper &&
-          this.state.listItems.map(function(item){
+          this.state.listItems.map(function (item) {
             return <img src={item} height="100px" />
           })
         }
