@@ -2,18 +2,30 @@
 
 This project generates a phone background using all of your album covers.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+It uses ReactJS for front end and express as a simple server for a wallpaper creation service.
+
+There are two separate npm projects. One is in `/frontend` and the other is in `/wp-service`. Remember to run npm scripts for both. Details on running below.
 
 ## Quickstart
 
 - Clone the repo
-- run `npm install`
-- run `npm start`
+- run `npm install` in `/frontend`
+- run `npm install` in `/wp-service`
+- run `npm start` in `/frontend`
+- run `node server.js` in `wp-service/server` (in another terminal)
 - fix the code so it works
 
-## Available Scripts
+What you've just done is installed all dependencies, started the frontend on port 3000 and started the wallpaper service server on port 3001. The frontend will hit port 3001 with all the image URIs and the backend will respond with "YEET".
 
-In the project directory, you can run:
+## Frontend
+
+The frontend uses React.
+
+The frontend was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+### Available Scripts
+
+In `/frontend`, you can run:
 
 ### `npm start`
 
@@ -48,32 +60,10 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-## Learn More
+## Backend
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+The backend is just a simple express server that listens on `localhost:3001` for `POST` requests that have a `JSON` body. The body should be a `JSON Array` where each element is a `URI` for an album cover. It will stitch these images together into a wallpaper and return the wallpaper as `TBD`.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Run
 
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+`cd` into `/wp-service/server` and run `node server.js`. The server will listen on `localhost:3001` for the request described above.
