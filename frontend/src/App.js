@@ -38,7 +38,7 @@ class App extends Component {
     let responseLength = 0;
     let imageURIs = []
 
-    for (let i = responseLength; i < 4; i++) {
+    for (let i = responseLength; i < 15; i++) {
       promises.push(axios.get('https://api.spotify.com/v1/me/tracks', {
         headers: { Authorization: "Bearer " + this.state.token },
         params: {
@@ -54,6 +54,7 @@ class App extends Component {
           imageURIs.push(item['track']['album']['images'][0]['url'])
         })
       })
+      console.log("song list length", imageURIs.length)
       this.setState({
         listItems  : imageURIs,
         showWallpaper: true
@@ -84,7 +85,7 @@ class App extends Component {
         <br></br><br></br>
         {this.state.showWallpaper &&
           this.state.listItems.map(function (item) {
-            return <img src={item} height="100px" />
+            return <img src={item} height="50px" />
           })
         }
       </div>
