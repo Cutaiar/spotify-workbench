@@ -4,11 +4,9 @@
   /* background: linear-gradient(to top, rgb(2, 2, 2), rgb(182, 10, 0) 20%, rgb(2, 2, 2) 100%); */
 
   color: white;
-  height:100vh;
-  overflow:hidden;
-
-
-} 
+  height: 100vh;
+  overflow: hidden;
+}
 
 .Button {
   background-color: #1db954;
@@ -17,8 +15,8 @@
 
 body {
   background-color: #333;
-  height:100vh;
-  overflow:  hidden;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .btn {
@@ -44,17 +42,32 @@ body {
   text-transform: uppercase;
   transition: all 0.25s ease;
 }
+
+.btn3 {
+  background-color: transparent;
+  border-radius: 2em;
+  border: 0.2em solid #f500c0;
+  color: #f500c0;
+  cursor: pointer;
+  font-size: 2vmin;
+  padding: 0.2em 1.5em;
+  text-transform: uppercase;
+  transition: all 0.25s ease;
+}
 .btn:hover {
   background: #1ecd97;
   color: #333;
 }
-
 
 .btn2:hover {
   background: #00d0f5;
   color: #333;
 }
 
+.btn3:hover {
+  background: #f500c0;
+  color: #333;
+}
 
 .btn--login {
   margin: 0 auto;

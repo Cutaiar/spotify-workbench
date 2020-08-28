@@ -14,4 +14,9 @@ const MergeTask = () => {
   });
 };
 
-export { MergeTask };
+const ImageURLSToWallpaper = (imageUrls) => {
+  console.log(imageUrls);
+  return null;
+};
+
+export { MergeTask, ImageURLSToWallpaper };
