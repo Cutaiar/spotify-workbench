@@ -5,7 +5,7 @@
 
   color: white;
   height: 100vh;
-  overflow: hidden;
+  overflow: scroll;
 }
 
 .Button {

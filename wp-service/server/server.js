@@ -25,21 +25,21 @@ app.get("/", (req, res) => {
 });
 
 // Accept a post request, get the body, do the stitching, send the wallpaper in res
-app.post("/", (req, res) => {
+app.post("/", async (req, res) => {
   console.log("Got a POST at /. Kicking off wallpaper task");
 
   const URIs = req.body;
 
-  // TODO
-  // Download all the images
-  // Stitch them together
-  const wallpaper = ImageURLSToWallpaper(req.body);
+  // Stitch the images together
+  const wallpaper = await ImageURLSToWallpaper(req.body);
 
-  // TODO send the finished image back in res
-  res.send("YEET");
+  // send the finished image back in res
+  console.log("Sending response back to client...");
+  res.send(wallpaper);
+  console.log("Sent.");
 });
 
-// star the server
+// start the server
 app.listen(port, () => {
   console.log(`wp-serive istening at http://localhost:${port}`);
 });

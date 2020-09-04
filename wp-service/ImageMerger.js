@@ -9,14 +9,35 @@ const MergeTask = () => {
     Canvas: Canvas,
     Image: Image,
   }).then((b64) => {
-    console.log(b64);
+    //console.log(b64);
     console.log("done mergin'");
   });
 };
 
-const ImageURLSToWallpaper = (imageUrls) => {
-  console.log(imageUrls);
-  return null;
+const ImageURLSToWallpaper = async (imageUrls) => {
+  let dim = 640; // TODO base dimension off of actual from spotify
+  console.log(`Recieved ${imageUrls.length} images...`);
+  console.log(`Assuming a dimension of ${dim}x${dim} for each...`);
+  console.log("Stitching image...");
+  let widthInImages = imageUrls.length / 20;
+  let widthInPixels = widthInImages * dim;
+  const b64 = await mergeImages(
+    imageUrls.map((image, i) => {
+      return {
+        src: image,
+        x: (i % widthInImages) * dim,
+        y: Math.floor(i / widthInImages) * dim,
+      };
+    }, this),
+    {
+      width: widthInPixels,
+      height: widthInPixels,
+      Canvas: Canvas,
+      Image: Image,
+    }
+  );
+  console.log("Finished Stitching");
+  return b64;
 };
 
 export { MergeTask, ImageURLSToWallpaper };

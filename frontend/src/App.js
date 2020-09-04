@@ -14,6 +14,7 @@ class App extends Component {
       token: null,
       listItems: [],
       showWallpaper: false,
+      wallpaperResponse: "",
     };
     this.spotifyApi = new SpotifyWebApi();
   }
@@ -25,6 +26,7 @@ class App extends Component {
       // Set token
       this.setState({
         token: _token,
+        wallpaperResponse: "no reponse yet",
       });
       this.spotifyApi.setAccessToken(_token);
     }
@@ -72,14 +74,17 @@ class App extends Component {
     const URIs = this.state.listItems;
 
     // Hit the wp-service with the list of URIs
+    console.log("Sending URIs to server");
     const resp = await fetch("http://localhost:3001/", {
       method: "post",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(URIs), // TODO [cutaiar] state.listItems may not have all the items we want depending on when you call this method since it only updates between renders
     });
 
-    // Eventually the reponse will be a stitched image. We can display it at that point
-    console.log(resp);
+    // Save the wallpaper from the response in state
+    const wallpaper = await resp.text();
+    console.log("Got Wallpaper");
+    this.setState({ wallpaperResponse: wallpaper });
   };
 
   render() {
@@ -110,9 +115,14 @@ class App extends Component {
         </button>
         <br></br>
         <br></br>
+        <p>Wallpaper (one image):</p>
+        <img src={this.state.wallpaperResponse} height="1000"></img>
+        <br></br>
+        <p>Images from Spotify:</p>
+        <br></br>
         {this.state.showWallpaper &&
           this.state.listItems.map(function (item) {
-            return <img src={item} height="100px" />;
+            return <img src={item} height="50px" />;
           })}
       </div>
     );

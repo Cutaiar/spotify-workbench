@@ -15,7 +15,7 @@ There are two separate npm projects. One is in `/frontend` and the other is in `
 - run `node server.js` in `wp-service/server` (in another terminal)
 - fix the code so it works
 
-What you've just done is installed all dependencies, started the frontend on port 3000 and started the wallpaper service server on port 3001. The frontend will hit port 3001 with all the image URIs and the backend will respond with "YEET".
+What you've just done is installed all dependencies, started the frontend on port 3000 and started the wallpaper service server on port 3001. The frontend will hit port 3001 with all the image URIs and the backend will respond with a base64 encoded stitched wallpaper in the body".
 
 ## Frontend
 
@@ -62,7 +62,7 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 
 ## Backend
 
-The backend is just a simple express server that listens on `localhost:3001` for `POST` requests that have a `JSON` body. The body should be a `JSON Array` where each element is a `URI` for an album cover. It will stitch these images together into a wallpaper and return the wallpaper as `TBD`.
+The backend is just a simple express server that listens on `localhost:3001` for `POST` requests that have a `JSON` body. The body should be a `JSON Array` where each element is a `URI` for an album cover. It will stitch these images together into a wallpaper and return the wallpaper as a base64 encoded string in the body of the response.
 
 ### Run
 
