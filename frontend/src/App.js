@@ -116,7 +116,7 @@ class App extends Component {
         <br></br>
         <br></br>
         <p>Wallpaper (one image):</p>
-        <img src={this.state.wallpaperResponse} height="1000"></img>
+        <img src={this.state.wallpaperResponse} height="500"></img>
         <br></br>
         <p>Images from Spotify:</p>
         <br></br>
