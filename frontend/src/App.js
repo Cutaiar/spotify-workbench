@@ -37,7 +37,7 @@ class App extends Component {
     let responseLength = 0;
     let imageURIs = [];
 
-    for (let i = responseLength; i < 4; i++) {
+    for (let i = responseLength; i < 10; i++) {
       promises.push(
         axios.get("https://api.spotify.com/v1/me/tracks", {
           headers: { Authorization: "Bearer " + this.state.token },
