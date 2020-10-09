@@ -14,7 +14,7 @@ import { RunPlaylist } from "./RunPlaylist";
 const Home = () => {
   return (
     <>
-      <h2>Spotify Workbench</h2> <p>Welcome to your Spotify workbench</p>
+      <h2 style={{color: "white"}}>Spotify Workbench</h2> <p style={{color: "white"}}>Welcome to your Spotify workbench</p>
     </>
   );
 };
