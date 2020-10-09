@@ -87,3 +87,9 @@ The backend is just a simple express server that listens on `localhost:3001` for
 #### Run
 
 `cd` into `/backend/server` and run `node server.js`. The server will listen on `localhost:3001` for the request described above.
+
+## Run Playlists
+
+The idea here is to provide playlists that represent all the songs you just ran to (presumably discovered via radio). This will use the Spotify api to grab your last x songs, and the Strava api to get your most recent run. We can then use timestamps to construct this playlist, create it in your library, and provide a nice image for it.
+
+I have part of this implemented in another project.
