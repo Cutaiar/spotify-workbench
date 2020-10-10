@@ -22,6 +22,10 @@ Note: The repo is in some turmoil given that it was recently converted from an i
 
 What you've just done is installed all dependencies for the frontend and backend, started the frontend on port 3000 and started the wallpaper service server on port 3001. The frontend will hit port 3001 with all the image URIs and the backend will respond with a base64 encoded stitched wallpaper in the body".
 
+### Styling
+
+This project uses [primereact](https://primefaces.org/primereact/showcase/#/setup) for styling and components.
+
 ## Wallpaper Generator
 
 This service generates a phone background using all of your album covers.
