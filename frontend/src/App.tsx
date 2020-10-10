@@ -11,10 +11,13 @@ import {
 
 import { RunPlaylist } from "./RunPlaylist";
 
+import { Button } from "primereact/button";
+
 const Home = () => {
   return (
     <>
-      <h2 style={{color: "white"}}>Spotify Workbench</h2> <p style={{color: "white"}}>Welcome to your Spotify workbench</p>
+      <h2 style={{ color: "white" }}>Spotify Workbench</h2>{" "}
+      <p style={{ color: "white" }}>Welcome to your Spotify workbench</p>
     </>
   );
 };
@@ -33,14 +36,14 @@ class App extends Component<any, any> {
       <Router>
         <div>
           <nav>
-            <NavLink to="/">
-              <button>Home</button>
+            <NavLink className="navlink-style" to="/">
+              <Button style={{ textDecoration: "none" }}>Home</Button>
             </NavLink>
-            <NavLink to="/wallpaper">
-              <button>wallpaper</button>
+            <NavLink className="navlink-style" to="/wallpaper">
+              <Button>wallpaper</Button>
             </NavLink>
-            <NavLink to="/runplaylist">
-              <button>run playlist</button>
+            <NavLink className="navlink-style" to="/runplaylist">
+              <Button>run playlist</Button>
             </NavLink>
           </nav>
 

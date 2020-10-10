@@ -72,3 +72,7 @@ body {
 .btn--login {
   margin: 0 auto;
 }
+
+.navlink-style {
+  text-decoration: none;
+}
