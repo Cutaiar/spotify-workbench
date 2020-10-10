@@ -16,10 +16,9 @@ Note: The repo is in some turmoil given that it was recently converted from an i
 
 ### Quickstart
 
-- Clone the repo
+- Clone this [repo](https://github.com/Cutaiar/album-cover-wallpaper.git)
 - run `./init.cmd` in the root of the repo
-- run `npm start` in `/frontend`
-- run `node server.js` in `backend/server` (in another terminal)
+- Run the `Start App` task using the command palette
 
 What you've just done is installed all dependencies for the frontend and backend, started the frontend on port 3000 and started the wallpaper service server on port 3001. The frontend will hit port 3001 with all the image URIs and the backend will respond with a base64 encoded stitched wallpaper in the body".
 

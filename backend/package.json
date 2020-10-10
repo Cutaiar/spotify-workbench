@@ -4,8 +4,7 @@
   "description": "convert images (usually album covers) into larger image for use as wallpaper",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "node ./server/server.js"
   },
   "author": "Cutaiar",
   "license": "ISC",
