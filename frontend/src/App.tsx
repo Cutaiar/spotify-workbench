@@ -11,7 +11,8 @@ import {
 
 import { RunPlaylist } from "./RunPlaylist";
 
-import { Button } from "primereact/button";
+// import { Button } from "primereact/button";
+import { Button } from '@material-ui/core';
 
 const Home = () => {
   return (
@@ -37,13 +38,22 @@ class App extends Component<any, any> {
         <div>
           <nav>
             <NavLink className="navlink-style" to="/">
-              <Button style={{ textDecoration: "none" }}>Home</Button>
+              <Button  style={{ textDecoration: "none", borderRadius:"2px",
+                backgroundColor: "#39CCCC",
+                fontSize: "10px",marginRight:"2px"
+              }}>Home</Button>
             </NavLink>
             <NavLink className="navlink-style" to="/wallpaper">
-              <Button>wallpaper</Button>
+              <Button style={{ textDecoration: "none", borderRadius:"2px",
+                backgroundColor: "#0074D9",
+                fontSize: "10px",marginRight:"2px",
+              }}>wallpaper</Button>
             </NavLink>
             <NavLink className="navlink-style" to="/runplaylist">
-              <Button>run playlist</Button>
+              <Button style={{ textDecoration: "none", borderRadius:"2px",
+                backgroundColor: "#7FDBFF",
+                fontSize: "10px",marginRight:"2px",
+              }}>run playlist</Button>
             </NavLink>
           </nav>
 

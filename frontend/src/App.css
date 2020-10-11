@@ -1,78 +1,84 @@
 .App {
-  text-align: center;
-  /* optional linear gradient
+    text-align: center;
+    /* optional linear gradient
   /* background: linear-gradient(to top, rgb(2, 2, 2), rgb(182, 10, 0) 20%, rgb(2, 2, 2) 100%); */
-
-  color: white;
-  height: 100vh;
-  overflow: scroll;
+    color: white;
+    height: 100vh;
+    overflow: scroll;
 }
 
 .Button {
-  background-color: #1db954;
-  border-radius: 10px;
+    background-color: #1db954;
+    border-radius: 10px;
+}
+
+.ButtonMat {
+    text-decoration: none;
+    background-color: #21b6ae;
+    font-size: 10px;
 }
 
 body {
-  background-color: #333;
-  height: 100vh;
-  overflow: hidden;
+    background-color: #333;
+    height: 100vh;
+    overflow: hidden;
 }
 
 .btn {
-  background-color: transparent;
-  border-radius: 2em;
-  border: 0.2em solid #1ecd97;
-  color: #1ecd97;
-  cursor: pointer;
-  font-size: 2vmin;
-  padding: 0.2em 1.5em;
-  text-transform: uppercase;
-  transition: all 0.25s ease;
+    background-color: transparent;
+    border-radius: 2em;
+    border: 0.2em solid #1ecd97;
+    color: #1ecd97;
+    cursor: pointer;
+    font-size: 2vmin;
+    padding: 0.2em 1.5em;
+    text-transform: uppercase;
+    transition: all 0.25s ease;
 }
 
 .btn2 {
-  background-color: transparent;
-  border-radius: 2em;
-  border: 0.2em solid #00d0f5;
-  color: #00d0f5;
-  cursor: pointer;
-  font-size: 2vmin;
-  padding: 0.2em 1.5em;
-  text-transform: uppercase;
-  transition: all 0.25s ease;
+    background-color: transparent;
+    border-radius: 2em;
+    border: 0.2em solid #00d0f5;
+    color: #00d0f5;
+    cursor: pointer;
+    font-size: 2vmin;
+    padding: 0.2em 1.5em;
+    text-transform: uppercase;
+    transition: all 0.25s ease;
 }
 
 .btn3 {
-  background-color: transparent;
-  border-radius: 2em;
-  border: 0.2em solid #f500c0;
-  color: #f500c0;
-  cursor: pointer;
-  font-size: 2vmin;
-  padding: 0.2em 1.5em;
-  text-transform: uppercase;
-  transition: all 0.25s ease;
+    background-color: transparent;
+    border-radius: 2em;
+    border: 0.2em solid #f500c0;
+    color: #f500c0;
+    cursor: pointer;
+    font-size: 2vmin;
+    padding: 0.2em 1.5em;
+    text-transform: uppercase;
+    transition: all 0.25s ease;
 }
+
 .btn:hover {
-  background: #1ecd97;
-  color: #333;
+    background: #1ecd97;
+    color: #333;
 }
 
 .btn2:hover {
-  background: #00d0f5;
-  color: #333;
+    background: #00d0f5;
+    color: #333;
 }
 
 .btn3:hover {
-  background: #f500c0;
-  color: #333;
+    background: #f500c0;
+    color: #333;
 }
 
 .btn--login {
-  margin: 0 auto;
+    margin: 0 auto;
 }
 
 .navlink-style {
-  text-decoration: none;
+    text-decoration: none;
 }
