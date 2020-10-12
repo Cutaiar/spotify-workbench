@@ -53,7 +53,9 @@ class GenerateWallpaper extends Component {
           responses.forEach((response) => {
             console.log(response);
             response["data"]["items"].forEach((item) => {
-              imageURIs.push(item["track"]["album"]["images"][0]["url"]);
+              if (item["track"]["album"]["images"][2]) {
+                imageURIs.push(item["track"]["album"]["images"][2]["url"]);
+              }
             });
           });
           this.setState({
