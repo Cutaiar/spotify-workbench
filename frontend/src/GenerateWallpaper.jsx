@@ -116,7 +116,8 @@ class GenerateWallpaper extends Component {
         <br></br>
         <br></br>
         <p>Wallpaper (one image):</p>
-        <img src={this.state.wallpaperResponse} height="500"></img>
+        <a href={this.state.wallpaperResponse} download> <img src={this.state.wallpaperResponse} height="500"></img>
+        </a>
         <br></br>
         <p>Images from Spotify:</p>
         <br></br>
