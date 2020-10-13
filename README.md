@@ -2,7 +2,7 @@
 
 The Spotify Workbench is a collection of services built on top of Spotify and other apps which provide the user with advanced musical functionality the the creation and discovery domains.
 
-Services include
+Services include:
 
 ##### `Wallpaper Generator`
 
@@ -12,9 +12,9 @@ Services include
 
 <br>
 
-Note: The repo is in some turmoil given that it was recently converted from an imperative react js wallpaper app, to a functional react ts project including many apps. The most notable inconsistency is the lack of a backend which serves the entire app rather than just the wallpaper app. More docs and refactor coming soon.
+_Note: The repo is in some turmoil given that it was recently converted from an imperative react js wallpaper app, to a functional react ts project including many apps. The most notable inconsistency is the lack of a backend which serves the entire app rather than just the wallpaper app. More docs and refactor coming soon._
 
-### Quickstart
+## Quickstart
 
 - Clone this [repo](https://github.com/Cutaiar/album-cover-wallpaper.git)
 - run `./init.cmd` in the root of the repo
@@ -22,76 +22,63 @@ Note: The repo is in some turmoil given that it was recently converted from an i
 
 What you've just done is installed all dependencies for the frontend and backend, started the frontend on port 3000 and started the wallpaper service server on port 3001. The frontend will hit port 3001 with all the image URIs and the backend will respond with a base64 encoded stitched wallpaper in the body".
 
-### Styling
+## Styling
 
 This project uses [primereact](https://primefaces.org/primereact/showcase/#/setup) for styling and components.
 
-## Wallpaper Generator
+## Frontend
 
-This service generates a phone background using all of your album covers.
+The frontend uses React. It was was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-It uses ReactTS for front end and express as a simple server for a wallpaper creation service.
+### Available Scripts
 
-There are two separate npm projects. One is in `/frontend` and the other is in `/backend`. Remember to run npm scripts for both. Details on running below.
-
-### Frontend
-
-The frontend uses React.
-
-The frontend was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-#### Available Scripts
-
-In `/frontend`, you can run:
+In `frontend/`, you can run:
 
 #### `npm start`
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+Runs the app in the development mode on [`http://localhost:3000`](http://localhost:3000).
 
 #### `npm test`
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Launches the test runner in the interactive watch mode. See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
 #### `npm run build`
 
-**[Potentially deprecated]**
+**⚠ Potentially deprecated in favor of webpack ⚠️**
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Default create-react-app build. See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-#### `npm run webpack
+#### `npm run webpack`
 
 Builds the app using webpack.
 
+#### `npm run compile`
+
+Just runs the typescript compiler (`tsc`) according to the `tsconfig.json` in `frontend/`. Usually used to generate an exhaustive list of things you need to fix to compile haha.
+
 #### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Don't use this unless [you know what you're doing](https://facebook.github.io/create-react-app/docs/deployment).
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-### Backend
+## Backend
 
 The backend is just a simple express server that listens on `localhost:3001` for `POST` requests that have a `JSON` body. The body should be a `JSON Array` where each element is a `URI` for an album cover. It will stitch these images together into a wallpaper and return the wallpaper as a base64 encoded string in the body of the response.
 
-#### Run
+_More to come..._
+
+### Running
 
 `cd` into `/backend/server` and run `node server.js`. The server will listen on `localhost:3001` for the request described above.
 
-## Run Playlists
+## Services
+
+As mentioned, spotify-workbench is a collection of services. Details on each below.
+
+### Wallpaper Generator
+
+This service generates a phone background using all of your album covers.
+
+### Run Playlists
 
 The idea here is to provide playlists that represent all the songs you just ran to (presumably discovered via radio). This will use the Spotify api to grab your last x songs, and the Strava api to get your most recent run. We can then use timestamps to construct this playlist, create it in your library, and provide a nice image for it.
 

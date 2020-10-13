@@ -2,13 +2,13 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 
 import "./index.css";
-import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 
 // Prime react imports for webpack
 import "primereact/resources/themes/saga-blue/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
+import { App } from "./components/App/App";
 
 ReactDOM.render(
   <React.StrictMode>

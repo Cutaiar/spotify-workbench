@@ -1,7 +1,6 @@
 import * as React from "react";
 import { Component } from "react";
 import "./App.css";
-import GenerateWallpaper from "./GenerateWallpaper";
 import {
   BrowserRouter as Router,
   Switch,
@@ -9,9 +8,9 @@ import {
   NavLink,
 } from "react-router-dom";
 
-import { RunPlaylist } from "./RunPlaylist";
-
 import { Button } from "primereact/button";
+import { RunPlaylist } from "../RunPlaylist/RunPlaylist";
+import { GenerateWallpaper } from "../GenerateWallpaper/GenerateWallpaper";
 
 const Home = () => {
   return (
@@ -63,4 +62,4 @@ class App extends Component<any, any> {
     );
   }
 }
-export default App;
+export { App };

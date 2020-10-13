@@ -1,18 +1,28 @@
 import React, { Component, useEffect, useState } from "react";
-import "./App.css";
+import "./GenerateWallpaper.css";
 import SpotifyWebApi from "spotify-web-api-js";
-import { authEndpoint, clientId, redirectUri, scopes } from "./config";
-import hash from "./hash";
+import {
+  authEndpoint,
+  clientId,
+  redirectUri,
+  scopes,
+} from "../../common/config";
+import hash from "../../common/hash";
 import axios from "axios";
+import { Button } from "primereact/button";
+
+const connectToSpotifyLink = `${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join(
+  "%20"
+)}&response_type=token&show_dialog=true`;
 
 class GenerateWallpaper extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      token: null,
+      token: undefined,
       listItems: [],
       showWallpaper: false,
-      wallpaperResponse: "",
+      wallpaperResponse: undefined,
     };
     this.spotifyApi = new SpotifyWebApi();
   }
@@ -24,7 +34,6 @@ class GenerateWallpaper extends Component {
       // Set token
       this.setState({
         token: _token,
-        wallpaperResponse: "no reponse yet",
       });
       this.spotifyApi.setAccessToken(_token);
     }
@@ -89,44 +98,51 @@ class GenerateWallpaper extends Component {
 
   render() {
     return (
-      <div className="App">
+      <div className="GenerateWallpaperRoot">
         <h1>Album Cover Wallpaper Generator</h1>
 
-        <a
-          className="btn btn--loginApp-link"
-          href={`${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join(
-            "%20"
-          )}&response_type=token&show_dialog=true`}
-        >
-          Login to Spotify
-        </a>
-        <p>Token: {this.state.token}</p>
-        <button
-          className="btn2 btn--loginApp-link"
+        <Button
+          onClick={() => {
+            window.location.href = connectToSpotifyLink;
+          }}
+          icon={this.state.token ? "pi pi-check" : "pi pi-sign-in"}
+          label={this.state.token ? "Token acquired" : "Connect To Spotify"}
+          className={`p-button-${this.state.token ? "success" : "info"}`}
+        ></Button>
+        <Button
+          className="p-button-primary"
           onClick={this.onGenerateClick}
-        >
-          Generate Phone Wallpaper
-        </button>
-        <button
-          className="btn3 btn--loginApp-link"
+          disabled={!this.state.token}
+          icon="pi pi-images"
+          label="Get Images from Spotify"
+        ></Button>
+        <Button
+          className="p-button-primary"
           onClick={this.onUploadClicked}
-        >
-          Upload to wp-service
-        </button>
-        <br></br>
-        <br></br>
-        <p>Wallpaper (one image):</p>
-        <a href={this.state.wallpaperResponse} download> <img src={this.state.wallpaperResponse} height="500"></img>
-        </a>
-        <br></br>
-        <p>Images from Spotify:</p>
-        <br></br>
-        {this.state.showWallpaper &&
-          this.state.listItems.map(function (item) {
-            return <img src={item} height="50px" />;
-          })}
+          disabled={!this.state.showWallpaper}
+          icon="pi pi-play"
+          label="Generate Wallpaper (backend)"
+        ></Button>
+
+        {this.state.wallpaperResponse && (
+          <>
+            <p>Wallpaper from backend: click to download</p>
+            <a href={this.state.wallpaperResponse} download>
+              <img src={this.state.wallpaperResponse} height="500"></img>
+            </a>
+          </>
+        )}
+
+        {this.state.showWallpaper && (
+          <>
+            <p>Images from Spotify:</p>
+            {this.state.listItems.map((item, i) => {
+              return <img src={item} height="50px" key={i} />;
+            })}
+          </>
+        )}
       </div>
     );
   }
 }
-export default GenerateWallpaper;
+export { GenerateWallpaper };
