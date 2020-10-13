@@ -53,7 +53,9 @@ class GenerateWallpaper extends Component {
           responses.forEach((response) => {
             console.log(response);
             response["data"]["items"].forEach((item) => {
-              imageURIs.push(item["track"]["album"]["images"][0]["url"]);
+              if (item["track"]["album"]["images"][2]) {
+                imageURIs.push(item["track"]["album"]["images"][2]["url"]);
+              }
             });
           });
           this.setState({
@@ -114,7 +116,8 @@ class GenerateWallpaper extends Component {
         <br></br>
         <br></br>
         <p>Wallpaper (one image):</p>
-        <img src={this.state.wallpaperResponse} height="500"></img>
+        <a href={this.state.wallpaperResponse} download> <img src={this.state.wallpaperResponse} height="500"></img>
+        </a>
         <br></br>
         <p>Images from Spotify:</p>
         <br></br>

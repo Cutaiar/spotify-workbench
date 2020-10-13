@@ -15,7 +15,7 @@ const MergeTask = () => {
 };
 
 const ImageURLSToWallpaper = async (imageUrls) => {
-  let dim = 640; // TODO base dimension off of actual from spotify
+  let dim = 64; // TODO base dimension off of actual from spotify
   console.log(`Recieved ${imageUrls.length} images...`);
   console.log(`Assuming a dimension of ${dim}x${dim} for each...`);
   console.log("Stitching image...");
