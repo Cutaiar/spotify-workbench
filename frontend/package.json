@@ -36,6 +36,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "webpack": "webpack --config webpack.config.js",
+    "compile": " tsc --project ./tsconfig.json",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

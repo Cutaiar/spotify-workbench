@@ -1,0 +1,9 @@
+body {
+  background-color: rgb(24, 24, 24);
+  height: 100vh;
+  overflow: hidden;
+}
+
+.navlink-style {
+  text-decoration: none;
+}
