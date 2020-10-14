@@ -1,3 +1,5 @@
+![logo](./spotify-workbench-icon.png)
+
 # Spotify Workbench
 
 The Spotify Workbench is a collection of services built on top of Spotify and other apps which provide the user with advanced musical functionality the the creation and discovery domains.
