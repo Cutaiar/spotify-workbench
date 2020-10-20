@@ -22,13 +22,14 @@ export const StravaTest: React.FC = (props) => {
   const [stravaClient, setStravaClient] = useState(undefined);
 
   const getAthlete = () => {
-    stravaClient?.athlete
-      .get({})
-      .then((resp: any) => setAthlete(resp))
-      .catch((e: any) => {
-        setAthlete("Error fetching athlete");
-        console.error(e);
-      });
+    // stravaClient?.athlete
+    // .get({})
+    // .then((resp: any) => setAthlete(resp))
+    // .catch((e: any) => {
+    //   setAthlete("Error fetching athlete");
+    //   console.error(e);
+    // });
+    setAthlete(stravaClient.athlete.toString());
   };
 
   React.useEffect(() => {
@@ -41,9 +42,14 @@ export const StravaTest: React.FC = (props) => {
       const urlParams = new URLSearchParams(queryString);
       const _code = urlParams.get("code");
       if (_code) {
-        // const token = await stravaApi.oauth.getToken(_code);
-        // const client: any = new (stravaApi.client as any)(token);
-        // setStravaClient(client);
+        try {
+          const token = await stravaApi.oauth.getToken(_code);
+          console.log("token", token);
+        } catch {
+          console.log("shit");
+        }
+        const client: any = new (stravaApi.client as any)(token);
+        setStravaClient(client);
       }
     };
     clientSetup();
