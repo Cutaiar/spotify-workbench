@@ -18,7 +18,7 @@ _Note: The repo is in some turmoil given that it was recently converted from an 
 
 - Clone this [repo](https://github.com/Cutaiar/album-cover-wallpaper.git)
 - run `./init.cmd` in the root of the repo
-- Run the `Start App` task using the command palette
+- Run the `Start App` task using the command palette (`cmd+shift+p`)
 
 What you've just done is installed all dependencies for the frontend and backend, started the frontend on port 3000 and started the wallpaper service server on port 3001. The frontend will hit port 3001 with all the image URIs and the backend will respond with a base64 encoded stitched wallpaper in the body".
 
