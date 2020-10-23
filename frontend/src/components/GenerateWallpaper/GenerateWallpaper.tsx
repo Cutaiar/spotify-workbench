@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from "react";
+import React from "react";
 import "./GenerateWallpaper.css";
 import axios from "axios";
 import { Button } from "primereact/button";
@@ -104,7 +104,7 @@ const GenerateWallpaper: React.FC<IGenerateWallpaperProps> = (props) => {
         <>
           <p>Wallpaper from backend: click to download</p>
           <a href={state.wallpaperResponse} download>
-            <img src={state.wallpaperResponse} height="500"></img>
+            <img alt="" src={state.wallpaperResponse} height="500"></img>
           </a>
         </>
       )}
@@ -113,7 +113,7 @@ const GenerateWallpaper: React.FC<IGenerateWallpaperProps> = (props) => {
         <>
           <p>Images from Spotify:</p>
           {state.listItems.map((item, i) => {
-            return <img src={item} height="50px" key={i} />;
+            return <img alt="" src={item} height="50px" key={i} />;
           })}
         </>
       )}
