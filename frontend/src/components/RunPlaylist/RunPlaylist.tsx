@@ -84,43 +84,50 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
 
   return (
     <div className={"RunPlaylistRoot"}>
-      <h1> Run Playlists</h1>
-      <div style={{ width: "200px" }}>
-        <InputText
-          style={{ width: "100%" }}
-          value={numberOfSongsToFetch}
-          keyfilter={"int"}
-          className={isInputValid() ? "" : "p-invalid"}
-          onChange={(e) => {
-            let target = e.target as HTMLInputElement;
-            setNumberOfSongsToFetch(+target.value);
-          }}
-        />
-        <Slider
-          min={1}
-          max={50}
-          value={numberOfSongsToFetch}
-          onChange={(e) => {
-            setNumberOfSongsToFetch(e.value as number);
-          }}
-        />
-        {!isInputValid() && (
-          <small className="p-invalid"> {`Between 0 and ${fetchLimit}`}</small>
-        )}
-      </div>
+      <h2> Run Playlists</h2>
+      <div className={"p-d-flex p-jc-center p-ai-center p-p-1"}>
+        <div className="p-p-1" style={{ width: "200px" }}>
+          <InputText
+            style={{ width: "100%" }}
+            value={numberOfSongsToFetch}
+            keyfilter={"int"}
+            className={isInputValid() ? "" : "p-invalid"}
+            onChange={(e) => {
+              let target = e.target as HTMLInputElement;
+              setNumberOfSongsToFetch(+target.value);
+            }}
+          />
+          <Slider
+            min={1}
+            max={50}
+            value={numberOfSongsToFetch}
+            onChange={(e) => {
+              setNumberOfSongsToFetch(e.value as number);
+            }}
+          />
+          {!isInputValid() && (
+            <small className="p-invalid">
+              {" "}
+              {`Between 0 and ${fetchLimit}`}
+            </small>
+          )}
+        </div>
 
-      <Button
-        onClick={() => getRecentSongs()}
-        disabled={!props.spotifyUser || !isInputValid()}
-      >
-        Get Recent Songs
-      </Button>
-      <Button
-        onClick={() => saveToPlaylist()}
-        disabled={!props.spotifyUser || songItems.length <= 0}
-      >
-        Save to Playlist
-      </Button>
+        <Button
+          onClick={() => getRecentSongs()}
+          disabled={!props.spotifyUser || !isInputValid()}
+          className="p-m-2"
+        >
+          Get Recent Songs
+        </Button>
+        <Button
+          onClick={() => saveToPlaylist()}
+          disabled={!props.spotifyUser || songItems.length <= 0}
+          className="p-m-2"
+        >
+          Save to Playlist
+        </Button>
+      </div>
       <div className="p-d-flex " style={{ height: "100%" }}>
         <div
           style={{ display: "flex", justifyContent: "center", width: "100%" }}

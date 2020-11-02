@@ -9,6 +9,8 @@ import "primereact/resources/themes/saga-blue/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import { App } from "./components/App/App";
+import PrimeReact from "primereact/utils";
+PrimeReact.ripple = true;
 
 ReactDOM.render(
   <React.StrictMode>

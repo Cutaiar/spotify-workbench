@@ -4,6 +4,6 @@
     /* background: linear-gradient(to top, rgb(2, 2, 2), rgb(182, 10, 0) 20%, rgb(2, 2, 2) 100%); */
 
   color: white;
-  height: 100vh;
+  height: 100%;
   overflow: scroll;
 }

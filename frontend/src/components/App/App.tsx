@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 
 import { Button } from "primereact/button";
+import { Home } from "../Home/Home";
 import { RunPlaylist } from "../RunPlaylist/RunPlaylist";
 import { GenerateWallpaper } from "../GenerateWallpaper/GenerateWallpaper";
 import hash from "../../common/hash";
@@ -23,15 +24,6 @@ const connectToSpotifyLink = `${authEndpoint}?client_id=${clientId}&redirect_uri
   "%20"
 )}&response_type=token&show_dialog=true`;
 
-const Home = () => {
-  return (
-    <>
-      <h2 style={{ color: "white" }}>Spotify Workbench</h2>{" "}
-      <p style={{ color: "white" }}>Welcome to your Spotify workbench</p>
-    </>
-  );
-};
-
 export interface ISpotifyUser {
   profileImage?: string;
   token: string;
@@ -40,6 +32,10 @@ export interface ISpotifyUser {
 
 const App: React.FC = (props) => {
   const [spotifyUser, setSpotifyUser] = React.useState<ISpotifyUser>(undefined);
+
+  const HomeRoute = () => {
+    return <Home />;
+  };
 
   const WallpaperRoute = () => {
     return <GenerateWallpaper spotifyUser={spotifyUser} />;
@@ -114,7 +110,7 @@ const App: React.FC = (props) => {
           <RunPlaylistRoute />
         </Route>
         <Route path="/">
-          <Home />
+          <HomeRoute />
         </Route>
       </Switch>
     </Router>
