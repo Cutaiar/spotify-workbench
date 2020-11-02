@@ -84,22 +84,22 @@ const GenerateWallpaper: React.FC<IGenerateWallpaperProps> = (props) => {
   return (
     <div className="GenerateWallpaperRoot">
       <h1>Album Cover Wallpaper Generator</h1>
-
-      <Button
-        className="p-button-primary"
-        onClick={onGenerateClick}
-        disabled={!props.spotifyUser?.token}
-        icon="pi pi-images"
-        label="Get Images from Spotify"
-      ></Button>
-      <Button
-        className="p-button-primary"
-        onClick={onUploadClicked}
-        disabled={!state.showWallpaper}
-        icon="pi pi-play"
-        label="Generate Wallpaper (backend)"
-      ></Button>
-
+      <div className="p-d-flex p-jc-center p-ai-center">
+        <Button
+          className="p-button-primary p-m-2"
+          onClick={onGenerateClick}
+          disabled={!props.spotifyUser?.token}
+          icon="pi pi-images"
+          label="Get Images from Spotify"
+        ></Button>
+        <Button
+          className="p-button-primary p-m-2"
+          onClick={onUploadClicked}
+          disabled={!state.showWallpaper}
+          icon="pi pi-play"
+          label="Generate Wallpaper (backend)"
+        ></Button>
+      </div>
       {state.wallpaperResponse && (
         <>
           <p>Wallpaper from backend: click to download</p>

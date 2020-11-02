@@ -82,6 +82,11 @@ const App: React.FC = (props) => {
         }
         style={{ width: "100%", height: "100px" }}
       >
+        <img
+          src="/spotify-workbench-icon.png"
+          style={{ width: 60, height: 60 }}
+          className="p-m-3"
+        />
         <h1 className="p-text-nowrap p-text-truncate">Spotify Workbench</h1>
 
         {getNavigation()}
