@@ -1,9 +1,14 @@
 body {
   background-color: rgb(24, 24, 24);
   height: 100vh;
-  overflow: hidden;
+  overflow: scroll;
 }
 
 .navlink-style {
   text-decoration: none;
+}
+
+.navbar-style {
+  background-color: black;
+  color: white;
 }

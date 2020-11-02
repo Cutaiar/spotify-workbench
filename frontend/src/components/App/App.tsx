@@ -63,29 +63,49 @@ const App: React.FC = (props) => {
     }
   }, []);
 
-  return (
-    <Router>
-      <nav>
-        <NavLink className="navlink-style" to="/">
-          <Button style={{ textDecoration: "none" }}>Home</Button>
+  const getNavigation = () => {
+    return (
+      <nav className="p-pl-3">
+        <NavLink className="navlink-style p-p-1" to="/">
+          <Button className={"p-button-secondary"}>Home</Button>
         </NavLink>
-        <NavLink className="navlink-style" to="/wallpaper">
-          <Button>wallpaper</Button>
+        <NavLink className="navlink-style p-p-1" to="/wallpaper">
+          <Button className={"p-button-secondary"}>wallpaper</Button>
         </NavLink>
-        <NavLink className="navlink-style" to="/runplaylist">
-          <Button>run playlist</Button>
+        <NavLink className="navlink-style p-p-1" to="/runplaylist">
+          <Button className={"p-button-secondary"}>run playlist</Button>
         </NavLink>
       </nav>
+    );
+  };
+  const getNavbar = () => {
+    return (
+      <div
+        className={
+          " navbar-style p-d-flex p-flex-row p-jc-start p-ai-center p-p-3"
+        }
+        style={{ width: "100%", height: "100px" }}
+      >
+        <h1 className="p-text-nowrap p-text-truncate">Spotify Workbench</h1>
 
-      <Button
-        onClick={() => {
-          window.location.href = connectToSpotifyLink;
-        }}
-        icon={spotifyUser?.token ? "pi pi-check" : "pi pi-sign-in"}
-        label={spotifyUser?.token ? "Token acquired" : "Connect To Spotify"}
-        className={`p-button-${spotifyUser?.token ? "success" : "info"}`}
-      ></Button>
+        {getNavigation()}
+        <Button
+          onClick={() => {
+            window.location.href = connectToSpotifyLink;
+          }}
+          icon={spotifyUser?.token ? "pi pi-check" : "pi pi-sign-in"}
+          label={spotifyUser?.token ? "Token acquired" : "Connect To Spotify"}
+          className={`p-ml-auto p-button-rounded p-button-${
+            spotifyUser?.token ? "success" : "help"
+          }`}
+        ></Button>
+      </div>
+    );
+  };
 
+  return (
+    <Router>
+      {getNavbar()}
       <Switch>
         <Route path="/wallpaper">
           <WallpaperRoute />
