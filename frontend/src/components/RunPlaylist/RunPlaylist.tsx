@@ -89,7 +89,7 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
         <InputText
           style={{ width: "100%" }}
           value={numberOfSongsToFetch}
-          keyfilter={/^[0-5]?[0-9]$/}
+          keyfilter={"int"}
           className={isInputValid() ? "" : "p-invalid"}
           onChange={(e) => {
             let target = e.target as HTMLInputElement;
