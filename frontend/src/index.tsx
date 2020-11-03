@@ -5,7 +5,7 @@ import "./index.css";
 import * as serviceWorker from "./serviceWorker";
 
 // Prime react imports for webpack
-import "primereact/resources/themes/saga-blue/theme.css";
+import "primereact/resources/themes/bootstrap4-light-purple/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import { App } from "./components/App/App";
