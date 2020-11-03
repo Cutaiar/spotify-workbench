@@ -1,3 +1,13 @@
+<p align="center">
+  <a href="https://spotiverse.io/">
+    <img
+      alt="Spotify Workbench"
+      src="frontend/public/spotify-workbench-icon.png"
+      width="100"
+    />
+  </a>
+</p>
+
 # Spotify Workbench
 
 The Spotify Workbench is a collection of services built on top of Spotify and other apps which provide the user with advanced musical functionality the the creation and discovery domains.

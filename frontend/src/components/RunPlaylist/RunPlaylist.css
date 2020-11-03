@@ -1,0 +1,21 @@
+.RunPlaylistRoot {
+  color: white;
+  height: 100%;
+  text-align: center;
+}
+
+.song-item-title {
+  font-size: medium;
+}
+
+.song-item-artist {
+  font-size: smaller;
+  font-weight: 300;
+  color: rgb(92, 92, 92);
+}
+
+.song-info-container {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from "react";
+import React from "react";
 import "./GenerateWallpaper.css";
 import axios from "axios";
 import { Button } from "primereact/button";
@@ -44,7 +44,6 @@ const GenerateWallpaper: React.FC<IGenerateWallpaperProps> = (props) => {
       .then(
         axios.spread((...responses) => {
           responses.forEach((response) => {
-            console.log(response);
             response["data"]["items"].forEach((item: any) => {
               if (item["track"]["album"]["images"][2]) {
                 imageURIs.push(item["track"]["album"]["images"][2]["url"]);
@@ -84,27 +83,27 @@ const GenerateWallpaper: React.FC<IGenerateWallpaperProps> = (props) => {
   return (
     <div className="GenerateWallpaperRoot">
       <h1>Album Cover Wallpaper Generator</h1>
-
-      <Button
-        className="p-button-primary"
-        onClick={onGenerateClick}
-        disabled={!props.spotifyUser?.token}
-        icon="pi pi-images"
-        label="Get Images from Spotify"
-      ></Button>
-      <Button
-        className="p-button-primary"
-        onClick={onUploadClicked}
-        disabled={!state.showWallpaper}
-        icon="pi pi-play"
-        label="Generate Wallpaper (backend)"
-      ></Button>
-
+      <div className="p-d-flex p-jc-center p-ai-center">
+        <Button
+          className="p-button-primary p-m-2"
+          onClick={onGenerateClick}
+          disabled={!props.spotifyUser?.token}
+          icon="pi pi-images"
+          label="Get Images from Spotify"
+        ></Button>
+        <Button
+          className="p-button-primary p-m-2"
+          onClick={onUploadClicked}
+          disabled={!state.showWallpaper}
+          icon="pi pi-play"
+          label="Generate Wallpaper (backend)"
+        ></Button>
+      </div>
       {state.wallpaperResponse && (
         <>
           <p>Wallpaper from backend: click to download</p>
           <a href={state.wallpaperResponse} download>
-            <img src={state.wallpaperResponse} height="500"></img>
+            <img alt="" src={state.wallpaperResponse} height="500"></img>
           </a>
         </>
       )}
@@ -113,7 +112,7 @@ const GenerateWallpaper: React.FC<IGenerateWallpaperProps> = (props) => {
         <>
           <p>Images from Spotify:</p>
           {state.listItems.map((item, i) => {
-            return <img src={item} height="50px" key={i} />;
+            return <img alt="" src={item} height="50px" key={i} />;
           })}
         </>
       )}
