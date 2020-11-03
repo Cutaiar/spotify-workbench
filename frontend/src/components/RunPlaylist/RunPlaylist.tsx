@@ -8,6 +8,8 @@ import "primeflex/primeflex.css";
 import { Slider } from "primereact/slider";
 import { InputText } from "primereact/inputtext";
 import "./RunPlaylist.css";
+import { Toast, ToastMessage } from "primereact/toast";
+import { findAllByTestId } from "@testing-library/react";
 
 interface IRunPlaylistProps {
   spotifyUser: ISpotifyUser;
@@ -21,6 +23,8 @@ interface ISongItem {
   onClick: (preview_url?: string) => void;
 }
 
+const playlistName = "wb-recents";
+
 export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
   props
 ) => {
@@ -30,6 +34,7 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
     const options: SpotifyApi.RecentlyPlayedParameterObject = {
       limit: numberOfSongsToFetch,
     };
+
     const songs = await props.spotifyUser.spotifyApi.getMyRecentlyPlayedTracks(
       options
     );
@@ -64,7 +69,6 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
     console.log("click");
     console.log(playingSong);
     playingSong.current?.pause();
-
     if (preview_url !== undefined) {
       const newSong = new Audio(preview_url);
       newSong.volume = 0.1;
@@ -105,14 +109,43 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
   const saveToPlaylist = async () => {
     const id = (await props.spotifyUser.spotifyApi.getMe()).id;
     const playlist = await props.spotifyUser.spotifyApi.createPlaylist(id, {
-      name: "wb-recents",
+      name: playlistName,
       public: false,
     });
-    await props.spotifyUser.spotifyApi.addTracksToPlaylist(
-      playlist.id,
-      songItems.map((s) => {
-        return s.uri;
+    props.spotifyUser.spotifyApi
+      .addTracksToPlaylist(
+        playlist.id,
+        songItems.map((s) => {
+          return s.uri;
+        })
+      )
+      .then((_) => {
+        showSaveToPlaylistToast(true);
       })
+      .catch((error) => {
+        console.error("Encountered an error saving playlist");
+        console.log(error);
+        showSaveToPlaylistToast(false);
+      });
+  };
+
+  const saveToPlaylistSuccessToast = React.createRef<Toast>();
+  const showSaveToPlaylistToast = (success: boolean) => {
+    const successToast: ToastMessage = {
+      severity: "success",
+      summary: "Created a new playlist",
+      detail: `${numberOfSongsToFetch} added to ${playlistName}`,
+      closable: false,
+    };
+
+    const failToast: ToastMessage = {
+      severity: "error",
+      summary: "Playlist not created",
+      detail: `Encountered an issue`,
+    };
+
+    saveToPlaylistSuccessToast.current?.show(
+      success ? successToast : failToast
     );
   };
 
@@ -132,6 +165,7 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
 
   return (
     <div className={"RunPlaylistRoot"}>
+      <Toast ref={saveToPlaylistSuccessToast} position="bottom-right" />
       <h2> Run Playlists</h2>
       <div className={"p-d-flex p-jc-center p-ai-center p-p-1"}>
         <div className="p-p-1" style={{ width: "200px" }}>
