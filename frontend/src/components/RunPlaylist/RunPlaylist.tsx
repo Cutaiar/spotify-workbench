@@ -12,6 +12,14 @@ import "./RunPlaylist.css";
 interface IRunPlaylistProps {
   spotifyUser: ISpotifyUser;
 }
+interface ISongItem {
+  name: string;
+  image: string;
+  artist: string;
+  uri: string;
+  preview_url: string;
+  onClick: (preview_url?: string) => void;
+}
 
 export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
   props
@@ -41,23 +49,54 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
         image: (songImageUris as any[])[i],
         artist: song.track.artists[0].name,
         uri: song.track.uri,
-      };
+        preview_url: song.track.preview_url,
+        onClick: () => onSongItemClicked(song.track.preview_url),
+      } as ISongItem;
     });
     setSongItems(songItems);
   };
 
   const [selectedSongItems, setSelectedSongItems] = React.useState(undefined);
-  const [songItems, setSongItems] = React.useState([]);
+  const [songItems, setSongItems] = React.useState<ISongItem[]>([]);
+  const playingSong = React.useRef<HTMLAudioElement>(undefined);
+
+  const onSongItemClicked = (preview_url: string) => {
+    console.log("click");
+    console.log(playingSong);
+    playingSong.current?.pause();
+
+    if (preview_url !== undefined) {
+      const newSong = new Audio(preview_url);
+      newSong.volume = 0.1;
+      newSong.load();
+      newSong.play();
+      playingSong.current = newSong;
+    }
+  };
 
   const songItemTemplate = (option: any) => {
     return (
-      <div className={"p-grid"}>
-        <div className="p-col-fixed" style={{ width: "100px" }}>
-          <img alt={option.name} src={option.image} />
+      <div className={"p-d-flex"}>
+        <div className="p-mr-2" style={{ width: "40px" }}>
+          <img
+            alt={""}
+            onError={(e) => {
+              let target = e.target as HTMLInputElement;
+              target.onerror = null;
+              target.src =
+                "https://via.placeholder.com/150/000000/FFFFFF/?text=issue loading image";
+            }}
+            src={option.image}
+            height={40}
+          />
         </div>
-        <div className="p-grid p-dir-col">
-          <div className="p-col">{option.name}</div>
-          <div className="p-col">{option.artist}</div>
+        <div className="p-d-flex p-flex-column p-jc-center song-info-container">
+          <div className="song-item-title p-text-truncate p-text-nowrap p-text-left p-mb-1">
+            {option.name}
+          </div>
+          <div className="song-item-artist p-text-truncate p-text-left">
+            {option.artist}
+          </div>
         </div>
       </div>
     );
@@ -80,6 +119,15 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
   const fetchLimit = 50;
   const isInputValid = () => {
     return numberOfSongsToFetch < fetchLimit + 1 && numberOfSongsToFetch > 0;
+  };
+
+  const onListBoxChange = (e: any) => {
+    setSelectedSongItems(e.value);
+    if (e.value === null) {
+      playingSong.current?.pause();
+    } else {
+      e.value.onClick();
+    }
   };
 
   return (
@@ -106,10 +154,7 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
             }}
           />
           {!isInputValid() && (
-            <small className="p-invalid">
-              {" "}
-              {`Between 0 and ${fetchLimit}`}
-            </small>
+            <small className="p-invalid">{`Between 0 and ${fetchLimit}`}</small>
           )}
         </div>
 
@@ -130,12 +175,17 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
       </div>
       <div className="p-d-flex " style={{ height: "100%" }}>
         <div
-          style={{ display: "flex", justifyContent: "center", width: "100%" }}
+          style={{
+            overflow: "hidden",
+            display: "flex",
+            justifyContent: "center",
+            width: "100%",
+          }}
         >
           <ListBox
             value={selectedSongItems}
             options={songItems}
-            onChange={(e) => setSelectedSongItems(e.value)}
+            onChange={onListBoxChange}
             filter
             optionLabel="name"
             itemTemplate={songItemTemplate}
