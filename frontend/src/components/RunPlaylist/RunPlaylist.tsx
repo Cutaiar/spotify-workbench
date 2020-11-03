@@ -1,7 +1,6 @@
 import { Button } from "primereact/button";
 import { ListBox } from "primereact/listbox";
 import * as React from "react";
-import SpotifyWebApi from "spotify-web-api-js";
 import { getImageForSpotifyTracks } from "../../common/util";
 import { ISpotifyUser } from "../App/App";
 import "primeflex/primeflex.css";
@@ -9,7 +8,6 @@ import { Slider } from "primereact/slider";
 import { InputText } from "primereact/inputtext";
 import "./RunPlaylist.css";
 import { Toast, ToastMessage } from "primereact/toast";
-import { findAllByTestId } from "@testing-library/react";
 
 interface IRunPlaylistProps {
   spotifyUser: ISpotifyUser;
@@ -24,6 +22,7 @@ interface ISongItem {
 }
 
 const playlistName = "wb-recents";
+const fetchLimit = 50;
 
 export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
   props
@@ -48,6 +47,7 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
       songIds
     );
 
+    // The data entities which back the options for the listbox
     const songItems = songs.items.map((song, i) => {
       return {
         name: song.track.name,
@@ -64,6 +64,7 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
   const [selectedSongItems, setSelectedSongItems] = React.useState(undefined);
   const [songItems, setSongItems] = React.useState<ISongItem[]>([]);
   const playingSong = React.useRef<HTMLAudioElement>(undefined);
+  const saveToPlaylistSuccessToast = React.createRef<Toast>();
 
   const onSongItemClicked = (preview_url: string) => {
     console.log("click");
@@ -129,7 +130,6 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
       });
   };
 
-  const saveToPlaylistSuccessToast = React.createRef<Toast>();
   const showSaveToPlaylistToast = (success: boolean) => {
     const successToast: ToastMessage = {
       severity: "success",
@@ -149,7 +149,6 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
     );
   };
 
-  const fetchLimit = 50;
   const isInputValid = () => {
     return numberOfSongsToFetch < fetchLimit + 1 && numberOfSongsToFetch > 0;
   };
@@ -207,7 +206,7 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
           Save to Playlist
         </Button>
       </div>
-      <div className="p-d-flex " style={{ height: "100%" }}>
+      <div className="p-d-flex" style={{ height: "100%" }}>
         <div
           style={{
             overflow: "hidden",
