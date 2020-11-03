@@ -44,7 +44,6 @@ const GenerateWallpaper: React.FC<IGenerateWallpaperProps> = (props) => {
       .then(
         axios.spread((...responses) => {
           responses.forEach((response) => {
-            console.log(response);
             response["data"]["items"].forEach((item: any) => {
               if (item["track"]["album"]["images"][2]) {
                 imageURIs.push(item["track"]["album"]["images"][2]["url"]);

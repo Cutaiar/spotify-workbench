@@ -67,8 +67,6 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
   const saveToPlaylistSuccessToast = React.createRef<Toast>();
 
   const onSongItemClicked = (preview_url: string) => {
-    console.log("click");
-    console.log(playingSong);
     playingSong.current?.pause();
     if (preview_url !== undefined) {
       const newSong = new Audio(preview_url);
