@@ -168,7 +168,7 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
       <Toast ref={saveToPlaylistSuccessToast} position="bottom-right" />
       <h2> Run Playlists</h2>
       <div className={"p-d-flex p-jc-center p-ai-center p-p-1"}>
-        <div className="p-p-1" style={{ width: "200px" }}>
+        <div className="p-p-1" style={{ width: "170px" }}>
           <InputText
             style={{ width: "100%" }}
             value={numberOfSongsToFetch}
