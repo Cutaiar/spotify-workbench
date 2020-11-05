@@ -8,11 +8,12 @@ import { Slider } from "primereact/slider";
 import { InputText } from "primereact/inputtext";
 import "./RunPlaylist.css";
 import { Toast, ToastMessage } from "primereact/toast";
+import { SongListItem } from "./SongListItem";
 
 interface IRunPlaylistProps {
   spotifyUser: ISpotifyUser;
 }
-interface ISongItem {
+export interface ISongItem {
   name: string;
   image: string;
   artist: string;
@@ -75,34 +76,6 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
       newSong.play();
       playingSong.current = newSong;
     }
-  };
-
-  const songItemTemplate = (option: any) => {
-    return (
-      <div className={"p-d-flex"}>
-        <div className="p-mr-2" style={{ width: "40px" }}>
-          <img
-            alt={""}
-            onError={(e) => {
-              let target = e.target as HTMLInputElement;
-              target.onerror = null;
-              target.src =
-                "https://via.placeholder.com/150/000000/FFFFFF/?text=issue loading image";
-            }}
-            src={option.image}
-            height={40}
-          />
-        </div>
-        <div className="p-d-flex p-flex-column p-jc-center song-info-container">
-          <div className="song-item-title p-text-truncate p-text-nowrap p-text-left p-mb-1">
-            {option.name}
-          </div>
-          <div className="song-item-artist p-text-truncate p-text-left">
-            {option.artist}
-          </div>
-        </div>
-      </div>
-    );
   };
 
   const saveToPlaylist = async () => {
@@ -219,7 +192,9 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
             onChange={onListBoxChange}
             filter
             optionLabel="name"
-            itemTemplate={songItemTemplate}
+            itemTemplate={(item: ISongItem) => {
+              return <SongListItem item={item} />;
+            }}
             style={{ width: "500px" }}
             listStyle={{ maxHeight: "100%" }}
           />
