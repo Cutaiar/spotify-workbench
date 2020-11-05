@@ -11,11 +11,15 @@
 .song-item-artist {
   font-size: smaller;
   font-weight: 300;
-  color: rgb(92, 92, 92);
+  color: rgb(172, 172, 172);
 }
 
 .song-info-container {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.song-item-commands {
+  z-index: 2; /* attempt at making the song item command buttons clickable. Didn't work.*/
 }

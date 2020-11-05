@@ -19,7 +19,7 @@ export interface ISongItem {
   artist: string;
   uri: string;
   preview_url: string;
-  onClick: (preview_url?: string) => void;
+  link: string;
 }
 
 const playlistName = "wb-recents";
@@ -56,7 +56,7 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
         artist: song.track.artists[0].name,
         uri: song.track.uri,
         preview_url: song.track.preview_url,
-        onClick: () => onSongItemClicked(song.track.preview_url),
+        link: song.track.external_urls.spotify,
       } as ISongItem;
     });
     setSongItems(songItems);
@@ -64,17 +64,21 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
 
   const [selectedSongItems, setSelectedSongItems] = React.useState(undefined);
   const [songItems, setSongItems] = React.useState<ISongItem[]>([]);
-  const playingSong = React.useRef<HTMLAudioElement>(undefined);
+  const songAudio = React.useRef<HTMLAudioElement>(undefined);
   const saveToPlaylistSuccessToast = React.createRef<Toast>();
 
-  const onSongItemClicked = (preview_url: string) => {
-    playingSong.current?.pause();
-    if (preview_url !== undefined) {
-      const newSong = new Audio(preview_url);
-      newSong.volume = 0.1;
-      newSong.load();
-      newSong.play();
-      playingSong.current = newSong;
+  const handleSongItemClicked = (song: ISongItem) => {
+    handleAudioForSongClick(song);
+  };
+
+  const handleAudioForSongClick = (song: ISongItem) => {
+    songAudio.current?.pause();
+    if (song.preview_url !== undefined) {
+      const newAudio = new Audio(song.preview_url);
+      newAudio.volume = 0.1;
+      newAudio.load();
+      newAudio.play();
+      songAudio.current = newAudio;
     }
   };
 
@@ -127,9 +131,9 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
   const onListBoxChange = (e: any) => {
     setSelectedSongItems(e.value);
     if (e.value === null) {
-      playingSong.current?.pause();
+      songAudio.current?.pause();
     } else {
-      e.value.onClick();
+      handleSongItemClicked(e.value);
     }
   };
 
@@ -193,7 +197,12 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
             filter
             optionLabel="name"
             itemTemplate={(item: ISongItem) => {
-              return <SongListItem item={item} />;
+              return (
+                <SongListItem
+                  isPlaying={item == selectedSongItems}
+                  item={item}
+                />
+              );
             }}
             style={{ width: "500px" }}
             listStyle={{ maxHeight: "100%" }}
