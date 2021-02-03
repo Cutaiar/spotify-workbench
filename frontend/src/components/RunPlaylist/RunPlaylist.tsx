@@ -22,13 +22,19 @@ export interface ISongItem {
   link: string;
 }
 
-const playlistName = "wb-recents";
+type ProgressState = "not started" | "in progress" | "success" | "error";
 const fetchLimit = 50;
 
 export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
   props
 ) => {
   const [numberOfSongsToFetch, setNumberOfSongsToFetch] = React.useState(10);
+  const [playlistName, setPlaylistName] = React.useState<string>("sw-recents");
+
+  const [activeIndex, setActiveIndex] = React.useState(-1);
+  const [progressState, setProgressState] = React.useState<ProgressState>(
+    "not started"
+  );
 
   const getRecentSongs = async () => {
     const options: SpotifyApi.RecentlyPlayedParameterObject = {
@@ -66,6 +72,7 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
   const [songItems, setSongItems] = React.useState<ISongItem[]>([]);
   const songAudio = React.useRef<HTMLAudioElement>(undefined);
   const saveToPlaylistSuccessToast = React.createRef<Toast>();
+  const createPlaylistToast = React.createRef<Toast>();
 
   const handleSongItemClicked = (song: ISongItem) => {
     handleAudioForSongClick(song);
@@ -83,46 +90,80 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
   };
 
   const saveToPlaylist = async () => {
+    setProgressState("in progress");
     const id = (await props.spotifyUser.spotifyApi.getMe()).id;
-    const playlist = await props.spotifyUser.spotifyApi.createPlaylist(id, {
-      name: playlistName,
-      public: false,
-    });
-    props.spotifyUser.spotifyApi
-      .addTracksToPlaylist(
-        playlist.id,
-        songItems.map((s) => {
-          return s.uri;
-        })
-      )
-      .then((_) => {
-        showSaveToPlaylistToast(true);
+    const playlist = await props.spotifyUser.spotifyApi
+      .createPlaylist(id, {
+        name: playlistName,
+        public: false,
       })
-      .catch((error) => {
+      .catch((e) => {
         console.error("Encountered an error saving playlist");
-        console.log(error);
-        showSaveToPlaylistToast(false);
+        console.log(e);
+        setProgressState("error");
       });
+
+    if (playlist) {
+      const addTracksResp = await props.spotifyUser.spotifyApi
+        .addTracksToPlaylist(
+          playlist.id,
+          songItems.map((s) => {
+            return s.uri;
+          })
+        )
+        .catch((e) => {
+          console.error("Encountered an error saving playlist");
+          console.log(e);
+          setProgressState("error");
+        });
+
+      if (addTracksResp) {
+        setPlaylistName(null);
+        setProgressState("success");
+      }
+    }
   };
 
-  const showSaveToPlaylistToast = (success: boolean) => {
-    const successToast: ToastMessage = {
-      severity: "success",
-      summary: "Created a new playlist",
-      detail: `${numberOfSongsToFetch} added to ${playlistName}`,
-      closable: false,
+  const toastMessage: ToastMessage = React.useMemo(() => {
+    return {
+      severity: "info",
+      sticky: true,
+      content: (
+        <div className="p-d-flex p-flex-row p-ai-center" style={{ flex: "1" }}>
+          <div className="p-mr-2">
+            <InputText
+              value={playlistName}
+              onChange={(e) => {
+                setPlaylistName((e.target as HTMLInputElement).value);
+              }}
+              autoFocus
+              placeholder={playlistName}
+              disabled
+            />
+          </div>
+          <div className="p-mr-2">
+            <Button
+              label="Save"
+              className="p-button-primary"
+              onClick={async () => {
+                await saveToPlaylist();
+                // createPlaylistToast.current?.clear(); // WHY DOES THIS NOT WORK
+              }}
+            />
+          </div>
+        </div>
+      ),
     };
+  }, [
+    playlistName,
+    saveToPlaylist,
+    progressState,
+    createPlaylistToast.current,
+  ]);
 
-    const failToast: ToastMessage = {
-      severity: "error",
-      summary: "Playlist not created",
-      detail: `Encountered an issue`,
-    };
-
-    saveToPlaylistSuccessToast.current?.show(
-      success ? successToast : failToast
-    );
-  };
+  const showCreatePlaylistToast = React.useCallback(() => {
+    createPlaylistToast.current?.show(toastMessage);
+  }, [createPlaylistToast, toastMessage]);
 
   const isInputValid = () => {
     return numberOfSongsToFetch < fetchLimit + 1 && numberOfSongsToFetch > 0;
@@ -130,7 +171,8 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
 
   const onListBoxChange = (e: any) => {
     setSelectedSongItems(e.value);
-    if (e.value === null) {
+    setActiveIndex(songItems.findIndex((s) => s === e.value));
+    if (!e.value) {
       songAudio.current?.pause();
     } else {
       handleSongItemClicked(e.value);
@@ -140,6 +182,12 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
   return (
     <div className={"RunPlaylistRoot"}>
       <Toast ref={saveToPlaylistSuccessToast} position="bottom-right" />
+      <Toast
+        ref={createPlaylistToast}
+        position="bottom-right"
+        onRemove={() => console.log("toast removed")}
+      />
+
       <h2> Run Playlists</h2>
       <div className={"p-d-flex p-jc-center p-ai-center p-p-1"}>
         <div className="p-p-1" style={{ width: "170px" }}>
@@ -174,7 +222,7 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
           Get Recent Songs
         </Button>
         <Button
-          onClick={() => saveToPlaylist()}
+          onClick={() => showCreatePlaylistToast()}
           disabled={!props.spotifyUser || songItems.length <= 0}
           className="p-m-2"
         >
