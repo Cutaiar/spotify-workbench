@@ -19,6 +19,7 @@ import {
   redirectUri,
   scopes,
 } from "../../common/config";
+import { Visualizer } from "../Visualizer/Visualizer";
 
 const connectToSpotifyLink = `${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join(
   "%20"
@@ -90,6 +91,8 @@ const App: React.FC = (props) => {
         <h1 className="p-text-nowrap p-text-truncate">Spotify Workbench</h1>
 
         {getNavigation()}
+        <Visualizer width={200} height={200} />
+
         <Button
           onClick={() => {
             window.location.href = connectToSpotifyLink;
