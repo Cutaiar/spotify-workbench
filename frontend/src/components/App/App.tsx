@@ -84,6 +84,7 @@ const App: React.FC = (props) => {
         style={{ width: "100%", height: "100px" }}
       >
         <img
+          alt={""}
           src="/spotify-workbench-icon.png"
           style={{ width: 60, height: 60 }}
           className="p-m-3"

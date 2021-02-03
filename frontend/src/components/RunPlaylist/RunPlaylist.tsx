@@ -31,6 +31,7 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
   const [numberOfSongsToFetch, setNumberOfSongsToFetch] = React.useState(10);
   const [playlistName, setPlaylistName] = React.useState<string>("sw-recents");
 
+  // @ts-ignore
   const [activeIndex, setActiveIndex] = React.useState(-1);
   const [progressState, setProgressState] = React.useState<ProgressState>(
     "not started"
@@ -154,12 +155,7 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
         </div>
       ),
     };
-  }, [
-    playlistName,
-    saveToPlaylist,
-    progressState,
-    createPlaylistToast.current,
-  ]);
+  }, [playlistName, saveToPlaylist]);
 
   const showCreatePlaylistToast = React.useCallback(() => {
     createPlaylistToast.current?.show(toastMessage);
@@ -247,7 +243,7 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
             itemTemplate={(item: ISongItem) => {
               return (
                 <SongListItem
-                  isPlaying={item == selectedSongItems}
+                  isPlaying={item === selectedSongItems}
                   item={item}
                 />
               );
