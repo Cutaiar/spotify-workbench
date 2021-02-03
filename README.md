@@ -18,7 +18,7 @@ Services include:
 
 ##### `Run Playlists`
 
-##### `More to Come`
+##### `Music Visualization via canvas`
 
 <br>
 

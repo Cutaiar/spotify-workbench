@@ -32,12 +32,10 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
   const [numberOfSongsToFetch, setNumberOfSongsToFetch] = React.useState(10);
   const [playlistName, setPlaylistName] = React.useState<string>("sw-recents");
 
-  // @ts-ignore
-  const [activeIndex, setActiveIndex] = React.useState(-1);
-  // @ts-ignore
-  const [progressState, setProgressState] = React.useState<ProgressState>(
-    "not started"
-  );
+  // const [activeIndex, setActiveIndex] = React.useState(-1);
+  // const [progressState, setProgressState] = React.useState<ProgressState>(
+  //   "not started"
+  // );
 
   const getRecentSongs = async () => {
     const options: SpotifyApi.RecentlyPlayedParameterObject = {
@@ -93,7 +91,7 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
   };
 
   const saveToPlaylist = React.useCallback(async () => {
-    setProgressState("in progress");
+    // setProgressState("in progress");
     const id = (await props.spotifyUser.spotifyApi.getMe()).id;
     const playlist = await props.spotifyUser.spotifyApi
       .createPlaylist(id, {
@@ -103,7 +101,7 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
       .catch((e) => {
         console.error("Encountered an error saving playlist");
         console.log(e);
-        setProgressState("error");
+        // setProgressState("error");
       });
 
     if (playlist) {
@@ -117,12 +115,12 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
         .catch((e) => {
           console.error("Encountered an error saving playlist");
           console.log(e);
-          setProgressState("error");
+          // setProgressState("error");
         });
 
       if (addTracksResp) {
         setPlaylistName(null);
-        setProgressState("success");
+        // setProgressState("success");
       }
     }
   }, [playlistName, props.spotifyUser.spotifyApi, songItems]);
@@ -169,7 +167,7 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
 
   const onListBoxChange = (e: any) => {
     setSelectedSongItems(e.value);
-    setActiveIndex(songItems.findIndex((s) => s === e.value));
+    // setActiveIndex(songItems.findIndex((s) => s === e.value));
     if (!e.value) {
       songAudio.current?.pause();
     } else {

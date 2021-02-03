@@ -1,4 +1,9 @@
 {
-  "cSpell.words": ["runplaylist"],
+  "cSpell.words": [
+    "freqs",
+    "macbook",
+    "navlink",
+    "runplaylist"
+],
   "eslint.workingDirectories": ["./backend", "./frontend"]
 }
