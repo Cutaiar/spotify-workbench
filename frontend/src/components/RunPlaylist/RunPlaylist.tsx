@@ -9,6 +9,7 @@ import { InputText } from "primereact/inputtext";
 import "./RunPlaylist.css";
 import { Toast, ToastMessage } from "primereact/toast";
 import { SongListItem } from "./SongListItem";
+import { useMemo } from "react";
 
 interface IRunPlaylistProps {
   spotifyUser: ISpotifyUser;
@@ -33,6 +34,7 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
 
   // @ts-ignore
   const [activeIndex, setActiveIndex] = React.useState(-1);
+  // @ts-ignore
   const [progressState, setProgressState] = React.useState<ProgressState>(
     "not started"
   );
@@ -90,7 +92,7 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
     }
   };
 
-  const saveToPlaylist = async () => {
+  const saveToPlaylist = React.useCallback(async () => {
     setProgressState("in progress");
     const id = (await props.spotifyUser.spotifyApi.getMe()).id;
     const playlist = await props.spotifyUser.spotifyApi
@@ -123,9 +125,9 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
         setProgressState("success");
       }
     }
-  };
+  }, [playlistName, props.spotifyUser.spotifyApi, songItems]);
 
-  const toastMessage: ToastMessage = React.useMemo(() => {
+  const toastMessage: ToastMessage = useMemo(() => {
     return {
       severity: "info",
       sticky: true,

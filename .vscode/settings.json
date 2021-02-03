@@ -1,5 +1,4 @@
 {
-    "cSpell.words": [
-        "runplaylist"
-    ]
+  "cSpell.words": ["runplaylist"],
+  "eslint.workingDirectories": ["./backend", "./frontend"]
 }
