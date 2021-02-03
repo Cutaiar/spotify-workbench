@@ -36,6 +36,14 @@ What you've just done is installed all dependencies for the frontend and backend
 
 This project uses [primereact](https://primefaces.org/primereact/showcase/#/setup) for styling and components.
 
+## Deployment
+
+On every commit to master, Spotify Workbench is deployed to
+
+[`https://spotify-workbench.netlify.app`](https://spotify-workbench.netlify.app)
+
+Be sure that there are no warnings when building locally as all warnings will fail CI. If you need access to the [netlify project](https://app.netlify.com/sites/spotify-workbench/overview), contact dillonc@vt.edu.
+
 ## Frontend
 
 The frontend uses React. It was was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
