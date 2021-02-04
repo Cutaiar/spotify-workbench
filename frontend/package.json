@@ -34,7 +34,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && npm run addRedirects",
+    "addRedirects": "cp ./_redirects ./build/_redirects",
     "webpack": "webpack --config webpack.config.js",
     "compile": " tsc --project ./tsconfig.json",
     "test": "react-scripts test",

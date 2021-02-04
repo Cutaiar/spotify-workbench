@@ -12,7 +12,7 @@ import { SongListItem } from "./SongListItem";
 import { useMemo } from "react";
 
 interface IRunPlaylistProps {
-  spotifyUser: ISpotifyUser;
+  spotifyUser?: ISpotifyUser;
 }
 export interface ISongItem {
   name: string;
@@ -123,7 +123,7 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
         // setProgressState("success");
       }
     }
-  }, [playlistName, props.spotifyUser.spotifyApi, songItems]);
+  }, [playlistName, props.spotifyUser, songItems]);
 
   const toastMessage: ToastMessage = useMemo(() => {
     return {
