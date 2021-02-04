@@ -45,38 +45,30 @@ const App: React.FC = (props) => {
 
   React.useEffect(() => {
     // Set token
-    const func = async () => {
-      let _token = (hash as any).access_token;
-      if (_token) {
-        const user: ISpotifyUser = {
-          userObject: undefined,
-          token: _token,
-          spotifyApi: new SpotifyWebApi(),
-        };
-        user.spotifyApi.setAccessToken(_token);
-        setSpotifyUser(user);
+    let _token = (hash as any).access_token;
+    if (_token) {
+      const user: ISpotifyUser = {
+        userObject: undefined,
+        token: _token,
+        spotifyApi: new SpotifyWebApi(),
+      };
+      user.spotifyApi.setAccessToken(_token);
+      setSpotifyUser(user);
 
-        // kickoff me request
-        await user.spotifyApi.getMe(
-          undefined,
-          (
-            error: SpotifyWebApi.ErrorObject,
-            value: SpotifyApi.CurrentUsersProfileResponse
-          ) => {
-            if (error) {
-              console.error("Issue fetching user object from spotify api.");
-              return;
-            }
-            // Got a user object back
-            const userWithUserObject = { ...user, userObject: value };
-            setSpotifyUser(userWithUserObject);
-            console.log("Set spotify user object");
-            return;
-          }
-        );
-      }
-    };
-    func();
+      // kickoff me request
+      (async () => {
+        try {
+          const value = await user.spotifyApi.getMe();
+          const userWithUserObject = { ...user, userObject: value };
+          setSpotifyUser(userWithUserObject);
+          console.log("Set spotify user object");
+          return;
+        } catch (error) {
+          console.error("Issue fetching user object from spotify api. ", error);
+          return;
+        }
+      })();
+    }
   }, []);
 
   const getNavigation = () => {
@@ -113,17 +105,55 @@ const App: React.FC = (props) => {
         {getNavigation()}
         <Visualizer width={200} height={200} />
 
-        <Button
-          onClick={() => {
-            window.location.href = connectToSpotifyLink;
-          }}
-          icon={spotifyUser?.token ? "pi pi-check" : "pi pi-sign-in"}
-          label={spotifyUser?.token ? "Token acquired" : "Connect To Spotify"}
-          className={`p-ml-auto p-button-rounded p-button-${
-            spotifyUser?.token ? "success" : "help"
-          }`}
-        ></Button>
-        <p>{JSON.stringify(spotifyUser?.userObject)}</p>
+        {spotifyUser?.userObject && (
+          <div
+            className="p-d-flex p-ai-center p-ml-auto"
+            style={{
+              background: "#191919",
+              borderRadius: 8,
+              position: "relative",
+            }}
+          >
+            <img
+              alt=""
+              src={spotifyUser.userObject.images[0].url}
+              width={50}
+              height={50}
+              style={{ borderTopLeftRadius: 8, borderBottomLeftRadius: 8 }}
+            ></img>
+            <p
+              style={{
+                fontSize: 12,
+                color: "#dcdfe1",
+                overflow: "hidden",
+                whiteSpace: "nowrap",
+                paddingLeft: 14,
+                paddingRight: 30,
+              }}
+            >
+              {spotifyUser.userObject.display_name}
+            </p>
+            <img
+              alt=""
+              src={"/Spotify_Icon_RGB_Green.png"}
+              width={14}
+              height={14}
+              style={{ position: "absolute", top: "5px", right: "5px" }}
+            ></img>
+          </div>
+        )}
+        {!spotifyUser?.userObject && (
+          <Button
+            onClick={() => {
+              window.location.href = connectToSpotifyLink;
+            }}
+            icon={spotifyUser?.token ? "pi pi-check" : "pi pi-sign-in"}
+            label={spotifyUser?.token ? "Token acquired" : "Connect To Spotify"}
+            className={`p-ml-auto p-button-rounded p-button-${
+              spotifyUser?.token ? "success" : "help"
+            }`}
+          ></Button>
+        )}
       </div>
     );
   };
