@@ -13,20 +13,17 @@ import { RunPlaylist } from "../RunPlaylist/RunPlaylist";
 import { GenerateWallpaper } from "../GenerateWallpaper/GenerateWallpaper";
 import hash from "../../common/hash";
 import SpotifyWebApi from "spotify-web-api-js";
-import {
-  authEndpoint,
-  clientId,
-  redirectUri,
-  scopes,
-} from "../../common/config";
+import { authEndpoint, clientId, scopes } from "../../common/config";
 import { Visualizer } from "../Visualizer/Visualizer";
 
-const connectToSpotifyLink = `${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join(
-  "%20"
-)}&response_type=token&show_dialog=true`;
+// TODO use window location instead
+const redirectUri = window.location.href; // TODO Fix not working from non home authorizations in local testing
+const connectToSpotifyLink = `${authEndpoint}?client_id=${clientId}&redirect_uri=${encodeURIComponent(
+  redirectUri
+)}&scope=${scopes.join("%20")}&response_type=token&show_dialog=true`;
 
 export interface ISpotifyUser {
-  profileImage?: string;
+  userObject?: SpotifyApi.CurrentUsersProfileResponse;
   token: string;
   spotifyApi: SpotifyWebApi.SpotifyWebApiJs;
 }
@@ -48,16 +45,38 @@ const App: React.FC = (props) => {
 
   React.useEffect(() => {
     // Set token
-    let _token = (hash as any).access_token;
-    if (_token) {
-      const user: ISpotifyUser = {
-        profileImage: undefined,
-        token: _token,
-        spotifyApi: new SpotifyWebApi(),
-      };
-      user.spotifyApi.setAccessToken(_token);
-      setSpotifyUser(user);
-    }
+    const func = async () => {
+      let _token = (hash as any).access_token;
+      if (_token) {
+        const user: ISpotifyUser = {
+          userObject: undefined,
+          token: _token,
+          spotifyApi: new SpotifyWebApi(),
+        };
+        user.spotifyApi.setAccessToken(_token);
+        setSpotifyUser(user);
+
+        // kickoff me request
+        await user.spotifyApi.getMe(
+          undefined,
+          (
+            error: SpotifyWebApi.ErrorObject,
+            value: SpotifyApi.CurrentUsersProfileResponse
+          ) => {
+            if (error) {
+              console.error("Issue fetching user object from spotify api.");
+              return;
+            }
+            // Got a user object back
+            const userWithUserObject = { ...user, userObject: value };
+            setSpotifyUser(userWithUserObject);
+            console.log("Set spotify user object");
+            return;
+          }
+        );
+      }
+    };
+    func();
   }, []);
 
   const getNavigation = () => {
@@ -104,6 +123,7 @@ const App: React.FC = (props) => {
             spotifyUser?.token ? "success" : "help"
           }`}
         ></Button>
+        <p>{JSON.stringify(spotifyUser?.userObject)}</p>
       </div>
     );
   };
