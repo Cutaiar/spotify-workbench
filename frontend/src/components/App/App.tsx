@@ -1,5 +1,7 @@
 import React from "react";
+
 import "./App.css";
+
 import {
   BrowserRouter as Router,
   Switch,
@@ -7,13 +9,16 @@ import {
   NavLink,
 } from "react-router-dom";
 
+import hash from "../../common/hash";
+import { authEndpoint, clientId, scopes } from "../../common/config";
+import SpotifyWebApi from "spotify-web-api-js";
+
 import { Button } from "primereact/button";
+
 import { Home } from "../Home/Home";
 import { RunPlaylist } from "../RunPlaylist/RunPlaylist";
 import { GenerateWallpaper } from "../GenerateWallpaper/GenerateWallpaper";
-import hash from "../../common/hash";
-import SpotifyWebApi from "spotify-web-api-js";
-import { authEndpoint, clientId, scopes } from "../../common/config";
+import { ThreeEngine } from "./ThreeEngine/ThreeEngine";
 import { Visualizer } from "../Visualizer/Visualizer";
 
 // TODO use window location instead
@@ -41,6 +46,10 @@ const App: React.FC = (props) => {
 
   const RunPlaylistRoute = () => {
     return <RunPlaylist spotifyUser={spotifyUser} />;
+  };
+
+  const SpotiverseRoute = () => {
+    return <ThreeEngine />;
   };
 
   React.useEffect(() => {
@@ -75,13 +84,16 @@ const App: React.FC = (props) => {
     return (
       <nav className="p-pl-3">
         <NavLink className="navlink-style p-p-1" to="/">
-          <Button className={"p-button-secondary"}>Home</Button>
+          <Button className={"p-button-info"}>Home</Button>
         </NavLink>
         <NavLink className="navlink-style p-p-1" to="/wallpaper">
-          <Button className={"p-button-secondary"}>wallpaper</Button>
+          <Button className={"p-button-info"}>Wallpaper</Button>
         </NavLink>
         <NavLink className="navlink-style p-p-1" to="/runplaylist">
-          <Button className={"p-button-secondary"}>run playlist</Button>
+          <Button className={"p-button-info"}>Run playlist</Button>
+        </NavLink>
+        <NavLink className="navlink-style p-p-1" to="/spotiverse">
+          <Button className={"p-button-info"}>Spotiverse</Button>
         </NavLink>
       </nav>
     );
@@ -94,16 +106,12 @@ const App: React.FC = (props) => {
         }
         style={{ width: "100%", height: "100px" }}
       >
-        <img
-          alt={""}
-          src="/spotify-workbench-icon.png"
-          style={{ width: 60, height: 60 }}
-          className="p-m-3"
-        />
+        <div className="p-m-3">
+          <Visualizer width={90} height={90} />
+        </div>
         <h1 className="p-text-nowrap p-text-truncate">Spotify Workbench</h1>
 
         {getNavigation()}
-        <Visualizer width={200} height={200} />
 
         {spotifyUser?.userObject && (
           <div
@@ -147,12 +155,31 @@ const App: React.FC = (props) => {
             onClick={() => {
               window.location.href = connectToSpotifyLink;
             }}
-            icon={spotifyUser?.token ? "pi pi-check" : "pi pi-sign-in"}
-            label={spotifyUser?.token ? "Token acquired" : "Connect To Spotify"}
-            className={`p-ml-auto p-button-rounded p-button-${
-              spotifyUser?.token ? "success" : "help"
-            }`}
-          ></Button>
+            label={"Connect to spotify"}
+            style={{
+              display: "flex",
+              flexFlow: "row-reverse",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            className={`p-ml-auto p-button-rounded p-button-success`}
+          >
+            <div
+              style={{
+                paddingRight: 10,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <img
+                alt=""
+                src={"/Spotify_Icon_RGB_Black.png"}
+                width={20}
+                height={20}
+              ></img>
+            </div>
+          </Button>
         )}
       </div>
     );
@@ -167,6 +194,9 @@ const App: React.FC = (props) => {
         </Route>
         <Route path="/runplaylist">
           <RunPlaylistRoute />
+        </Route>
+        <Route path="/spotiverse">
+          <SpotiverseRoute />
         </Route>
         <Route path="/">
           <HomeRoute />

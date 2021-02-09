@@ -6,7 +6,7 @@
  *
  * Thanks to: https://codesandbox.io/s/bold-pond-fqq22?file=/index.html for inspiration
  */
-export const getAnimationLoop = async (canvas, requestRef, options) => {
+export const canvasAnimationLoop = async (canvas, requestRef) => {
   const devices = await navigator.mediaDevices.enumerateDevices();
   const stream = await navigator.mediaDevices.getUserMedia({
     audio: {
@@ -22,8 +22,9 @@ export const getAnimationLoop = async (canvas, requestRef, options) => {
   let freqs = new Uint8Array(analyser.frequencyBinCount);
 
   return function draw() {
-    let radius = 30;
-    let bars = 100;
+    let radius = canvas.width / 3;
+    let numBars = canvas.width / 2;
+    let barFactor = 5 / canvas.height;
 
     // Background
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -35,9 +36,9 @@ export const getAnimationLoop = async (canvas, requestRef, options) => {
     analyser.getByteFrequencyData(freqs);
 
     // Draw bars
-    for (var i = 0; i < bars; i++) {
-      let radians = (Math.PI * 2) / bars;
-      let bar_height = freqs[i] * options?.factor ?? 0.5;
+    for (var i = 0; i < numBars; i++) {
+      let radians = (Math.PI * 2) / numBars;
+      let bar_height = freqs[i] * barFactor;
 
       let x = canvas.width / 2 + Math.cos(radians * i) * radius;
       let y = canvas.height / 2 + Math.sin(radians * i) * radius;

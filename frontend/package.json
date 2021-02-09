@@ -23,7 +23,8 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
     "react-transition-group": "^4.4.1",
-    "spotify-web-api-js": "^1.5.1"
+    "spotify-web-api-js": "^1.5.1",
+    "three": "^0.125.2"
   },
   "devDependencies": {
     "@types/jest": "^26.0.15",

@@ -19,6 +19,17 @@ export const Home: React.FC = (props) => {
           This is a collection of tools, addons, and nifty functionality which
           aims to add both depth and simplicity to your modern music exploration
           and consumption.
+          <br />
+          <br />
+          <a
+            className={"p-text-light"}
+            style={{ fontSize: 20, textDecoration: "none" }}
+            href="https://github.com/Cutaiar/spotify-workbench"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            https://github.com/Cutaiar/spotify-workbench
+          </a>
         </p>
       </div>
     </div>
