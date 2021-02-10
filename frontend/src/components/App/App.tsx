@@ -1,4 +1,5 @@
 import React from "react";
+import NavDropdown from 'react-bootstrap/NavDropdown'
 
 import "./App.css";
 
@@ -83,18 +84,45 @@ const App: React.FC = (props) => {
   const getNavigation = () => {
     return (
       <nav className="p-pl-3">
-        <NavLink className="navlink-style p-p-1" to="/">
-          <Button className={"p-button-info"}>Home</Button>
-        </NavLink>
-        <NavLink className="navlink-style p-p-1" to="/wallpaper">
-          <Button className={"p-button-info"}>Wallpaper</Button>
-        </NavLink>
-        <NavLink className="navlink-style p-p-1" to="/runplaylist">
-          <Button className={"p-button-info"}>Run playlist</Button>
-        </NavLink>
-        <NavLink className="navlink-style p-p-1" to="/spotiverse">
-          <Button className={"p-button-info"}>Spotiverse</Button>
-        </NavLink>
+        <div className="nav-desktop-wrapper">
+          <NavLink className="navlink-style p-p-1" to="/">
+            <Button className={"p-button-info"}>Home</Button>
+          </NavLink>
+          <NavLink className="navlink-style p-p-1" to="/wallpaper">
+            <Button className={"p-button-info"}>Wallpaper</Button>
+          </NavLink>
+          <NavLink className="navlink-style p-p-1" to="/runplaylist">
+            <Button className={"p-button-info"}>Run playlist</Button>
+          </NavLink>
+          <NavLink className="navlink-style p-p-1" to="/spotiverse">
+            <Button className={"p-button-info"}>Spotiverse</Button>
+          </NavLink>
+        </div>
+
+        <div className="nav-dropdown-wrapper">
+          <NavDropdown className={"p-button-info"} title="Navigate" id="nav-dropdown">
+            <NavDropdown.Item>
+              <NavLink className="navlink-style p-p-1" to="/">
+                <Button className={"p-button-info"}>Home</Button>
+              </NavLink>
+            </NavDropdown.Item>
+            <NavDropdown.Item>
+              <NavLink className="navlink-style p-p-1" to="/wallpaper">
+                <Button className={"p-button-info"}>Wallpaper</Button>
+              </NavLink>
+            </NavDropdown.Item>
+            <NavDropdown.Item>
+              <NavLink className="navlink-style p-p-1" to="/runplaylist">
+                <Button className={"p-button-info"}>Run playlist</Button>
+              </NavLink>
+            </NavDropdown.Item>
+            <NavDropdown.Item>
+              <NavLink className="navlink-style p-p-1" to="/spotiverse">
+                <Button className={"p-button-info"}>Spotiverse</Button>
+              </NavLink>
+            </NavDropdown.Item>
+        </NavDropdown>
+      </div>
       </nav>
     );
   };

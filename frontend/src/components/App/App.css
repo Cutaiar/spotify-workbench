@@ -12,3 +12,24 @@ body {
   background-color: black;
   color: white;
 }
+
+@media screen and (min-width: 600px) {
+  .nav-dropdown-wrapper {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .nav-desktop-wrapper {
+    display: none;
+  }
+}
+
+.dropdown-menu {
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdown-menu .p-button {
+  width: 100%;
+}
