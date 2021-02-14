@@ -11,7 +11,7 @@
 /* Style the buttons that are used to open and close the accordion panel */
 
 .accordion {
-    background-color: #eee;
+    background-color: black;
     color: #444;
     cursor: pointer;
     padding: 18px;
@@ -27,7 +27,7 @@
 
 .accordion:hover,
 .active {
-    background-color: #ccc;
+    background-color: rgb(26, 22, 22);
 }
 
 
@@ -59,7 +59,7 @@
 /* Style the accordion content panel. Note: hidden by default */
 
 .accordion__content {
-    background-color: white;
+    background-color: rgb(26, 22, 22);
     overflow: auto;
     transition: max-height 100ms;
 }

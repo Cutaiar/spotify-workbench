@@ -1,3 +1,7 @@
-.songListItem {
+.trackTitle {
     color: white;
+}
+
+.trackImage {
+    width: 200px
 }

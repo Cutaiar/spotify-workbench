@@ -31,8 +31,12 @@ export const SongList: React.FC<ISongList> = (props) => {
         })
     }
 
-    const item = content => {
-        return <p>{content}</p>
+    const item = (content: string) => {
+        return <p className="trackTitle">{content}</p>
+    }
+
+    const getImage = (url: string) => {
+        return <img className="trackImage" src={url} />
     }
     return (
         <>
@@ -46,8 +50,7 @@ export const SongList: React.FC<ISongList> = (props) => {
             <div>
                 {state.showList && state.songs.map(song => (
                     <Accordion
-                        mainItem={item(song.name)} subItem={item(song.artist)} />
-                    // <p className="songListItem" key={song.name}>{song.name}</p>
+                        mainItem={item(song.name)} subItem={getImage(song.imageLink)} />
                 ))}
             </div>
         </>
