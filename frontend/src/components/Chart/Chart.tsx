@@ -9,7 +9,7 @@ interface IChartProps {
 export const Chart: React.FC<IChartProps> = (props) => {
   return (
     <div style={{ height: "100%" }}>
-      pee
+      <p style={{ color: "white" }}>pee</p>
     </div>
   );
 };

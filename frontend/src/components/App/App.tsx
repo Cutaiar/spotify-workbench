@@ -206,11 +206,11 @@ const App: React.FC = (props) => {
         <Route path="/spotiverse">
           <SpotiverseRoute />
         </Route>
-        <Route path="/">
-          <HomeRoute />
-        </Route>
         <Route path="/chart">
           <ChartRoute />
+        </Route>
+        <Route path="/">
+          <HomeRoute />
         </Route>
       </Switch>
     </Router>
