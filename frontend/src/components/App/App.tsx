@@ -20,6 +20,7 @@ import { RunPlaylist } from "../RunPlaylist/RunPlaylist";
 import { GenerateWallpaper } from "../GenerateWallpaper/GenerateWallpaper";
 import { ThreeEngine } from "./ThreeEngine/ThreeEngine";
 import { Visualizer } from "../Visualizer/Visualizer";
+import { Chart } from "../Chart/Chart";
 
 // TODO use window location instead
 const redirectUri = window.location.href; // TODO Fix not working from non home authorizations in local testing
@@ -50,6 +51,10 @@ const App: React.FC = (props) => {
 
   const SpotiverseRoute = () => {
     return <ThreeEngine />;
+  };
+
+  const ChartRoute = () => {
+    return <Chart spotifyUser={spotifyUser} />;
   };
 
   React.useEffect(() => {
@@ -94,6 +99,9 @@ const App: React.FC = (props) => {
         </NavLink>
         <NavLink className="navlink-style p-p-1" to="/spotiverse">
           <Button className={"p-button-info"}>Spotiverse</Button>
+        </NavLink>
+        <NavLink className="navlink-style p-p-1" to="/chart">
+          <Button className={"p-button-info"}>Chart</Button>
         </NavLink>
       </nav>
     );
@@ -200,6 +208,9 @@ const App: React.FC = (props) => {
         </Route>
         <Route path="/">
           <HomeRoute />
+        </Route>
+        <Route path="/chart">
+          <ChartRoute />
         </Route>
       </Switch>
     </Router>
