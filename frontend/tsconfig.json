@@ -8,6 +8,7 @@
     "target": "es5",
     "allowJs": true,
     "moduleResolution": "node",
+    "noImplicitAny": false,
     "lib": [
       "dom",
       "dom.iterable",

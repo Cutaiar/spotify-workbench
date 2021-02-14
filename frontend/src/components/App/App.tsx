@@ -20,6 +20,7 @@ import { RunPlaylist } from "../RunPlaylist/RunPlaylist";
 import { GenerateWallpaper } from "../GenerateWallpaper/GenerateWallpaper";
 import { ThreeEngine } from "./ThreeEngine/ThreeEngine";
 import { Visualizer } from "../Visualizer/Visualizer";
+import { SongList } from "../SongList/SongList"
 
 // TODO use window location instead
 const redirectUri = window.location.href; // TODO Fix not working from non home authorizations in local testing
@@ -52,6 +53,9 @@ const App: React.FC = (props) => {
     return <ThreeEngine />;
   };
 
+  const ListRoute = () => {
+    return <SongList spotifyUser={spotifyUser} />
+  }
   React.useEffect(() => {
     // Set token
     let _token = (hash as any).access_token;
@@ -94,6 +98,9 @@ const App: React.FC = (props) => {
         </NavLink>
         <NavLink className="navlink-style p-p-1" to="/spotiverse">
           <Button className={"p-button-info"}>Spotiverse</Button>
+        </NavLink>
+        <NavLink className="navlink-style p-p-1" to="/songList">
+          <Button className={"p-button-info"}>Song List</Button>
         </NavLink>
       </nav>
     );
@@ -197,6 +204,9 @@ const App: React.FC = (props) => {
         </Route>
         <Route path="/spotiverse">
           <SpotiverseRoute />
+        </Route>
+        <Route path="/songList">
+          <ListRoute />
         </Route>
         <Route path="/">
           <HomeRoute />
