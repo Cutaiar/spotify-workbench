@@ -1,4 +1,4 @@
-const axios = require('axios');
+import axios from "axios";
 const url = 'https://api.spotify.com/v1/me/player/recently-played';
 const idUrl = 'https://api.spotify.com/v1/audio-features?ids='
 const artistUrl = 'https://api.spotify.com/v1/artists?ids='
