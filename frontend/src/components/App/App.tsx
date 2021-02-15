@@ -20,7 +20,7 @@ import { RunPlaylist } from "../RunPlaylist/RunPlaylist";
 import { GenerateWallpaper } from "../GenerateWallpaper/GenerateWallpaper";
 import { ThreeEngine } from "./ThreeEngine/ThreeEngine";
 import { Visualizer } from "../Visualizer/Visualizer";
-import { Chart } from "../Chart/Chart";
+import { ChartPage } from "../ChartPage/ChartPage";
 
 // TODO use window location instead
 const redirectUri = window.location.href; // TODO Fix not working from non home authorizations in local testing

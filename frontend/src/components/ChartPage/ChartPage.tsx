@@ -6,7 +6,7 @@ interface IChartProps {
   spotifyUser: ISpotifyUser;
 }
 
-export const Chart: React.FC<IChartProps> = (props) => {
+export const ChartPage: React.FC<IChartProps> = (props) => {
   return (
     <div style={{ height: "100%" }}>
       <p style={{ color: "white" }}>pee</p>
