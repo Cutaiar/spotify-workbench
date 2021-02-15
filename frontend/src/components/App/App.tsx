@@ -54,7 +54,7 @@ const App: React.FC = (props) => {
   };
 
   const ChartRoute = () => {
-    return <Chart spotifyUser={spotifyUser} />;
+    return <ChartPage spotifyUser={spotifyUser} />;
   };
 
   React.useEffect(() => {
