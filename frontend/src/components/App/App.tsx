@@ -18,7 +18,7 @@ import { Button } from "primereact/button";
 import { Home } from "../Home/Home";
 import { RunPlaylist } from "../RunPlaylist/RunPlaylist";
 import { GenerateWallpaper } from "../GenerateWallpaper/GenerateWallpaper";
-import { ThreeEngine } from "./ThreeEngine/ThreeEngine";
+import { ThreeEngine } from "../ThreeEngine/ThreeEngine";
 import { Visualizer } from "../Visualizer/Visualizer";
 
 // TODO use window location instead
