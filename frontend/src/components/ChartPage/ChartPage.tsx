@@ -1,9 +1,11 @@
 import React from "react";
 import Chart from "chart.js";
 import "primeflex/primeflex.css";
+import { Button } from "primereact/button";
 import { ISpotifyUser } from "../App/App";
 import { getUsersLikedSongs } from "../../spotiverse-functions/getUsersLikedSongs";
-import { Song } from "../../spotiverse-functions";
+import { Features, Song } from "../../spotiverse-functions";
+import { SongListItem } from "../RunPlaylist/SongListItem";
 
 interface IChartProps {
   spotifyUser: ISpotifyUser;
@@ -28,35 +30,53 @@ export const ChartPage: React.FC<IChartProps> = (props) => {
         songs: songs,
         showList: false,
     })
-    console.log(songs);
   }
 
-  let ctx = document.getElementById('myChart') as HTMLCanvasElement;
+  const ctx = document.getElementById('myChart') as HTMLCanvasElement;
   if (ctx) {
+    const getAttribute = (song: Song, attribute: keyof typeof song.features) => {
+      return song.features[attribute];
+    }
+  
+    const testSong = state.songs[1];
+    const attributes: (keyof Features)[] = ["danceability", "liveness", "energy"];
+  
+    const chartData = attributes.map(attribute => (getAttribute(testSong, attribute)));
+  
     let chart = ctx.getContext('2d');
+
+    //graph options set here
+    const options = {
+      scale: {
+        angleLines: {
+            display: false
+        },
+        ticks: {
+          min: 0.0,
+          max: 1.0
+        }
+      }
+    };
     
     new Chart(chart, {
-      type: "line",
+      type: "radar",
       data: {
         //Bring in data
-        labels: ["Jan", "Feb", "March"],
+        labels: attributes,
         datasets: [
           {
-            label: "Sales",
-            data: [86, 67, 91],
+            label: testSong.name,
+            data: chartData,
           }
         ]
       },
-      options: {
-        //Customize chart options
-      }
+      options: options,
     });
   }
 
   return (
     <div style={{ height: "100%" }}>
-      <p style={{ color: "white" }}>{state.songs[0]?.name}{state.showList}asf</p>
-      <button onClick={getLikedSongs}/>
+      <Button className={"p-button-info"} onClick={getLikedSongs}>Get Data</Button>
       <canvas id="myChart"/>
     </div>
   );
