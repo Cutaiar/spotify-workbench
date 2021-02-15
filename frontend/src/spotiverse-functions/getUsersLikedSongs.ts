@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Artist, Song, Features } from "./SpotiyTypes"
+import { Artist, Song, Features } from "./SpotifyTypes"
 
 const libraryUrl = 'https://api.spotify.com/v1/me/tracks';
 const idUrl = 'https://api.spotify.com/v1/audio-features?ids='

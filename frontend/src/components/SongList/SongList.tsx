@@ -1,6 +1,8 @@
 import { getUsersLikedSongs, Song } from "../../spotiverse-functions"
 import { ISpotifyUser } from "../App/App";
 import React from "react";
+import { TestData } from "./test-data"
+// import { ProgressBar } from '@bit/primefaces.primereact.progressbar'
 import { Button } from "primereact/button";
 import { Accordion } from "../Accordion/Accordion"
 import "./SongList.css"
@@ -10,13 +12,13 @@ interface ISongList {
     spotifyUser?: ISpotifyUser;
 }
 interface ISongListState {
-    songs: Song[]; //this is lazy fix this later
+    songs: Song[];
     showList: boolean;
 }
 
 export const SongList: React.FC<ISongList> = (props) => {
     const initialState: ISongListState = {
-        songs: undefined,
+        songs: TestData,
         showList: false,
     };
     const [state, setState] = React.useState<ISongListState>(
@@ -31,26 +33,29 @@ export const SongList: React.FC<ISongList> = (props) => {
         })
     }
 
-    const item = (content: string) => {
-        return <p className="trackTitle">{content}</p>
+    const item = (content: string, url: string) => {
+        return <div className="mainContent">
+            <p className="trackTitle">{content}</p>
+            <img className="trackImage" src={url} />
+        </div>
     }
 
-    const getImage = (url: string) => {
-        return <img className="trackImage" src={url} />
+    const getSubContent = (artist: string, popularity: number) => {
+        return <p className="trackTitle">{artist + " has a populatiry of " + popularity}</p>
     }
     return (
         <>
-            <Button
+            {/* <Button
                 className="p-button-primary p-m-2"
-                onClick={getLikedSongs}
-                disabled={!props.spotifyUser?.token}
+                onClick={getLikedSongsTest}
+                // disabled={!props.spotifyUser?.token}
                 icon="pi pi-images"
                 label="Get Song List"
-            ></Button>
-            <div>
-                {state.showList && state.songs.map(song => (
+            ></Button> */}
+            <div className="listStyle">
+                {state.songs.map(song => (
                     <Accordion
-                        mainItem={item(song.name)} subItem={getImage(song.imageLink)} />
+                        mainItem={item(song.name, song.imageLink)} subItem={getSubContent(song.artist, song.popularity)} />
                 ))}
             </div>
         </>

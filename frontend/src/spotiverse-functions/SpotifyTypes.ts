@@ -1,10 +1,16 @@
+type TrackImage = {
+    height: number;
+    url: string;
+    width: number;
+}
+
 export type Artist = {
     followers: number;
     genres: string[];
     mainArtist: string;
     featuredArtists: string[];
     popularity: number;
-    images: string;
+    images: TrackImage[];
 
 }
 export type Features = {
@@ -24,14 +30,14 @@ export type Features = {
 
 export type Song = {
     name: string;
-    addedAt: Date;
-    releaseDate: Date;
+    addedAt: string;
+    releaseDate: string;
     artist: string;
     duration: number;
     explicit: boolean;
     popularity: number;
     imageLink: string;
-    id: number;
+    id: string;
     previewUrl: string;
     features: Features;
     artistInfo: Artist;

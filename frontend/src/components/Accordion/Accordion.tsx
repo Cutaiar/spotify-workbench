@@ -1,10 +1,10 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, JSXElementConstructor } from "react";
 import Chevron from "./Chevron";
 
 import "./Accordion.css";
 interface AccordionProps {
-    mainItem;
-    subItem;
+    mainItem: any;
+    subItem: any;
 
 }
 

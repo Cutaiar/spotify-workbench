@@ -3,5 +3,17 @@
 }
 
 .trackImage {
-    width: 200px
+    width: 50px
+}
+
+.listStyle {
+    width: 27%;
+    overflow: auto;
+}
+
+.mainContent {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 80%;
 }

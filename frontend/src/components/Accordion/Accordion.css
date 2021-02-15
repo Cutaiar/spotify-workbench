@@ -59,7 +59,7 @@
 /* Style the accordion content panel. Note: hidden by default */
 
 .accordion__content {
-    background-color: rgb(26, 22, 22);
+    background-color: rgb(15, 13, 13);
     overflow: auto;
     transition: max-height 100ms;
 }
