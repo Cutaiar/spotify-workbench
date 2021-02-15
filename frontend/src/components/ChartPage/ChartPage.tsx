@@ -1,36 +1,44 @@
-import React from "react";
+import React, { useState } from 'react';
 import Chart from "chart.js";
 import "primeflex/primeflex.css";
+import { SelectButton } from 'primereact/selectbutton';
 import { Button } from "primereact/button";
 import { ISpotifyUser } from "../App/App";
 import { getUsersLikedSongs } from "../../spotiverse-functions/getUsersLikedSongs";
 import { Features, Song } from "../../spotiverse-functions";
-import { SongListItem } from "../RunPlaylist/SongListItem";
+import "./ChartPage.css";
 
 interface IChartProps {
   spotifyUser: ISpotifyUser;
 }
 
-interface IChartState {
-  songs: Song[];
-  showList: boolean;
-}
+const defaultAttributes: (keyof Features)[] = [
+  "danceability",
+  "liveness",
+  "energy",
+  ];
+
+const multiSelectOptions = [
+  {name: "Danceability", value: "danceability"},
+  {name: "Liveness", value: "liveness"},
+  {name: "Energy", value: "energy"},
+  {name: "Speechiness", value: "speechiness"},
+];
 
 export const ChartPage: React.FC<IChartProps> = (props) => {
-  const initialState: IChartState = {
-    songs: [],
-    showList: false,
-  };
-  const [state, setState] = React.useState<IChartState>(
-      initialState
-  );
+  const [songs, setSongs] = useState(null);
+  const [index, setIndex] = useState(0);
+  const [selectedAttributes, setSelectedAttributes] = useState<(keyof Features)[]>(defaultAttributes);
+  
   const getLikedSongs = async () => {
     const songs = await getUsersLikedSongs(props?.spotifyUser?.token);
-    setState({
-        songs: songs,
-        showList: false,
-    })
+    setSongs(songs);
   }
+
+  const updateSeconds = () => setInterval(() => {
+    console.log('Interval triggered');
+    setIndex(index + 1);
+  }, 1000);
 
   const ctx = document.getElementById('myChart') as HTMLCanvasElement;
   if (ctx) {
@@ -38,10 +46,9 @@ export const ChartPage: React.FC<IChartProps> = (props) => {
       return song.features[attribute];
     }
   
-    const testSong = state.songs[1];
-    const attributes: (keyof Features)[] = ["danceability", "liveness", "energy"];
+    const testSong = songs[0];
   
-    const chartData = attributes.map(attribute => (getAttribute(testSong, attribute)));
+    const chartData = selectedAttributes.map(attribute => (getAttribute(testSong, attribute)));
   
     let chart = ctx.getContext('2d');
 
@@ -62,7 +69,7 @@ export const ChartPage: React.FC<IChartProps> = (props) => {
       type: "radar",
       data: {
         //Bring in data
-        labels: attributes,
+        labels: selectedAttributes,
         datasets: [
           {
             label: testSong.name,
@@ -77,6 +84,11 @@ export const ChartPage: React.FC<IChartProps> = (props) => {
   return (
     <div style={{ height: "100%" }}>
       <Button className={"p-button-info"} onClick={getLikedSongs}>Get Data</Button>
+      <Button className={"p-button-info"} onClick={updateSeconds}>Start Count</Button>
+      <SelectButton className="multiselect" value={selectedAttributes} options={multiSelectOptions} onChange={(e) => {
+        console.log(e);
+        setSelectedAttributes(e.value);
+      }} optionLabel="name" multiple />
       <canvas id="myChart"/>
     </div>
   );
