@@ -7,6 +7,7 @@ import { ISpotifyUser } from "../App/App";
 import { getUsersLikedSongs } from "../../spotiverse-functions/getUsersLikedSongs";
 import { Features, Song } from "../../spotiverse-functions";
 import "./ChartPage.css";
+import { withRouter } from 'react-router-dom';
 
 interface IChartProps {
   spotifyUser: ISpotifyUser;
@@ -23,6 +24,7 @@ const multiSelectOptions = [
   {name: "Liveness", value: "liveness"},
   {name: "Energy", value: "energy"},
   {name: "Speechiness", value: "speechiness"},
+  {name: "Valence", value: "valence"},
 ];
 
 export const ChartPage: React.FC<IChartProps> = (props) => {
@@ -47,13 +49,18 @@ export const ChartPage: React.FC<IChartProps> = (props) => {
     }
   
     const testSong = songs[0];
+
+    const testSong2 = songs[1];
   
     const chartData = selectedAttributes.map(attribute => (getAttribute(testSong, attribute)));
+
+    const chartData2 = selectedAttributes.map(attribute => (getAttribute(testSong2, attribute)));
   
     let chart = ctx.getContext('2d');
 
     //graph options set here
     const options = {
+      color: "white",
       scale: {
         angleLines: {
             display: false
@@ -62,8 +69,14 @@ export const ChartPage: React.FC<IChartProps> = (props) => {
           min: 0.0,
           max: 1.0
         }
+      },
+      labels: {
+        fontSize: 18,
       }
     };
+
+    Chart.defaults.global.defaultFontColor = 'white';
+    Chart.defaults.global.defaultColor = 'green';
     
     new Chart(chart, {
       type: "radar",
@@ -74,6 +87,10 @@ export const ChartPage: React.FC<IChartProps> = (props) => {
           {
             label: testSong.name,
             data: chartData,
+          },
+          {
+            label: testSong2.name,
+            data: chartData2,
           }
         ]
       },
