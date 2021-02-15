@@ -25,7 +25,10 @@ const multiSelectOptions = [
   {name: "Energy", value: "energy"},
   {name: "Speechiness", value: "speechiness"},
   {name: "Valence", value: "valence"},
+  {name: "Instrumentalness", value: "instrumentalness"},
 ];
+
+const NUM_SONGS = 5;
 
 export const ChartPage: React.FC<IChartProps> = (props) => {
   const [songs, setSongs] = useState(null);
@@ -47,14 +50,17 @@ export const ChartPage: React.FC<IChartProps> = (props) => {
     const getAttribute = (song: Song, attribute: keyof typeof song.features) => {
       return song.features[attribute];
     }
-  
-    const testSong = songs[0];
 
-    const testSong2 = songs[1];
-  
-    const chartData = selectedAttributes.map(attribute => (getAttribute(testSong, attribute)));
+    let datasets = [];
 
-    const chartData2 = selectedAttributes.map(attribute => (getAttribute(testSong2, attribute)));
+    for (let i = 0; i < NUM_SONGS; i++) {
+      const chartData = selectedAttributes.map(attribute => (getAttribute(songs[i], attribute)));
+      let dataset = {
+        label: songs[i].name,
+        data: chartData,
+      };
+      datasets.push(dataset);
+    }
   
     let chart = ctx.getContext('2d');
 
@@ -83,16 +89,7 @@ export const ChartPage: React.FC<IChartProps> = (props) => {
       data: {
         //Bring in data
         labels: selectedAttributes,
-        datasets: [
-          {
-            label: testSong.name,
-            data: chartData,
-          },
-          {
-            label: testSong2.name,
-            data: chartData2,
-          }
-        ]
+        datasets: datasets,
       },
       options: options,
     });
