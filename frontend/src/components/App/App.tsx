@@ -18,8 +18,10 @@ import { Button } from "primereact/button";
 import { Home } from "../Home/Home";
 import { RunPlaylist } from "../RunPlaylist/RunPlaylist";
 import { GenerateWallpaper } from "../GenerateWallpaper/GenerateWallpaper";
-import { ThreeEngine } from "../ThreeEngine/ThreeEngine";
 import { Visualizer } from "../Visualizer/Visualizer";
+import { Spotiverse } from "../Spotiverse/Spotiverse";
+
+import { AppStateProvider, IAppState } from "../../context/appStateContext";
 
 // TODO use window location instead
 const redirectUri = window.location.href; // TODO Fix not working from non home authorizations in local testing
@@ -36,6 +38,10 @@ export interface ISpotifyUser {
 const App: React.FC = (props) => {
   const [spotifyUser, setSpotifyUser] = React.useState<ISpotifyUser>(undefined);
 
+  const [appState, setAppState] = React.useState<IAppState>({
+    theme: "bonk-blue",
+  });
+
   const HomeRoute = () => {
     return <Home />;
   };
@@ -49,9 +55,11 @@ const App: React.FC = (props) => {
   };
 
   const SpotiverseRoute = () => {
-    return <ThreeEngine />;
+    return <Spotiverse spotifyUser={spotifyUser} />;
   };
 
+  // TODO this relies on the the auth url being opened in the same window, causing the page
+  // to reload, and this component to remount.
   React.useEffect(() => {
     // Set token
     let _token = (hash as any).access_token;
@@ -186,23 +194,25 @@ const App: React.FC = (props) => {
   };
 
   return (
-    <Router>
-      {getNavbar()}
-      <Switch>
-        <Route path="/wallpaper">
-          <WallpaperRoute />
-        </Route>
-        <Route path="/runplaylist">
-          <RunPlaylistRoute />
-        </Route>
-        <Route path="/spotiverse">
-          <SpotiverseRoute />
-        </Route>
-        <Route path="/">
-          <HomeRoute />
-        </Route>
-      </Switch>
-    </Router>
+    <AppStateProvider value={appState}>
+      <Router>
+        {getNavbar()}
+        <Switch>
+          <Route path="/wallpaper">
+            <WallpaperRoute />
+          </Route>
+          <Route path="/runplaylist">
+            <RunPlaylistRoute />
+          </Route>
+          <Route path="/spotiverse">
+            <SpotiverseRoute />
+          </Route>
+          <Route path="/">
+            <HomeRoute />
+          </Route>
+        </Switch>
+      </Router>
+    </AppStateProvider>
   );
 };
 export { App };

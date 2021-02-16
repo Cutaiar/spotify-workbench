@@ -4,25 +4,31 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { Particle } from "./Particle";
 import { AxisHelper } from "./axis";
 import { Song } from "../../models/song";
-import { generateTestLocalSongs } from "./helpers";
 
 const SIMULATION_SCALE: number = 100;
 
+// TODO this might cause extra rerenders, consider encapsulating song[] in interface
+export interface IThreeEngineProps {
+  songs: Song[];
+}
 /**
  * A component encapsulating the THREE powered spotiverse engine
  *
  * Bootstrapped from: https://blog.bitsrc.io/starting-with-react-16-and-three-js-in-5-minutes-3079b8829817
  * Converted into a FC
  *
- * @param props n/a
+ * TODO there is way too much going on in the useeffect, move as much out of it as you can
+ * @param props the songs to render in the particle system
  */
-export const ThreeEngine: React.FC = (props) => {
+export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
   const rootRef = React.useRef(undefined);
+  const { songs } = props;
+
   React.useEffect(() => {
     // let canvas: HTMLCanvasElement;
     let light: THREE.AmbientLight;
 
-    let particles: Particle[];
+    let particles: Particle[] = [];
     // let raycaster: THREE.Raycaster;
     // let mouse: THREE.Vector2;
 
@@ -32,7 +38,6 @@ export const ThreeEngine: React.FC = (props) => {
 
     let controls: OrbitControls;
 
-    let SIMULATION_SCALE: number = 100;
     // let dragging: boolean = false;
     // let offset: THREE.Vector3;
     let plane: THREE.Mesh;
@@ -44,11 +49,10 @@ export const ThreeEngine: React.FC = (props) => {
       ["z", "valence"],
     ]);
 
-    let cachedSongs: Song[];
-
     // let lastSelectedParticle: Particle;
     // let currentSelectedParticle: Particle;
 
+    // setup scene and camera
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera(
       75,
@@ -57,20 +61,17 @@ export const ThreeEngine: React.FC = (props) => {
       1000
     );
 
+    // setup renderer
     var renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
     rootRef.current.appendChild(renderer.domElement);
-
-    var geometry = new THREE.BoxGeometry(1, 1, 1);
-    var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    var cube = new THREE.Mesh(geometry, material);
 
     // soft white light
     light = new THREE.AmbientLight(0x404040);
     light.position.z = 10;
     scene.add(light);
 
-    // camera controller
+    // setup camera controller
     controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
     controls.dampingFactor = 0.05;
@@ -80,38 +81,31 @@ export const ThreeEngine: React.FC = (props) => {
     controls.maxPolarAngle = Math.PI / 2;
     //this.controls.update(); //controls.update() must be called after any manual changes to the camera's transform
 
-    const onSongsChanged = (newSongs: Song[]) => {
-      console.log("onSongsChanged");
-      cachedSongs = newSongs;
-      smartRegenerateSongParticleRelations();
-    };
-
     const addParticle = (particle: Particle) => {
       particles.push(particle);
       particleGroup.add(particle.mesh);
     };
 
-    // cached songs should be updated before calling this function
     const smartRegenerateSongParticleRelations = () => {
       let c = 0;
       // Reassign current particles new songs
       for (let p of particles) {
-        p.song = cachedSongs[c];
+        p.song = songs[c];
         //p.color = s.color(255, 0, 0) // Debug colors
         c++;
-        if (c === cachedSongs.length) {
+        if (c === songs.length) {
           break; // If there are less new songs than points
         }
       }
 
       // There are more new songs than points
-      if (c < cachedSongs.length) {
+      if (c < songs.length) {
         // console.log("Smart Regenerate: adding new songs...")
-        for (let i = c; i < cachedSongs.length; i++) {
+        for (let i = c; i < songs.length; i++) {
           let n = new Particle(
             1,
             Array(3).fill(SIMULATION_SCALE / 2),
-            cachedSongs[i]
+            songs[i]
           );
           //n.color = new THREE.Color(0,255,0) // Debug colors
           addParticle(n);
@@ -231,6 +225,10 @@ export const ThreeEngine: React.FC = (props) => {
       function (this: Window, ev: KeyboardEvent) {
         if (ev.key === "r") {
           regenerateTargetsRandomly();
+          return;
+        }
+        if (ev.key === "c") {
+          regenerateTargetsToCenterForLoading();
         }
       }
     );
@@ -272,15 +270,11 @@ export const ThreeEngine: React.FC = (props) => {
     plane.visible = false;
     // this.plane.material.opacity = .1;
     scene.add(plane);
-    particles = [];
 
     camera.position.z = 5;
 
     var animate = function () {
       requestAnimationFrame(animate);
-
-      cube.rotation.x += 0.01;
-      cube.rotation.y += 0.01;
 
       controls.update(); // required if controls.enableDamping or controls.autoRotate are set to true
       particles.forEach((p) => {
@@ -289,11 +283,11 @@ export const ThreeEngine: React.FC = (props) => {
       renderer.render(scene, camera);
     };
 
-    const testSongs = generateTestLocalSongs();
-    onSongsChanged(testSongs);
-
+    console.log("songs changed, regenerating...");
+    console.log(songs);
+    smartRegenerateSongParticleRelations();
     animate();
-  }, []);
+  }, [songs]);
 
   return <div ref={rootRef} />;
 };
