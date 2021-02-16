@@ -1,10 +1,11 @@
+import { TrackImage, randomTrackImage } from "./trackImage"
 export type Artist = {
   followers: number;
   genres: string[];
   mainArtist: string;
   featuredArtists: string[];
   popularity: number;
-  images: string; // TODO why did this used to be Array<Map<string, any>>
+  images: TrackImage[];
 };
 
 export const randomArtist = (): Artist => {
@@ -14,6 +15,6 @@ export const randomArtist = (): Artist => {
     mainArtist: "",
     featuredArtists: [""],
     popularity: 0,
-    images: "",
+    images: [randomTrackImage()],
   };
 };
