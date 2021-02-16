@@ -5,7 +5,7 @@ export type Artist = {
   mainArtist: string;
   featuredArtists: string[];
   popularity: number;
-  images: TrackImage[]; // TODO why did this used to be Array<Map<string, any>>
+  images: TrackImage[];
 };
 
 export const randomArtist = (): Artist => {
