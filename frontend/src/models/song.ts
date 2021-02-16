@@ -1,60 +1,34 @@
-import { Features } from "./features"
-import { ArtistInfo } from "./artist-info"
+import { Features, randomFeatures } from "./features";
+import { Artist, randomArtist } from "./artist";
 
-export class Song {
-    name: string;
-    added_at: string;
-    release_date: string;
-    artist: string;
-    duration: number;
-    explicit: boolean;
-    popularity: number;
-    id: string;
-    image_link: string;
-    song_info: object;
-    song_popularity: number;
-    features: Features;
-    artist_info: ArtistInfo;
-    preview_url: string;
+export type Song = {
+  name: string;
+  addedAt: Date;
+  releaseDate: Date;
+  artist: string;
+  duration: number;
+  explicit: boolean;
+  popularity: number;
+  imageLink: string;
+  id: number;
+  previewUrl: string;
+  features: Features;
+  artistInfo: Artist;
+};
 
-    constructor(
-        inName: string,
-        inAdded: string,
-        inRelease_date: string,
-        inArtist: string,
-        inDuration: number,
-        inExplicit: boolean,
-        inPopularity: number,
-        inId: string,
-        inImageLink: string,
-        inSongPopularity: number,
-        inFeatures: Features,
-        inArtistInfo: ArtistInfo,
-        previewURL: string) {
-        this.name = inName;
-        this.added_at = inAdded;
-        this.release_date = inRelease_date;
-        this.artist = inArtist;
-        this.duration = inDuration;
-        this.explicit = inExplicit;
-        this.popularity = inPopularity;
-        this.id = inId;
-        this.image_link = inImageLink
-        this.song_popularity = inSongPopularity;
-        this.features = inFeatures;
-        this.artist_info = inArtistInfo;
-        this.preview_url = previewURL;
-    }
-
-    addInfo(inInfo: object) {
-        this.song_info = inInfo;
-    }
-
-    public static Random() {
-        return new Song("random song", "", "", "", 0, false, 0, "", "", 0,
-               new Features(Math.random(), Math.random(), Math.random(),
-                            Math.random(), Math.random(), Math.random(),
-                            Math.random(), Math.random(), Math.random(),
-                            Math.random(), Math.random(), Math.random()), null, null);
-    }
-}
+export const randomSong = (): Song => {
+  return {
+    name: "random song",
+    addedAt: new Date(),
+    releaseDate: new Date(),
+    artist: "random artist",
+    duration: 0,
+    explicit: false,
+    popularity: 0,
+    imageLink: "",
+    id: 0,
+    previewUrl: "",
+    features: randomFeatures(),
+    artistInfo: randomArtist(),
+  };
+};

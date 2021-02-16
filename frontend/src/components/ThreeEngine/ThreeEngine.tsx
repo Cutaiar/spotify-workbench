@@ -291,8 +291,6 @@ export const ThreeEngine: React.FC = (props) => {
 
     const testSongs = generateTestLocalSongs();
     onSongsChanged(testSongs);
-    // onSongsChanged(testSongs);
-    // regenerateTargetsRandomly();
 
     animate();
   }, []);

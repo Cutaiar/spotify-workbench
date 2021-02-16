@@ -1,40 +1,31 @@
-export class Features {
-    tempo: number;
-    valence: number;
-    loudness: number;
-    energy: number;
-    key: number;
-    mode: number;
-    speechiness: number;
-    acousticness: number;
-    instrumentalness: number;
-    liveness: number;
-    danceability: number;
-    popularity: number;
+export type Features = {
+  danceability: number;
+  energy: number;
+  key: number;
+  loudness: number;
+  mode: number;
+  speechiness: number;
+  acousticness: number;
+  instrumentalness: number;
+  liveness: number;
+  valence: number;
+  tempo: number;
+  timeSignature: number;
+};
 
-    constructor(tempo: number,
-                valence: number,
-                loudness: number,
-                energy: number,
-                key: number,
-                mode: number,
-                speechiness: number,
-                acousticness: number,
-                instrumentalness: number,
-                liveness: number,
-                danceability: number,
-                popularity:number) {
-        this.tempo = tempo
-        this.valence = valence
-        this.loudness = loudness
-        this.energy = energy
-        this.key = key
-        this.mode = mode
-        this.speechiness = speechiness
-        this.acousticness = acousticness
-        this.instrumentalness = instrumentalness
-        this.liveness = liveness 
-        this.danceability = danceability;
-        this.popularity = popularity;
-    }
-}
+export const randomFeatures = (): Features => {
+  return {
+    danceability: Math.random(),
+    energy: Math.random(),
+    key: Math.random(),
+    loudness: Math.random(),
+    mode: Math.random(),
+    speechiness: Math.random(),
+    acousticness: Math.random(),
+    instrumentalness: Math.random(),
+    liveness: Math.random(),
+    valence: Math.random(),
+    tempo: Math.random(),
+    timeSignature: Math.random(),
+  };
+};
