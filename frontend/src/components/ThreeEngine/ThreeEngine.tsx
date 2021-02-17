@@ -4,6 +4,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { Particle } from "./Particle";
 import { AxisHelper } from "./axis";
 import { Song } from "../../models/song";
+import { generateRandomSongs } from "../../spotifyDataAccess";
 
 const SIMULATION_SCALE: number = 100;
 
@@ -42,6 +43,8 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
     // let offset: THREE.Vector3;
     let plane: THREE.Mesh;
     // let lerpVec: THREE.Vector3;
+
+    // let songs: Song[] = [];
 
     let axisFeatures = new Map<string, string>([
       ["x", "speechiness"],
@@ -86,8 +89,11 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
       particleGroup.add(particle.mesh);
     };
 
-    const smartRegenerateSongParticleRelations = () => {
+    const smartRegenerateSongParticleRelations = ():
+      | NodeJS.Timeout
+      | undefined => {
       let c = 0;
+      let particlesDeleteTimer: NodeJS.Timeout | undefined = undefined;
       // Reassign current particles new songs
       for (let p of particles) {
         p.song = songs[c];
@@ -121,12 +127,13 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
         }
 
         // wait half a second for any deleted particles to fade out, then delete
-        setTimeout(() => {
+        particlesDeleteTimer = setTimeout(() => {
           particles = particles.slice(0, c);
           toRemove.forEach((p) => particleGroup.remove(p.mesh));
         }, 500);
       }
       regenerateTargetsAccordingToSongs();
+      return particlesDeleteTimer;
     };
 
     const regenerateTargetsAccordingToSongs = () => {
@@ -220,18 +227,18 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
       });
     };
 
-    window.addEventListener(
-      "keydown",
-      function (this: Window, ev: KeyboardEvent) {
-        if (ev.key === "r") {
-          regenerateTargetsRandomly();
-          return;
-        }
-        if (ev.key === "c") {
-          regenerateTargetsToCenterForLoading();
-        }
+    // Have to use function syntax for some reason
+    const keydownHandler = function (this: Window, ev: KeyboardEvent) {
+      if (ev.key === "r") {
+        regenerateTargetsRandomly();
+        return;
       }
-    );
+      if (ev.key === "c") {
+        regenerateTargetsToCenterForLoading();
+      }
+    };
+
+    window.addEventListener("keydown", keydownHandler);
 
     const generateAxisAndGrid = () => {
       let gridHelper = new THREE.GridHelper(
@@ -285,8 +292,16 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
 
     console.log("songs changed, regenerating...");
     console.log(songs);
-    smartRegenerateSongParticleRelations();
+    // songs = generateRandomSongs();
+    const particlesDeleteTimer = smartRegenerateSongParticleRelations();
     animate();
+
+    return () => {
+      if (particlesDeleteTimer) {
+        clearTimeout(particlesDeleteTimer);
+      }
+      window.removeEventListener("keydown", keydownHandler);
+    };
   }, [songs]);
 
   return <div ref={rootRef} />;

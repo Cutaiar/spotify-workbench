@@ -21,11 +21,11 @@ export const Spotiverse: React.FC<ISpotiverseProps> = (props) => {
       const token = props.spotifyUser?.token;
       if (token) {
         // const fetchedSongs = await getUsersLikedSongs(token);
-        const fetchedSongs = await generateRandomSongsAsync();
+        const fetchedSongs = await generateRandomSongsAsync(100, 100);
         setSongs(fetchedSongs);
       }
     })();
-  }, [props.spotifyUser?.token]);
+  }, []);
 
   return (
     <div>
