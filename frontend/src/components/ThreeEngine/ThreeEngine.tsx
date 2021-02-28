@@ -66,7 +66,7 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
 
     // setup renderer
     var renderer = new THREE.WebGLRenderer();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(window.innerWidth / 10 * 7, window.innerHeight / 100 * 87);
     rootRef.current.appendChild(renderer.domElement);
 
     // soft white light

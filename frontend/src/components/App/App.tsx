@@ -112,7 +112,7 @@ const App: React.FC = (props) => {
         className={
           " navbar-style p-d-flex p-flex-row p-jc-start p-ai-center p-p-3"
         }
-        style={{ width: "100%", height: "100px" }}
+        style={{ width: "100%", height: "13%" }}
       >
         <div className="p-m-3">
           <Visualizer width={90} height={90} />

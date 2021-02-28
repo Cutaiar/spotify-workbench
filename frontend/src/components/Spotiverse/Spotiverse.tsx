@@ -4,11 +4,15 @@ import { Song } from "../../models/song";
 import { getUsersLikedSongs } from "../../spotifyDataAccess";
 import { ISpotifyUser } from "../App/App";
 import { generateRandomSongsAsync } from "../../spotifyDataAccess/";
-import { ThreeEngine } from "../ThreeEngine/ThreeEngine";
+import { ThreeEngine, IThreeEngineProps } from "../ThreeEngine/ThreeEngine";
+import { SongList } from "../SongList/SongList"
+import { TestData } from "./test-data"
+import "./Spotiverse.css"
 
 export interface ISpotiverseProps {
   spotifyUser?: ISpotifyUser;
 }
+
 
 export const Spotiverse: React.FC<ISpotiverseProps> = (props) => {
   const [songs, setSongs] = useState<Song[]>([]);
@@ -21,15 +25,20 @@ export const Spotiverse: React.FC<ISpotiverseProps> = (props) => {
       const token = props.spotifyUser?.token;
       if (token) {
         // const fetchedSongs = await getUsersLikedSongs(token);
-        const fetchedSongs = await generateRandomSongsAsync(100, 100);
+        const fetchedSongs = await generateRandomSongsAsync(100, 100); //can we use TestData for now?
         setSongs(fetchedSongs);
       }
     })();
   }, []);
 
   return (
-    <div>
-      <ThreeEngine songs={songs} />
-    </div>
+    <>
+      <div style={{ display: "flex", flexDirection: "row", height: "87vh" }}>
+        <ThreeEngine songs={TestData} />
+        <div className="songListWrapper">
+          <SongList songs={TestData} />
+        </div>
+      </div>
+    </>
   );
 };
