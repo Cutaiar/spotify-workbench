@@ -50,7 +50,7 @@ export const SongList: React.FC<ISongList & ISongListProps> = (props: ISongListP
             <div >
                 {state.songs.map(song => (
                     <Accordion
-                        mainItem={item(song.name, song.imageLink)} subItem={getSubContent(song.artist, song.popularity)} />
+                        mainItem={item(song.name, song.imageLink)} subItem={getSubContent(song.artist, song.popularity)} songLink={song.previewUrl} />
                 ))}
             </div>
         </>
