@@ -26,6 +26,10 @@ export const PinNavButton: React.FC<IPinNavButtonProps> = (props) => {
           pinRef.current?.clear();
           pinRef.current?.focus();
         }
+
+        if (started && passed) {
+          history.push(`/${to}`);
+        }
       }}
     >
       {started && !passed && (
@@ -34,6 +38,12 @@ export const PinNavButton: React.FC<IPinNavButtonProps> = (props) => {
           length={4}
           focus
           type="custom"
+          inputStyle={{
+            width: "15px",
+            height: "auto",
+            border: "none",
+            borderBottom: "2px solid",
+          }}
           onChange={(value, i) => setIndex(i)}
           onComplete={(value, index) => {
             if (value === pin) {
@@ -41,13 +51,17 @@ export const PinNavButton: React.FC<IPinNavButtonProps> = (props) => {
               setPassed(true);
               // TODO unlock animation then
               history.push(`/${to}`);
-              setStarted(false);
-              setPassed(false);
             }
           }}
         />
       )}
-      {(!started || passed) && props.children}
+
+      {(!started || passed) && (
+        <>
+          {props.children}
+          <i className={`pi pi-${passed ? "lock-open" : "lock"} p-ml-2`}></i>
+        </>
+      )}
     </Button>
   );
 };
