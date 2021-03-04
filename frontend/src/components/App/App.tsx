@@ -21,6 +21,7 @@ import { GenerateWallpaper } from "../GenerateWallpaper/GenerateWallpaper";
 import { ThreeEngine } from "../ThreeEngine/ThreeEngine";
 import { Visualizer } from "../Visualizer/Visualizer";
 import { Experiments } from "../Experiments/Experiments";
+import { PinNavButton } from "../Experiments/PinNavButton";
 
 // TODO use window location instead
 const redirectUri = window.location.href; // TODO Fix not working from non home authorizations in local testing
@@ -98,7 +99,11 @@ const App: React.FC = (props) => {
     return (
       <nav className="p-pl-3">
         {routes.map((r, i) => {
-          return (
+          return r.name === "experiments" ? (
+            <PinNavButton pin={"BOOL"} to={r.name}>
+              {r.displayName}
+            </PinNavButton>
+          ) : (
             <NavLink key={i} className="navlink-style p-p-1" to={`/${r.name}`}>
               <Button className={"p-button-info"}>{r.displayName}</Button>
             </NavLink>
