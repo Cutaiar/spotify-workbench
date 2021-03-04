@@ -1,10 +1,41 @@
-import React from "react";
+import React, { useRef, useState, useMemo } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { Particle } from "./Particle";
 import { AxisHelper } from "./axis";
 import { Song } from "../../models/song";
 import { generateRandomSongs } from "../../spotifyDataAccess";
+
+
+
+// const Box = (props: any) => {
+//   // This reference will give us direct access to the mesh
+//   const mesh = useRef() || { current: { rotation: { x: 4 } } } || { current: { rotation: { y: 4 } } };;
+
+//   // Set up state for the hovered and active state 
+//   const [active, setActive] = useState(false);
+
+//   // Rotate mesh every frame, this is outside of React without overhead
+//   useFrame(() => {
+//     mesh.current.rotation.x = mesh.current.rotation.y += 0.01;
+//   });
+
+//   // const texture = useMemo(() => new THREE.TextureLoader().load(five), []);
+
+//   return (
+//     <mesh
+//       {...props}
+//       ref={mesh}
+//       scale={active ? [2, 2, 2] : [1.5, 1.5, 1.5]}
+//       onClick={(e) => setActive(!active)}
+//     >
+//       <boxBufferGeometry args={[1, 1, 1]} />
+//       <meshBasicMaterial attach="material" transparent side={THREE.DoubleSide}>
+//         {/* <primitive attach="map" object={texture} /> */}
+//       </meshBasicMaterial>
+//     </mesh>
+//   );
+// }
 
 const SIMULATION_SCALE: number = 100;
 
@@ -15,7 +46,8 @@ export interface IThreeEngineProps {
 /**
  * A component encapsulating the THREE powered spotiverse engine
  *
- * Bootstrapped from: https://blog.bitsrc.io/starting-with-react-16-and-three-js-in-5-minutes-3079b8829817
+ * Bootstrapped from: https://blog.bitsrc.io/starting-with-react-16-and-th
+ree-js-in-5-minutes-3079b8829817
  * Converted into a FC
  *
  * TODO there is way too much going on in the useeffect, move as much out of it as you can
@@ -24,10 +56,47 @@ export interface IThreeEngineProps {
 export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
   const rootRef = React.useRef(undefined);
   const { songs } = props;
+  const [selectedParticle, setSelectedParticle] = useState<Particle>(null);
+
+  const [camera, setCamera] = useState(new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
+  ));
+
+  const selectParticle = (ev: any) => {
+    debugger;
+    console.log("getting clicked")
+    const mouse = new THREE.Vector2(1, 1); //probably could be moved to state
+    mouse.x = (ev.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = - (ev.clientY / window.innerHeight) * 2 + 1;
+    var vector = new THREE.Vector3(mouse.x, mouse.y, 1);
+    const raycaster = new THREE.Raycaster(); //probably could be moved to state
+    raycaster.setFromCamera(mouse, camera);
+    vector.unproject(camera);
+    const particleGroup = new THREE.Object3D();
+
+    var intersections = raycaster.intersectObject(particleGroup, true);
+    if (intersections.length > 0) {
+      var intersection: any = (intersections.length) > 0 ? intersections[0] : null;
+      if (intersection !== null) {
+        // this.dragging = true;
+        // console.log(intersection.object.userData.particle)
+        let p: Particle = intersection.object.userData.particle
+        // this.appService.currentSelectedSong.next(p == this.lastSelectedParticle ? null : p.song);
+        setSelectedParticle(p);
+        // this.controls.enabled = false;
+        // let planeIntersection = this.raycaster.intersectObject(this.plane);
+        // // this.offset.copy(planeIntersection[0].point).sub(this.plane.position)
+        // this.lerpVec.copy(p.intendedLoc)
+
+      }
+    }
+  }
 
   React.useEffect(() => {
     // let canvas: HTMLCanvasElement;
-    let light: THREE.AmbientLight;
 
     let particles: Particle[] = [];
     // let raycaster: THREE.Raycaster;
@@ -37,32 +106,27 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
 
     // let frameId: number = null;
 
-    let controls: OrbitControls;
 
     // let dragging: boolean = false;
     // let offset: THREE.Vector3;
-    let plane: THREE.Mesh;
     // let lerpVec: THREE.Vector3;
 
     // let songs: Song[] = [];
 
-    let axisFeatures = new Map<string, string>([
+    const axisFeatures = new Map<string, string>([
       ["x", "speechiness"],
       ["y", "acousticness"],
       ["z", "valence"],
     ]);
-
+    console.log(selectedParticle)
+    if (selectedParticle) {
+      selectedParticle.select()
+    }
     // let lastSelectedParticle: Particle;
     // let currentSelectedParticle: Particle;
 
     // setup scene and camera
-    var scene = new THREE.Scene();
-    var camera = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000
-    );
+    const scene = new THREE.Scene();
 
     // setup renderer
     var renderer = new THREE.WebGLRenderer();
@@ -70,12 +134,12 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
     rootRef.current.appendChild(renderer.domElement);
 
     // soft white light
-    light = new THREE.AmbientLight(0x404040);
+    const light = new THREE.AmbientLight(0x404040);
     light.position.z = 10;
     scene.add(light);
 
     // setup camera controller
-    controls = new OrbitControls(camera, renderer.domElement);
+    const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
     controls.dampingFactor = 0.05;
     controls.screenSpacePanning = false;
@@ -185,23 +249,19 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
       });
 
       //at this point, our map holds all of the scales values that we want :))))))
-      let count = 0;
-      particles.forEach((p) => {
+      particles.forEach((p, i) => {
         p.intendedLoc = new THREE.Vector3(
-          scaledValues.get("x")[count],
-          scaledValues.get("y")[count],
-          scaledValues.get("z")[count]
+          scaledValues.get("x")[i],
+          scaledValues.get("y")[i],
+          scaledValues.get("z")[i]
         ).multiplyScalar(SIMULATION_SCALE);
-        count++;
       });
-      count = 0;
-      particles.forEach((p) => {
+      particles.forEach((p, i) => {
         p.loc = new THREE.Vector3(
-          scaledValues.get("x")[count],
-          scaledValues.get("y")[count],
-          scaledValues.get("z")[count]
+          scaledValues.get("x")[i],
+          scaledValues.get("y")[i],
+          scaledValues.get("z")[i]
         ).multiplyScalar(SIMULATION_SCALE);
-        count++;
       });
     };
 
@@ -218,7 +278,7 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
     };
 
     const regenerateTargetsRandomly = (effectSize = false): void => {
-      let mul = 100;
+      const mul = 100;
       particles.forEach((p) => {
         p.intendedLoc.x = Math.random() * mul;
         p.intendedLoc.y = Math.random() * mul;
@@ -240,35 +300,35 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
 
     window.addEventListener("keydown", keydownHandler);
 
-    const generateAxisAndGrid = () => {
-      let gridHelper = new THREE.GridHelper(
-        SIMULATION_SCALE * 2,
-        50,
-        0xffffff,
-        0xffffff
-      );
-      let mat: any = gridHelper.material;
-      mat.transparent = true;
-      mat.opacity = 0.1;
-      scene.add(gridHelper);
-      gridHelper.position.setY(-1); // To not clip with meshlines
+    // (() => { // this is an effort to make things functional 
+    let gridHelper = new THREE.GridHelper(
+      SIMULATION_SCALE * 2,
+      50,
+      0xffffff,
+      0xffffff
+    );
+    let mat: any = gridHelper.material;
+    mat.transparent = true;
+    mat.opacity = 0.1;
+    scene.add(gridHelper);
+    gridHelper.position.setY(-1); // To not clip with meshlines
 
-      // let axisHelper = new AxisHelper(
-      //   SIMULATION_SCALE,
-      //   1,
-      //   true,
-      //   false,
-      //   true,
-      //   true
-      // );
-      // scene.add(axisHelper.object3d);
-    };
-    generateAxisAndGrid();
+    // let axisHelper = new AxisHelper(
+    //   SIMULATION_SCALE,
+    //   1,
+    //   true,
+    //   false,
+    //   true,
+    //   true
+    // );
+    // scene.add(axisHelper.object3d);
+    // })();
+
 
     // Particle setup
     particleGroup = new THREE.Object3D();
     scene.add(particleGroup);
-    plane = new THREE.Mesh(
+    const plane = new THREE.Mesh(
       new THREE.PlaneBufferGeometry(1000, 1000, 8, 8),
       new THREE.MeshBasicMaterial({ color: 0xffffff })
     );
@@ -304,5 +364,8 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
     };
   }, [songs]);
 
-  return <div ref={rootRef} />;
+  //style={{ width: "70%", background: "background: linear-gradient(to top, rgb(2, 2, 2), rgb(182, 10, 0) 20%, rgb(2, 2, 2) 100%)" }}>
+  return <div onMouseDown={selectParticle}>
+    <div ref={rootRef} />
+  </div>;
 };

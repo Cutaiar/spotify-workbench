@@ -4,7 +4,7 @@ import { Song } from "../../models/song";
 import { getUsersLikedSongs } from "../../spotifyDataAccess";
 import { ISpotifyUser } from "../App/App";
 import { generateRandomSongsAsync } from "../../spotifyDataAccess/";
-import { ThreeEngine, IThreeEngineProps } from "../ThreeEngine/ThreeEngine";
+import { ThreeEngine } from "../ThreeEngine/ThreeEngine";
 import { SongList } from "../SongList/SongList"
 import { TestData } from "./test-data"
 import "./Spotiverse.css"
