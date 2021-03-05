@@ -5,37 +5,8 @@ import { Particle } from "./Particle";
 import { AxisHelper } from "./axis";
 import { Song } from "../../models/song";
 import { generateRandomSongs } from "../../spotifyDataAccess";
+import { render } from "@testing-library/react";
 
-
-
-// const Box = (props: any) => {
-//   // This reference will give us direct access to the mesh
-//   const mesh = useRef() || { current: { rotation: { x: 4 } } } || { current: { rotation: { y: 4 } } };;
-
-//   // Set up state for the hovered and active state 
-//   const [active, setActive] = useState(false);
-
-//   // Rotate mesh every frame, this is outside of React without overhead
-//   useFrame(() => {
-//     mesh.current.rotation.x = mesh.current.rotation.y += 0.01;
-//   });
-
-//   // const texture = useMemo(() => new THREE.TextureLoader().load(five), []);
-
-//   return (
-//     <mesh
-//       {...props}
-//       ref={mesh}
-//       scale={active ? [2, 2, 2] : [1.5, 1.5, 1.5]}
-//       onClick={(e) => setActive(!active)}
-//     >
-//       <boxBufferGeometry args={[1, 1, 1]} />
-//       <meshBasicMaterial attach="material" transparent side={THREE.DoubleSide}>
-//         {/* <primitive attach="map" object={texture} /> */}
-//       </meshBasicMaterial>
-//     </mesh>
-//   );
-// }
 
 const SIMULATION_SCALE: number = 100;
 
@@ -55,54 +26,126 @@ ree-js-in-5-minutes-3079b8829817
  */
 export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
   const rootRef = React.useRef(undefined);
+  const controls = useRef((ev: any) => { })
+  const mouse = useRef<THREE.Vector2>(new THREE.Vector2(0, 0))
   const { songs } = props;
   const [selectedParticle, setSelectedParticle] = useState<Particle>(null);
 
-  const [camera, setCamera] = useState(new THREE.PerspectiveCamera(
-    75,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    1000
-  ));
-
-  const selectParticle = (ev: any) => {
-    debugger;
-    console.log("getting clicked")
-    const mouse = new THREE.Vector2(1, 1); //probably could be moved to state
-    mouse.x = (ev.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = - (ev.clientY / window.innerHeight) * 2 + 1;
-    var vector = new THREE.Vector3(mouse.x, mouse.y, 1);
-    const raycaster = new THREE.Raycaster(); //probably could be moved to state
-    raycaster.setFromCamera(mouse, camera);
-    vector.unproject(camera);
-    const particleGroup = new THREE.Object3D();
-
-    var intersections = raycaster.intersectObject(particleGroup, true);
-    if (intersections.length > 0) {
-      var intersection: any = (intersections.length) > 0 ? intersections[0] : null;
-      if (intersection !== null) {
-        // this.dragging = true;
-        // console.log(intersection.object.userData.particle)
-        let p: Particle = intersection.object.userData.particle
-        // this.appService.currentSelectedSong.next(p == this.lastSelectedParticle ? null : p.song);
-        setSelectedParticle(p);
-        // this.controls.enabled = false;
-        // let planeIntersection = this.raycaster.intersectObject(this.plane);
-        // // this.offset.copy(planeIntersection[0].point).sub(this.plane.position)
-        // this.lerpVec.copy(p.intendedLoc)
-
-      }
-    }
-  }
 
   React.useEffect(() => {
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    );
+
+    let particles: Particle[] = []; //should be moved to state
+    let particleGroup = new THREE.Object3D(); //should be moved to state
     // let canvas: HTMLCanvasElement;
 
-    let particles: Particle[] = [];
     // let raycaster: THREE.Raycaster;
+    const raycaster = new THREE.Raycaster();
+    function drawRaycastLine(raycaster: THREE.Raycaster) {
+      let material = new THREE.LineBasicMaterial({
+        color: 0xff0000,
+        linewidth: 10
+      });
+      let startVec = new THREE.Vector3(
+        raycaster.ray.origin.x,
+        raycaster.ray.origin.y,
+        raycaster.ray.origin.z);
+
+      let endVec = new THREE.Vector3(
+        raycaster.ray.direction.x,
+        raycaster.ray.direction.y,
+        raycaster.ray.direction.z);
+
+      // could be any number
+      endVec.multiplyScalar(5000);
+
+      let midVec = new THREE.Vector3();
+      midVec.lerpVectors(startVec, endVec, 0.5);
+      const points = [];
+      points.push(startVec)
+      points.push(midVec)
+      points.push(endVec)
+
+      // get the point in the middle
+      // const vertices = [startVec, midVec, endVec]
+      let geometry = new THREE.BufferGeometry().setFromPoints(points);
+
+      let line = new THREE.Line(geometry, material);
+      scene.add(line);
+    }
+
+
+    const selectParticle = (ev: any) => {
+
+      ev.preventDefault()
+      var raycaster = new THREE.Raycaster();
+      var mouse = new THREE.Vector2();
+
+
+      mouse.x = (ev.clientX / renderer.domElement.clientWidth) * 2 - 1;
+      mouse.y = - ((ev.clientY - renderer.domElement.offsetTop) / renderer.domElement.height) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+      var intersects = raycaster.intersectObjects([particleGroup], true);
+      if (intersects.length > 0) {
+        var intersection: any = (intersects.length) > 0 ? intersects[0] : null;
+        if (intersection != null) {
+          let p: Particle = intersection.object.userData.particle
+          p.select()
+          console.log(selectedParticle)
+          if (p == selectedParticle) {
+            //do nothing
+          }
+          if (selectedParticle) {
+            debugger;
+            let lastSelected = particles.find(s => s == selectedParticle)
+            lastSelected.deselect()
+          }
+          setSelectedParticle(p)
+          //not sure what below does but leaving it commented so I don't lose it 
+          //     // this.controls.enabled = false;
+          //     // let planeIntersection = this.raycaster.intersectObject(this.plane);
+          //     // // this.offset.copy(planeIntersection[0].point).sub(this.plane.osition)
+          //     // this.lerpVec.copy(p.intendedLoc)
+
+        }
+
+
+      }
+      // console.log(mouse.current)
+      // const vector = new THREE.Vector3(mouse.current.x, mouse.current.y, 1);
+      // raycaster.setFromCamera(mouse.current, camera);
+      // vector.unproject(camera);
+
+      // drawRaycastLine(raycaster)
+      // var intersections = raycaster.intersectObject(particleGroup, true);
+      // if (intersections.length > 0) {
+      //   var intersection: any = (intersections.length) > 0 ? intersections[0] : null;
+      //   if (intersection !== null) {
+      //     // debugger;
+      //     console.log("intersection ez")
+      //     // this.dragging = true;
+      //     // console.log(intersection.object.userData.particle)
+      //     let p: Particle = intersection.object.userData.particle
+      //     // this.appService.currentSelectedSong.next(p == this.lastSelectedParticle ? null : p.song);
+      //     setSelectedParticle(p);
+      //     p.select()
+
+
+      // }
+      // }
+    }
+    controls.current = selectParticle
+
+
     // let mouse: THREE.Vector2;
 
-    let particleGroup: THREE.Object3D;
 
     // let frameId: number = null;
 
@@ -126,12 +169,12 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
     // let currentSelectedParticle: Particle;
 
     // setup scene and camera
-    const scene = new THREE.Scene();
 
     // setup renderer
-    var renderer = new THREE.WebGLRenderer();
+    var renderer = new THREE.WebGLRenderer() //.setSize(window.innerWidth / 10 * 7, window.innerHeight / 100 * 87);
     renderer.setSize(window.innerWidth / 10 * 7, window.innerHeight / 100 * 87);
     rootRef.current.appendChild(renderer.domElement);
+
 
     // soft white light
     const light = new THREE.AmbientLight(0x404040);
@@ -139,13 +182,13 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
     scene.add(light);
 
     // setup camera controller
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
-    controls.dampingFactor = 0.05;
-    controls.screenSpacePanning = false;
-    controls.minDistance = 100;
-    controls.maxDistance = 500;
-    controls.maxPolarAngle = Math.PI / 2;
+    const orbitControls = new OrbitControls(camera, renderer.domElement);
+    orbitControls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
+    orbitControls.dampingFactor = 0.05;
+    orbitControls.screenSpacePanning = false;
+    orbitControls.minDistance = 100;
+    orbitControls.maxDistance = 500;
+    orbitControls.maxPolarAngle = Math.PI / 2;
     //this.controls.update(); //controls.update() must be called after any manual changes to the camera's transform
 
     const addParticle = (particle: Particle) => {
@@ -326,7 +369,6 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
 
 
     // Particle setup
-    particleGroup = new THREE.Object3D();
     scene.add(particleGroup);
     const plane = new THREE.Mesh(
       new THREE.PlaneBufferGeometry(1000, 1000, 8, 8),
@@ -342,8 +384,8 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
 
     var animate = function () {
       requestAnimationFrame(animate);
-
-      controls.update(); // required if controls.enableDamping or controls.autoRotate are set to true
+      raycaster.setFromCamera(mouse.current, camera)
+      orbitControls.update(); // required if controls.enableDamping or controls.autoRotate are set to true
       particles.forEach((p) => {
         p.update();
       });
@@ -362,10 +404,18 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
       }
       window.removeEventListener("keydown", keydownHandler);
     };
+
   }, [songs]);
 
+  // const handleMouseMove = (e: React.PointerEvent<HTMLDivElement>) => {
+  //   // e.preventDefault()
+  //   // mouse.current.x = (e.clientX / window.innerWidth) * 2 - 1
+  //   // mouse.current.y = (e.clientY / window.innerHeight) * 2 + 1
+  // }
+
+  // (
   //style={{ width: "70%", background: "background: linear-gradient(to top, rgb(2, 2, 2), rgb(182, 10, 0) 20%, rgb(2, 2, 2) 100%)" }}>
-  return <div onMouseDown={selectParticle}>
+  return <div onPointerDown={e => controls.current(e)}>
     <div ref={rootRef} />
   </div>;
 };
