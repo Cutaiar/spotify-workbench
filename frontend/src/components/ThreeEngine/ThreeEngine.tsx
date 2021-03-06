@@ -1,4 +1,4 @@
-import React, { useRef, useState, useMemo } from "react";
+import React, { useRef, useState, useMemo, useEffect } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { Particle } from "./Particle";
@@ -27,12 +27,34 @@ ree-js-in-5-minutes-3079b8829817
 export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
   const rootRef = React.useRef(undefined);
   const controls = useRef((ev: any) => { })
+  const [lastParticle, setLastParticle] = useState<Particle>(null);
   const mouse = useRef<THREE.Vector2>(new THREE.Vector2(0, 0))
   const { songs } = props;
-  const [selectedParticle, setSelectedParticle] = useState<Particle>(null);
+  // const [selectedParticles, setSelectedParticles] = useState<Particle[]>([]); //this should be a queue that would be so much easier but im lazy
+  let particles: Particle[] = []; //should be moved to state
 
 
-  React.useEffect(() => {
+  // useEffect(() => {
+  //   // debugger;
+  //   if (selectedParticles && selectedParticles.length === 1) {
+  //     if (selectedParticles[0])
+  //       selectedParticles[0].select()
+  //   }
+  //   else if (selectedParticles.length === 2) {
+  //     debugger;
+  //     selectedParticles[1].deselect()
+  //   }
+
+  // }, [selectedParticles])
+
+  useEffect(() => {
+    if (lastParticle) {
+      lastParticle.deselect()
+    }
+  }, [lastParticle])
+
+  useEffect(() => {
+    let currentSelectedParticle: Particle;
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
       75,
@@ -41,7 +63,6 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
       1000
     );
 
-    let particles: Particle[] = []; //should be moved to state
     let particleGroup = new THREE.Object3D(); //should be moved to state
     // let canvas: HTMLCanvasElement;
 
@@ -98,16 +119,10 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
         if (intersection != null) {
           let p: Particle = intersection.object.userData.particle
           p.select()
-          console.log(selectedParticle)
-          if (p == selectedParticle) {
-            //do nothing
-          }
-          if (selectedParticle) {
-            debugger;
-            let lastSelected = particles.find(s => s == selectedParticle)
-            lastSelected.deselect()
-          }
-          setSelectedParticle(p)
+          setLastParticle(currentSelectedParticle);
+          currentSelectedParticle = p;
+
+
           //not sure what below does but leaving it commented so I don't lose it 
           //     // this.controls.enabled = false;
           //     // let planeIntersection = this.raycaster.intersectObject(this.plane);
@@ -118,28 +133,6 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
 
 
       }
-      // console.log(mouse.current)
-      // const vector = new THREE.Vector3(mouse.current.x, mouse.current.y, 1);
-      // raycaster.setFromCamera(mouse.current, camera);
-      // vector.unproject(camera);
-
-      // drawRaycastLine(raycaster)
-      // var intersections = raycaster.intersectObject(particleGroup, true);
-      // if (intersections.length > 0) {
-      //   var intersection: any = (intersections.length) > 0 ? intersections[0] : null;
-      //   if (intersection !== null) {
-      //     // debugger;
-      //     console.log("intersection ez")
-      //     // this.dragging = true;
-      //     // console.log(intersection.object.userData.particle)
-      //     let p: Particle = intersection.object.userData.particle
-      //     // this.appService.currentSelectedSong.next(p == this.lastSelectedParticle ? null : p.song);
-      //     setSelectedParticle(p);
-      //     p.select()
-
-
-      // }
-      // }
     }
     controls.current = selectParticle
 
@@ -161,10 +154,7 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
       ["y", "acousticness"],
       ["z", "valence"],
     ]);
-    console.log(selectedParticle)
-    if (selectedParticle) {
-      selectedParticle.select()
-    }
+
     // let lastSelectedParticle: Particle;
     // let currentSelectedParticle: Particle;
 
