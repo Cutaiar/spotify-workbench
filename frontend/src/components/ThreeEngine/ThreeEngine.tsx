@@ -13,6 +13,8 @@ const SIMULATION_SCALE: number = 100;
 // TODO this might cause extra rerenders, consider encapsulating song[] in interface
 export interface IThreeEngineProps {
   songs: Song[];
+  setSong: (song: Song) => void;
+  song: Song
 }
 /**
  * A component encapsulating the THREE powered spotiverse engine
@@ -29,7 +31,7 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
   const controls = useRef((ev: any) => { })
   const [lastParticle, setLastParticle] = useState<Particle>(null);
   const mouse = useRef<THREE.Vector2>(new THREE.Vector2(0, 0))
-  const { songs } = props;
+  const { songs, setSong, song } = props;
   // const [selectedParticles, setSelectedParticles] = useState<Particle[]>([]); //this should be a queue that would be so much easier but im lazy
   let particles: Particle[] = []; //should be moved to state
 
@@ -121,8 +123,7 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
           p.select()
           setLastParticle(currentSelectedParticle);
           currentSelectedParticle = p;
-
-
+          setSong(currentSelectedParticle.song)
           //not sure what below does but leaving it commented so I don't lose it 
           //     // this.controls.enabled = false;
           //     // let planeIntersection = this.raycaster.intersectObject(this.plane);

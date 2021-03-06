@@ -6,7 +6,7 @@ interface AccordionProps {
     mainItem: any;
     subItem: any;
     songLink: string;
-
+    id: string;
 }
 
 
@@ -39,7 +39,7 @@ export const Accordion = (props: AccordionProps) => {
 
 
     return (
-        <div className="accordion__section" >
+        <div id={props.id} className="accordion__section" >
             <button className={`accordion ${active}`} onClick={toggleAccordion} >
                 {props.mainItem}
                 < Chevron className={`${setRotate}`} width={10} fill={"#777"} />

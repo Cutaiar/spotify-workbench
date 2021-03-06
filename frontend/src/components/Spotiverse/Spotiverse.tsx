@@ -17,6 +17,7 @@ export interface ISpotiverseProps {
 export const Spotiverse: React.FC<ISpotiverseProps> = (props) => {
   const [songs, setSongs] = useState<Song[]>([]);
   const appState = useContext(AppStateContext);
+  const [selectedSong, setSelectedSong] = useState<Song>(null);
 
   // on mount (and when token changes), kickoff a request for the users liked songs
   // update state when they come down
@@ -31,12 +32,16 @@ export const Spotiverse: React.FC<ISpotiverseProps> = (props) => {
     })();
   }, []);
 
+  const setSong = (song: Song) => {
+    setSelectedSong(song)
+  }
+
   return (
     <>
       <div style={{ display: "flex", flexDirection: "row", height: "87vh" }}>
-        <ThreeEngine songs={TestData} />
-        <div className="songListWrapper">
-          <SongList songs={TestData} />
+        <ThreeEngine songs={TestData} setSong={setSong} song={selectedSong} />
+        <div style={{ color: "white" }} className="songListWrapper">
+          <SongList song={selectedSong} setSong={setSong} songs={TestData} />
         </div>
       </div>
     </>
