@@ -70,39 +70,6 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
 
     // let raycaster: THREE.Raycaster;
     const raycaster = new THREE.Raycaster();
-    function drawRaycastLine(raycaster: THREE.Raycaster) {
-      let material = new THREE.LineBasicMaterial({
-        color: 0xff0000,
-        linewidth: 10
-      });
-      let startVec = new THREE.Vector3(
-        raycaster.ray.origin.x,
-        raycaster.ray.origin.y,
-        raycaster.ray.origin.z);
-
-      let endVec = new THREE.Vector3(
-        raycaster.ray.direction.x,
-        raycaster.ray.direction.y,
-        raycaster.ray.direction.z);
-
-      // could be any number
-      endVec.multiplyScalar(5000);
-
-      let midVec = new THREE.Vector3();
-      midVec.lerpVectors(startVec, endVec, 0.5);
-      const points = [];
-      points.push(startVec)
-      points.push(midVec)
-      points.push(endVec)
-
-      // get the point in the middle
-      // const vertices = [startVec, midVec, endVec]
-      let geometry = new THREE.BufferGeometry().setFromPoints(points);
-
-      let line = new THREE.Line(geometry, material);
-      scene.add(line);
-    }
-
 
     const selectParticle = (ev: any) => {
 
