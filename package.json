@@ -18,9 +18,8 @@
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^4.14.2",
         "@typescript-eslint/parser": "^4.14.2",
+        "eslint": "^7.19.0",
+        "eslint-plugin-react": "^7.22.0"
     },
-    "dependencies": {
-        "react-three-fiber": "^5.3.19",
-        "three": "^0.126.0"
-    }
+    "dependencies": {}
 }
