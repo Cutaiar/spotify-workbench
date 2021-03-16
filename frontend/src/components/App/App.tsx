@@ -18,8 +18,10 @@ import { Button } from "primereact/button";
 import { Home } from "../Home/Home";
 import { RunPlaylist } from "../RunPlaylist/RunPlaylist";
 import { GenerateWallpaper } from "../GenerateWallpaper/GenerateWallpaper";
-import { ThreeEngine } from "../ThreeEngine/ThreeEngine";
 import { Visualizer } from "../Visualizer/Visualizer";
+import { Spotiverse } from "../Spotiverse/Spotiverse";
+
+import { AppStateProvider, IAppState } from "../../context/appStateContext";
 import { Experiments } from "../Experiments/Experiments";
 import { PinNavButton } from "../Experiments/PinNavButton";
 
@@ -58,7 +60,7 @@ const App: React.FC = (props) => {
     {
       name: "spotiverse",
       displayName: "Spotiverse",
-      content: <ThreeEngine />,
+      content: <Spotiverse />,
     },
     {
       name: "experiments",
@@ -67,6 +69,8 @@ const App: React.FC = (props) => {
     },
   ];
 
+  // TODO this relies on the the auth url being opened in the same window, causing the page
+  // to reload, and this component to remount.
   React.useEffect(() => {
     // Set token
     let _token = (hash as any).access_token;
@@ -118,7 +122,7 @@ const App: React.FC = (props) => {
         className={
           " navbar-style p-d-flex p-flex-row p-jc-start p-ai-center p-p-3"
         }
-        style={{ width: "100%", height: "100px" }}
+        style={{ width: "100%", height: "13%" }}
       >
         <div className="p-m-3">
           <Visualizer width={90} height={90} />

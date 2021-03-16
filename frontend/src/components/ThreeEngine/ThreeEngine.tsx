@@ -1,117 +1,182 @@
-import React from "react";
+import React, { useRef, useState, useMemo, useEffect } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { Particle } from "./Particle";
 import { AxisHelper } from "./axis";
 import { Song } from "../../models/song";
-import { generateTestLocalSongs } from "./helpers";
+import { generateRandomSongs } from "../../spotifyDataAccess";
+import { render } from "@testing-library/react";
+
 
 const SIMULATION_SCALE: number = 100;
 
+// TODO this might cause extra rerenders, consider encapsulating song[] in interface
+export interface IThreeEngineProps {
+  songs: Song[];
+  setSong: (song: Song) => void;
+  song: Song
+}
 /**
  * A component encapsulating the THREE powered spotiverse engine
  *
- * Bootstrapped from: https://blog.bitsrc.io/starting-with-react-16-and-three-js-in-5-minutes-3079b8829817
+ * Bootstrapped from: https://blog.bitsrc.io/starting-with-react-16-and-th
+ree-js-in-5-minutes-3079b8829817
  * Converted into a FC
  *
- * @param props n/a
+ * TODO there is way too much going on in the useeffect, move as much out of it as you can
+ * @param props the songs to render in the particle system
  */
-export const ThreeEngine: React.FC = (props) => {
+export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
   const rootRef = React.useRef(undefined);
-  React.useEffect(() => {
-    // let canvas: HTMLCanvasElement;
-    let light: THREE.AmbientLight;
+  const controls = useRef((ev: any) => { })
+  const [lastParticle, setLastParticle] = useState<Particle>(null);
+  const mouse = useRef<THREE.Vector2>(new THREE.Vector2(0, 0))
+  const { songs, setSong, song } = props;
+  // const [selectedParticles, setSelectedParticles] = useState<Particle[]>([]); //this should be a queue that would be so much easier but im lazy
+  let particles: Particle[] = []; //should be moved to state
 
-    let particles: Particle[];
-    // let raycaster: THREE.Raycaster;
-    // let mouse: THREE.Vector2;
 
-    let particleGroup: THREE.Object3D;
+  // useEffect(() => {
+  //   // debugger;
+  //   if (selectedParticles && selectedParticles.length === 1) {
+  //     if (selectedParticles[0])
+  //       selectedParticles[0].select()
+  //   }
+  //   else if (selectedParticles.length === 2) {
+  //     debugger;
+  //     selectedParticles[1].deselect()
+  //   }
 
-    // let frameId: number = null;
+  // }, [selectedParticles])
 
-    let controls: OrbitControls;
+  useEffect(() => {
+    if (lastParticle) {
+      lastParticle.deselect()
+    }
+  }, [lastParticle])
 
-    let SIMULATION_SCALE: number = 100;
-    // let dragging: boolean = false;
-    // let offset: THREE.Vector3;
-    let plane: THREE.Mesh;
-    // let lerpVec: THREE.Vector3;
-
-    let axisFeatures = new Map<string, string>([
-      ["x", "speechiness"],
-      ["y", "acousticness"],
-      ["z", "valence"],
-    ]);
-
-    let cachedSongs: Song[];
-
-    // let lastSelectedParticle: Particle;
-    // let currentSelectedParticle: Particle;
-
-    var scene = new THREE.Scene();
-    var camera = new THREE.PerspectiveCamera(
+  useEffect(() => {
+    let currentSelectedParticle: Particle;
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(
       75,
       window.innerWidth / window.innerHeight,
       0.1,
       1000
     );
 
-    var renderer = new THREE.WebGLRenderer();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    let particleGroup = new THREE.Object3D(); //should be moved to state
+    // let canvas: HTMLCanvasElement;
+
+    // let raycaster: THREE.Raycaster;
+    const raycaster = new THREE.Raycaster();
+
+    const selectParticle = (ev: any) => {
+
+      ev.preventDefault()
+      var raycaster = new THREE.Raycaster();
+      var mouse = new THREE.Vector2();
+
+
+      mouse.x = (ev.clientX / renderer.domElement.clientWidth) * 2 - 1;
+      mouse.y = - ((ev.clientY - renderer.domElement.offsetTop) / renderer.domElement.height) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+      var intersects = raycaster.intersectObjects([particleGroup], true);
+      if (intersects.length > 0) {
+        var intersection: any = (intersects.length) > 0 ? intersects[0] : null;
+        if (intersection != null) {
+          let p: Particle = intersection.object.userData.particle
+          p.select()
+          setLastParticle(currentSelectedParticle);
+          currentSelectedParticle = p;
+          setSong(currentSelectedParticle.song)
+          //not sure what below does but leaving it commented so I don't lose it 
+          //     // this.controls.enabled = false;
+          //     // let planeIntersection = this.raycaster.intersectObject(this.plane);
+          //     // // this.offset.copy(planeIntersection[0].point).sub(this.plane.osition)
+          //     // this.lerpVec.copy(p.intendedLoc)
+
+        }
+
+
+      }
+    }
+    controls.current = selectParticle
+
+
+    // let mouse: THREE.Vector2;
+
+
+    // let frameId: number = null;
+
+
+    // let dragging: boolean = false;
+    // let offset: THREE.Vector3;
+    // let lerpVec: THREE.Vector3;
+
+    // let songs: Song[] = [];
+
+    const axisFeatures = new Map<string, string>([
+      ["x", "speechiness"],
+      ["y", "acousticness"],
+      ["z", "valence"],
+    ]);
+
+    // let lastSelectedParticle: Particle;
+    // let currentSelectedParticle: Particle;
+
+    // setup scene and camera
+
+    // setup renderer
+    var renderer = new THREE.WebGLRenderer() //.setSize(window.innerWidth / 10 * 7, window.innerHeight / 100 * 87);
+    renderer.setSize(window.innerWidth / 10 * 7, window.innerHeight / 100 * 87);
     rootRef.current.appendChild(renderer.domElement);
 
-    var geometry = new THREE.BoxGeometry(1, 1, 1);
-    var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    var cube = new THREE.Mesh(geometry, material);
 
     // soft white light
-    light = new THREE.AmbientLight(0x404040);
+    const light = new THREE.AmbientLight(0x404040);
     light.position.z = 10;
     scene.add(light);
 
-    // camera controller
-    controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
-    controls.dampingFactor = 0.05;
-    controls.screenSpacePanning = false;
-    controls.minDistance = 100;
-    controls.maxDistance = 500;
-    controls.maxPolarAngle = Math.PI / 2;
+    // setup camera controller
+    const orbitControls = new OrbitControls(camera, renderer.domElement);
+    orbitControls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
+    orbitControls.dampingFactor = 0.05;
+    orbitControls.screenSpacePanning = false;
+    orbitControls.minDistance = 100;
+    orbitControls.maxDistance = 500;
+    orbitControls.maxPolarAngle = Math.PI / 2;
     //this.controls.update(); //controls.update() must be called after any manual changes to the camera's transform
-
-    const onSongsChanged = (newSongs: Song[]) => {
-      console.log("onSongsChanged");
-      cachedSongs = newSongs;
-      smartRegenerateSongParticleRelations();
-    };
 
     const addParticle = (particle: Particle) => {
       particles.push(particle);
       particleGroup.add(particle.mesh);
     };
 
-    // cached songs should be updated before calling this function
-    const smartRegenerateSongParticleRelations = () => {
+    const smartRegenerateSongParticleRelations = ():
+      | NodeJS.Timeout
+      | undefined => {
       let c = 0;
+      let particlesDeleteTimer: NodeJS.Timeout | undefined = undefined;
       // Reassign current particles new songs
       for (let p of particles) {
-        p.song = cachedSongs[c];
+        p.song = songs[c];
         //p.color = s.color(255, 0, 0) // Debug colors
         c++;
-        if (c === cachedSongs.length) {
+        if (c === songs.length) {
           break; // If there are less new songs than points
         }
       }
 
       // There are more new songs than points
-      if (c < cachedSongs.length) {
+      if (c < songs.length) {
         // console.log("Smart Regenerate: adding new songs...")
-        for (let i = c; i < cachedSongs.length; i++) {
+        for (let i = c; i < songs.length; i++) {
           let n = new Particle(
             1,
             Array(3).fill(SIMULATION_SCALE / 2),
-            cachedSongs[i]
+            songs[i]
           );
           //n.color = new THREE.Color(0,255,0) // Debug colors
           addParticle(n);
@@ -127,12 +192,13 @@ export const ThreeEngine: React.FC = (props) => {
         }
 
         // wait half a second for any deleted particles to fade out, then delete
-        setTimeout(() => {
+        particlesDeleteTimer = setTimeout(() => {
           particles = particles.slice(0, c);
           toRemove.forEach((p) => particleGroup.remove(p.mesh));
         }, 500);
       }
       regenerateTargetsAccordingToSongs();
+      return particlesDeleteTimer;
     };
 
     const regenerateTargetsAccordingToSongs = () => {
@@ -184,23 +250,19 @@ export const ThreeEngine: React.FC = (props) => {
       });
 
       //at this point, our map holds all of the scales values that we want :))))))
-      let count = 0;
-      particles.forEach((p) => {
+      particles.forEach((p, i) => {
         p.intendedLoc = new THREE.Vector3(
-          scaledValues.get("x")[count],
-          scaledValues.get("y")[count],
-          scaledValues.get("z")[count]
+          scaledValues.get("x")[i],
+          scaledValues.get("y")[i],
+          scaledValues.get("z")[i]
         ).multiplyScalar(SIMULATION_SCALE);
-        count++;
       });
-      count = 0;
-      particles.forEach((p) => {
+      particles.forEach((p, i) => {
         p.loc = new THREE.Vector3(
-          scaledValues.get("x")[count],
-          scaledValues.get("y")[count],
-          scaledValues.get("z")[count]
+          scaledValues.get("x")[i],
+          scaledValues.get("y")[i],
+          scaledValues.get("z")[i]
         ).multiplyScalar(SIMULATION_SCALE);
-        count++;
       });
     };
 
@@ -217,7 +279,7 @@ export const ThreeEngine: React.FC = (props) => {
     };
 
     const regenerateTargetsRandomly = (effectSize = false): void => {
-      let mul = 100;
+      const mul = 100;
       particles.forEach((p) => {
         p.intendedLoc.x = Math.random() * mul;
         p.intendedLoc.y = Math.random() * mul;
@@ -226,44 +288,47 @@ export const ThreeEngine: React.FC = (props) => {
       });
     };
 
-    window.addEventListener(
-      "keydown",
-      function (this: Window, ev: KeyboardEvent) {
-        if (ev.key === "r") {
-          regenerateTargetsRandomly();
-        }
+    // Have to use function syntax for some reason
+    const keydownHandler = function (this: Window, ev: KeyboardEvent) {
+      if (ev.key === "r") {
+        regenerateTargetsRandomly();
+        return;
       }
-    );
-
-    const generateAxisAndGrid = () => {
-      let gridHelper = new THREE.GridHelper(
-        SIMULATION_SCALE * 2,
-        50,
-        0xffffff,
-        0xffffff
-      );
-      let mat: any = gridHelper.material;
-      mat.transparent = true;
-      mat.opacity = 0.1;
-      scene.add(gridHelper);
-      gridHelper.position.setY(-1); // To not clip with meshlines
-
-      // let axisHelper = new AxisHelper(
-      //   SIMULATION_SCALE,
-      //   1,
-      //   true,
-      //   false,
-      //   true,
-      //   true
-      // );
-      // scene.add(axisHelper.object3d);
+      if (ev.key === "c") {
+        regenerateTargetsToCenterForLoading();
+      }
     };
-    generateAxisAndGrid();
+
+    window.addEventListener("keydown", keydownHandler);
+
+    // (() => { // this is an effort to make things functional 
+    let gridHelper = new THREE.GridHelper(
+      SIMULATION_SCALE * 2,
+      50,
+      0xffffff,
+      0xffffff
+    );
+    let mat: any = gridHelper.material;
+    mat.transparent = true;
+    mat.opacity = 0.1;
+    scene.add(gridHelper);
+    gridHelper.position.setY(-1); // To not clip with meshlines
+
+    // let axisHelper = new AxisHelper(
+    //   SIMULATION_SCALE,
+    //   1,
+    //   true,
+    //   false,
+    //   true,
+    //   true
+    // );
+    // scene.add(axisHelper.object3d);
+    // })();
+
 
     // Particle setup
-    particleGroup = new THREE.Object3D();
     scene.add(particleGroup);
-    plane = new THREE.Mesh(
+    const plane = new THREE.Mesh(
       new THREE.PlaneBufferGeometry(1000, 1000, 8, 8),
       new THREE.MeshBasicMaterial({ color: 0xffffff })
     );
@@ -272,28 +337,43 @@ export const ThreeEngine: React.FC = (props) => {
     plane.visible = false;
     // this.plane.material.opacity = .1;
     scene.add(plane);
-    particles = [];
 
     camera.position.z = 5;
 
     var animate = function () {
       requestAnimationFrame(animate);
-
-      cube.rotation.x += 0.01;
-      cube.rotation.y += 0.01;
-
-      controls.update(); // required if controls.enableDamping or controls.autoRotate are set to true
+      raycaster.setFromCamera(mouse.current, camera)
+      orbitControls.update(); // required if controls.enableDamping or controls.autoRotate are set to true
       particles.forEach((p) => {
         p.update();
       });
       renderer.render(scene, camera);
     };
 
-    const testSongs = generateTestLocalSongs();
-    onSongsChanged(testSongs);
-
+    console.log("songs changed, regenerating...");
+    console.log(songs);
+    // songs = generateRandomSongs();
+    const particlesDeleteTimer = smartRegenerateSongParticleRelations();
     animate();
-  }, []);
 
-  return <div ref={rootRef} />;
+    return () => {
+      if (particlesDeleteTimer) {
+        clearTimeout(particlesDeleteTimer);
+      }
+      window.removeEventListener("keydown", keydownHandler);
+    };
+
+  }, [songs]);
+
+  // const handleMouseMove = (e: React.PointerEvent<HTMLDivElement>) => {
+  //   // e.preventDefault()
+  //   // mouse.current.x = (e.clientX / window.innerWidth) * 2 - 1
+  //   // mouse.current.y = (e.clientY / window.innerHeight) * 2 + 1
+  // }
+
+  // (
+  //style={{ width: "70%", background: "background: linear-gradient(to top, rgb(2, 2, 2), rgb(182, 10, 0) 20%, rgb(2, 2, 2) 100%)" }}>
+  return <div onPointerDown={e => controls.current(e)}>
+    <div ref={rootRef} />
+  </div>;
 };

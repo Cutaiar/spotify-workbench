@@ -3,14 +3,14 @@ import { Artist, randomArtist } from "./artist";
 
 export type Song = {
   name: string;
-  addedAt: Date;
-  releaseDate: Date;
+  addedAt: string;
+  releaseDate: string;
   artist: string;
   duration: number;
   explicit: boolean;
   popularity: number;
   imageLink: string;
-  id: number;
+  id: string;
   previewUrl: string;
   features: Features;
   artistInfo: Artist;
@@ -19,14 +19,14 @@ export type Song = {
 export const randomSong = (): Song => {
   return {
     name: "random song",
-    addedAt: new Date(),
-    releaseDate: new Date(),
+    addedAt: "",
+    releaseDate: "",
     artist: "random artist",
     duration: 0,
     explicit: false,
     popularity: 0,
     imageLink: "",
-    id: 0,
+    id: "",
     previewUrl: "",
     features: randomFeatures(),
     artistInfo: randomArtist(),
