@@ -1,7 +1,7 @@
 import { mergeStyles } from "@fluentui/merge-styles";
 import { NeutralColors } from "@fluentui/react";
 
-export const itemStack = mergeStyles({ paddingBottom: 100 });
+export const itemStack = mergeStyles({ paddingBottom: 100, paddingTop: 100 });
 
 export const itemStyle = mergeStyles({
   width: 200,

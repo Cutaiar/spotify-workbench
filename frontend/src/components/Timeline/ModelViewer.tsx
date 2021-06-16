@@ -1,8 +1,6 @@
 import { OrbitControls } from "@react-three/drei";
 import React, { Suspense, useRef } from "react";
-import { Canvas, useFrame, useLoader } from "react-three-fiber";
-import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { Canvas, useFrame } from "react-three-fiber";
 
 export interface IModelViewerProps {}
 export const ModelViewer: React.FunctionComponent<IModelViewerProps> = (
@@ -20,7 +18,7 @@ export const ModelViewer: React.FunctionComponent<IModelViewerProps> = (
         <ambientLight intensity={0.5} />
         <spotLight position={[10, 15, 10]} angle={0.9} />
         <Suspense fallback={<Loading />}>
-          <Sphere />
+          <Random />
         </Suspense>
       </Canvas>
     </div>
@@ -32,6 +30,47 @@ function Sphere() {
     <mesh rotation={[0, 0, 0]}>
       <sphereGeometry attach="geometry" args={[1, 16, 16]} />
       <meshStandardMaterial attach="material" color="blue" />
+    </mesh>
+  );
+}
+
+const randomColor = () => {
+  const rand = Math.floor(Math.random() * 5);
+  switch (rand) {
+    case 0:
+      return "red";
+    case 1:
+      return "blue";
+    case 3:
+      return "green";
+    case 4:
+      return "yellow";
+    default:
+      return "pink";
+  }
+};
+
+const randomGeom = () => {
+  const rand = Math.floor(Math.random() * 5);
+  switch (rand) {
+    case 0:
+      return <boxGeometry attach="geometry" args={[1, 1, 1, 4, 4, 4]} />;
+    case 1:
+      return <coneGeometry attach="geometry" args={[1, 1, 16]} />;
+    case 2:
+      return <cylinderGeometry attach="geometry" args={[1, 1, 1, 16]} />;
+    default:
+      return <sphereGeometry attach="geometry" args={[1, 16, 16]} />;
+  }
+};
+function Random() {
+  const mesh = useRef<THREE.Mesh>(null!);
+  useFrame((state, delta) => (mesh.current.rotation.x += 0.01));
+
+  return (
+    <mesh rotation={[0, 0, 0]} ref={mesh}>
+      {randomGeom()}
+      <meshStandardMaterial attach="material" color={randomColor()} />
     </mesh>
   );
 }

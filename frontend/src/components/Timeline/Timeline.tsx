@@ -28,6 +28,7 @@ export const Timeline: React.FC = (props) => {
           verticalAlign="space-between"
           className={style.itemStyle}
           gap={4}
+          key={i}
         >
           <ModelViewer />
           {i}
