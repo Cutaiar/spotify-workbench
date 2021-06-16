@@ -21,23 +21,25 @@ const loadSize = 10;
 export const Timeline: React.FC = (props) => {
   const [numberOfItems, setNumberOfItems] = React.useState(loadSize);
   return (
-    <Stack horizontalAlign="center" gap={100} className={style.itemStack}>
-      {data.items.slice(0, numberOfItems).map((i) => (
-        <Stack
-          horizontalAlign="center"
-          verticalAlign="space-between"
-          className={style.itemStyle}
-          gap={4}
-          key={i}
-        >
-          <ModelViewer />
-          {i}
-        </Stack>
-      ))}
-      <PrimaryButton
-        text="Load more"
-        onClick={() => setNumberOfItems((prev) => prev + loadSize)}
-      />
-    </Stack>
+    <div className={style.timelineRoot}>
+      <Stack horizontalAlign="center" gap={100} className={style.itemStack}>
+        {data.items.slice(0, numberOfItems).map((i) => (
+          <Stack
+            horizontalAlign="center"
+            verticalAlign="space-between"
+            className={style.itemStyle}
+            gap={4}
+            key={i}
+          >
+            <ModelViewer />
+            {i}
+          </Stack>
+        ))}
+        <PrimaryButton
+          text="Load more"
+          onClick={() => setNumberOfItems((prev) => prev + loadSize)}
+        />
+      </Stack>
+    </div>
   );
 };

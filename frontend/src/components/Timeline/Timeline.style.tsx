@@ -10,9 +10,17 @@ export const itemStyle = mergeStyles({
   background: NeutralColors.gray20,
   overflow: "hidden",
   borderRadius: "50%",
+  borderColor: NeutralColors.gray160,
+  borderWidth: 2,
+  borderStyle: "solid",
 });
 
 export const imageStyle = mergeStyles({
   width: "80%",
   height: "80%",
+});
+
+export const timelineRoot = mergeStyles({
+  background: NeutralColors.gray10,
+  height: "fitContent",
 });
