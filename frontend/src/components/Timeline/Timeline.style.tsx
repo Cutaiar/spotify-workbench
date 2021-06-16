@@ -1,5 +1,5 @@
 import { mergeStyles } from "@fluentui/merge-styles";
-import { NeutralColors } from "@fluentui/react";
+import { Depths, IVerticalDividerStyles, NeutralColors } from "@fluentui/react";
 
 export const itemStack = mergeStyles({ paddingBottom: 100, paddingTop: 100 });
 
@@ -10,9 +10,10 @@ export const itemStyle = mergeStyles({
   background: NeutralColors.gray20,
   overflow: "hidden",
   borderRadius: "50%",
-  borderColor: NeutralColors.gray160,
+  borderColor: NeutralColors.gray120,
   borderWidth: 2,
   borderStyle: "solid",
+  boxShadow: Depths.depth16,
 });
 
 export const imageStyle = mergeStyles({
@@ -24,3 +25,13 @@ export const timelineRoot = mergeStyles({
   background: NeutralColors.gray10,
   height: "fitContent",
 });
+
+export const dividerStyles: IVerticalDividerStyles = {
+  wrapper: {
+    height: "200px",
+  },
+  divider: {
+    background: NeutralColors.gray120,
+    width: 2,
+  },
+};

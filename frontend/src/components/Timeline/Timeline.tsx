@@ -1,5 +1,10 @@
 import * as React from "react";
-import { PrimaryButton, Stack } from "@fluentui/react";
+import {
+  PrimaryButton,
+  Stack,
+  Separator,
+  VerticalDivider,
+} from "@fluentui/react";
 import { ModelViewer } from "./ModelViewer";
 
 import * as data from "./items.json";
@@ -22,18 +27,21 @@ export const Timeline: React.FC = (props) => {
   const [numberOfItems, setNumberOfItems] = React.useState(loadSize);
   return (
     <div className={style.timelineRoot}>
-      <Stack horizontalAlign="center" gap={100} className={style.itemStack}>
+      <Stack horizontalAlign="center" gap={0} className={style.itemStack}>
         {data.items.slice(0, numberOfItems).map((i) => (
-          <Stack
-            horizontalAlign="center"
-            verticalAlign="space-between"
-            className={style.itemStyle}
-            gap={4}
-            key={i}
-          >
-            <ModelViewer />
-            {i}
-          </Stack>
+          <>
+            <Stack
+              horizontalAlign="center"
+              verticalAlign="space-between"
+              className={style.itemStyle}
+              gap={4}
+              key={i}
+            >
+              <ModelViewer />
+              {i}
+            </Stack>
+            <VerticalDivider styles={style.dividerStyles} />
+          </>
         ))}
         <PrimaryButton
           text="Load more"
