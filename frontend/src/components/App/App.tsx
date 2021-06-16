@@ -22,6 +22,7 @@ import { ThreeEngine } from "../ThreeEngine/ThreeEngine";
 import { Visualizer } from "../Visualizer/Visualizer";
 import { Experiments } from "../Experiments/Experiments";
 import { PinNavButton } from "../Experiments/PinNavButton";
+import { Timeline } from "../Timeline/Timeline";
 
 // TODO use window location instead
 const redirectUri = window.location.href; // TODO Fix not working from non home authorizations in local testing
@@ -64,6 +65,11 @@ const App: React.FC = (props) => {
       name: "experiments",
       displayName: "Experiments",
       content: <Experiments />,
+    },
+    {
+      name: "timeline",
+      displayName: "Timeline",
+      content: <Timeline />,
     },
   ];
 
