@@ -3,11 +3,13 @@ import {
   mergeStyles,
   NeutralColors,
   Spinner,
+  SpinnerSize,
   Stack,
+  Text,
 } from "@fluentui/react";
 import * as React from "react";
+import InView from "react-intersection-observer";
 import { ModelViewer } from "./ModelViewer";
-import { isInViewport } from "./utils";
 
 const itemStyle = mergeStyles({
   width: 200,
@@ -21,8 +23,12 @@ const itemStyle = mergeStyles({
   borderStyle: "solid",
   boxShadow: Depths.depth16,
 });
+
+const textStyle = mergeStyles({ maxWidth: 400, paddingLeft: 42 });
+
 export interface ITimelineItemProps {
   index: number;
+  shouldRender?: boolean;
 }
 
 /**
@@ -30,21 +36,37 @@ export interface ITimelineItemProps {
  * @param props See `ITimelineItemProps`
  */
 export const TimelineItem: React.FC<ITimelineItemProps> = (props) => {
-  const { index } = props;
-  const ref = React.useRef<HTMLDivElement>(null);
-  const shouldRender = ref.current && isInViewport(ref.current);
+  const { index, shouldRender } = props;
 
   return (
-    <div ref={ref}>
-      <Stack
-        horizontalAlign="center"
-        verticalAlign="space-between"
-        className={itemStyle}
-        gap={4}
-      >
-        {shouldRender ? <ModelViewer /> : <Spinner />}
-        {index}
-      </Stack>
-    </div>
+    <InView>
+      {({ inView, ref, entry }) => (
+        <div ref={ref}>
+          <Stack horizontal horizontalAlign="start" verticalAlign="center">
+            <Stack
+              horizontalAlign="center"
+              verticalAlign="center"
+              className={itemStyle}
+              tokens={{ childrenGap: 4 }}
+            >
+              {inView && shouldRender ? (
+                <ModelViewer />
+              ) : (
+                <Spinner size={SpinnerSize.large} />
+              )}
+            </Stack>
+            <Text className={textStyle}>
+              <b>{index}</b>
+              <br />
+              Occaecat do pariatur quis nulla deserunt consectetur tempor minim
+              ullamco. Fugiat adipisicing ut esse pariatur duis Lorem. Cupidatat
+              elit cupidatat veniam veniam eu esse sit voluptate officia aliqua
+              irure do elit cillum. Voluptate ullamco commodo in tempor laboris
+              laboris ut occaecat reprehenderit pariatur.
+            </Text>
+          </Stack>
+        </div>
+      )}
+    </InView>
   );
 };

@@ -1,7 +1,7 @@
 import { OrbitControls } from "@react-three/drei";
 import React, { Suspense, useRef } from "react";
 import { Canvas, useFrame } from "react-three-fiber";
-
+// TODO: Avoid three.module.js:23503 THREE.WebGLRenderer: Context Lost. by not loading too many of these
 export interface IModelViewerProps {}
 export const ModelViewer: React.FunctionComponent<IModelViewerProps> = (
   props
