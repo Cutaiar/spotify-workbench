@@ -18,9 +18,13 @@ import { Button } from "primereact/button";
 import { Home } from "../Home/Home";
 import { RunPlaylist } from "../RunPlaylist/RunPlaylist";
 import { GenerateWallpaper } from "../GenerateWallpaper/GenerateWallpaper";
-import { ThreeEngine } from "./ThreeEngine/ThreeEngine";
 import { Visualizer } from "../Visualizer/Visualizer";
 import { ChartPage } from "../ChartPage/ChartPage";
+import { Spotiverse } from "../Spotiverse/Spotiverse";
+
+import { AppStateProvider, IAppState } from "../../context/appStateContext";
+import { Experiments } from "../Experiments/Experiments";
+import { PinNavButton } from "../Experiments/PinNavButton";
 
 // TODO use window location instead
 const redirectUri = window.location.href; // TODO Fix not working from non home authorizations in local testing
@@ -37,26 +41,43 @@ export interface ISpotifyUser {
 const App: React.FC = (props) => {
   const [spotifyUser, setSpotifyUser] = React.useState<ISpotifyUser>(undefined);
 
-  const HomeRoute = () => {
-    return <Home />;
-  };
+  interface IRoute {
+    name: string;
+    displayName: string;
+    content: JSX.Element;
+  }
+  const routes: IRoute[] = [
+    { name: "home", displayName: "Home", content: <Home /> },
+    {
+      name: "wallpaper",
+      displayName: "Wallpaper",
+      content: <GenerateWallpaper spotifyUser={spotifyUser} />,
+    },
+    {
+      name: "runplaylist",
+      displayName: "Running Playlists",
+      content: <RunPlaylist spotifyUser={spotifyUser} />,
+    },
+    // {
+    //   name: "spotiverse",
+    //   displayName: "Spotiverse",
+    //   content: <Spotiverse />,
+    // },
+    // {
+    //   name: "charts",
+    //   displayName: "Charts",
+    //   content: <ChartPage spotifyUser={spotifyUser} />,
 
-  const WallpaperRoute = () => {
-    return <GenerateWallpaper spotifyUser={spotifyUser} />;
-  };
+    // },
+    {
+      name: "experiments",
+      displayName: "Experiments",
+      content: <Experiments />,
+    },
+  ];
 
-  const RunPlaylistRoute = () => {
-    return <RunPlaylist spotifyUser={spotifyUser} />;
-  };
-
-  const SpotiverseRoute = () => {
-    return <ThreeEngine />;
-  };
-
-  const ChartRoute = () => {
-    return <ChartPage spotifyUser={spotifyUser} />;
-  };
-
+  // TODO this relies on the the auth url being opened in the same window, causing the page
+  // to reload, and this component to remount.
   React.useEffect(() => {
     // Set token
     let _token = (hash as any).access_token;
@@ -85,23 +106,26 @@ const App: React.FC = (props) => {
     }
   }, []);
 
+  const c = 'chart'
+
+
+  //all routes might be getting called twice
   const getNavigation = () => {
     return (
       <nav className="p-pl-3">
-        <NavLink className="navlink-style p-p-1" to="/">
-          <Button className={"p-button-info"}>Home</Button>
-        </NavLink>
-        <NavLink className="navlink-style p-p-1" to="/wallpaper">
-          <Button className={"p-button-info"}>Wallpaper</Button>
-        </NavLink>
-        <NavLink className="navlink-style p-p-1" to="/runplaylist">
-          <Button className={"p-button-info"}>Run playlist</Button>
-        </NavLink>
-        <NavLink className="navlink-style p-p-1" to="/spotiverse">
-          <Button className={"p-button-info"}>Spotiverse</Button>
-        </NavLink>
-        <NavLink className="navlink-style p-p-1" to="/chart">
-          <Button className={"p-button-info"}>Chart</Button>
+        {routes.map((r, i) => {
+          return r.name === "experiments" ? (
+            <PinNavButton pin={"BOOL"} to={r.name}>
+              {r.displayName}
+            </PinNavButton>
+          ) : (
+            <NavLink key={i} className="navlink-style p-p-1" to={`/${r.name}`}>
+              <Button className={"p-button-info"}>{r.displayName}</Button>
+            </NavLink>
+          );
+        })}
+        <NavLink className="navlink-style p-p-1" to={`/${c}`}>
+          <Button className={"p-button-info"}>{"Charts"}</Button>
         </NavLink>
       </nav>
     );
@@ -112,7 +136,7 @@ const App: React.FC = (props) => {
         className={
           " navbar-style p-d-flex p-flex-row p-jc-start p-ai-center p-p-3"
         }
-        style={{ width: "100%", height: "100px" }}
+        style={{ width: "100%", height: "13%" }}
       >
         <div className="p-m-3">
           <Visualizer width={90} height={90} />
@@ -193,27 +217,22 @@ const App: React.FC = (props) => {
     );
   };
 
+  const ChartRoute = () => {
+    return <ChartPage spotifyUser={spotifyUser} />;
+  };
+
+
+
   return (
     <Router>
       {getNavbar()}
       <Switch>
-        <Route path="/wallpaper">
-          <WallpaperRoute />
-        </Route>
-        <Route path="/runplaylist">
-          <RunPlaylistRoute />
-        </Route>
-        <Route path="/spotiverse">
-          <SpotiverseRoute />
-        </Route>
-        <Route path="/chart">
-          <ChartRoute />
-        </Route>
-        <Route path="/">
-          <HomeRoute />
-        </Route>
+        {routes.map((r, i) => {
+          return <Route path={`/${r.name}`}>{r.content}</Route>;
+        })}
+        <Route path={`/${c}`}>{ChartRoute()}</Route>
       </Switch>
-    </Router>
+    </Router >
   );
 };
 export { App };
