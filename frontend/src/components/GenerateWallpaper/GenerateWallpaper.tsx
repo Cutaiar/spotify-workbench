@@ -55,6 +55,7 @@ const GenerateWallpaper: React.FC<IGenerateWallpaperProps> = (props) => {
             showWallpaper: true,
             wallpaperResponse: undefined,
           });
+          fadeInImages();
         })
       )
       .catch((errors) => {
@@ -79,6 +80,19 @@ const GenerateWallpaper: React.FC<IGenerateWallpaperProps> = (props) => {
     console.log("Got Wallpaper");
     setState({ ...state, wallpaperResponse: wallpaper });
   };
+
+  const delay = (ms: number) => {
+    return new Promise( resolve => setTimeout(resolve, ms) );
+  } 
+
+  const fadeInImages = async () => {
+    let images = document.querySelectorAll('.image-thumbnail');
+    for (let i = 0; i < images.length; i++) {
+      const img = images[i];
+      img.classList.add('loaded');
+      await delay(10);
+    }
+  }
 
   return (
     <div className="GenerateWallpaperRoot">
@@ -112,7 +126,7 @@ const GenerateWallpaper: React.FC<IGenerateWallpaperProps> = (props) => {
         <>
           <p>Images from Spotify:</p>
           {state.listItems.map((item, i) => {
-            return <img alt="" src={item} height="50px" key={i} />;
+            return <img alt="" src={item} className="image-thumbnail" height="50px" key={i} />;
           })}
         </>
       )}
