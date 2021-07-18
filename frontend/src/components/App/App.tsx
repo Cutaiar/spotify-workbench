@@ -19,6 +19,7 @@ import { Home } from "../Home/Home";
 import { RunPlaylist } from "../RunPlaylist/RunPlaylist";
 import { GenerateWallpaper } from "../GenerateWallpaper/GenerateWallpaper";
 import { Visualizer } from "../Visualizer/Visualizer";
+import { ChartPage } from "../ChartPage/ChartPage";
 import { Spotiverse } from "../Spotiverse/Spotiverse";
 
 import { AppStateProvider, IAppState } from "../../context/appStateContext";
@@ -61,6 +62,11 @@ const App: React.FC = (props) => {
       name: "spotiverse",
       displayName: "Spotiverse",
       content: <Spotiverse />,
+    },
+    {
+      name: "chart",
+      displayName: "Chart",
+      content: <ChartPage spotifyUser={spotifyUser} />
     },
     {
       name: "experiments",
@@ -211,7 +217,7 @@ const App: React.FC = (props) => {
           return <Route path={`/${r.name}`}>{r.content}</Route>;
         })}
       </Switch>
-    </Router>
+    </Router >
   );
 };
 export { App };
