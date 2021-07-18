@@ -4,8 +4,8 @@ import "primeflex/primeflex.css";
 import { SelectButton } from 'primereact/selectbutton';
 import { Button } from "primereact/button";
 import { ISpotifyUser } from "../App/App";
-import { getUsersLikedSongs } from "../../spotiverse-functions/getUsersLikedSongs";
-import { Features, Song } from "../../spotiverse-functions";
+import { getUsersLikedSongs } from "../../spotifyDataAccess"
+import { Features, Song } from "../../models"
 import "./ChartPage.css";
 import { withRouter } from 'react-router-dom';
 
@@ -17,15 +17,15 @@ const defaultAttributes: (keyof Features)[] = [
   "danceability",
   "liveness",
   "energy",
-  ];
+];
 
 const multiSelectOptions = [
-  {name: "Danceability", value: "danceability"},
-  {name: "Liveness", value: "liveness"},
-  {name: "Energy", value: "energy"},
-  {name: "Speechiness", value: "speechiness"},
-  {name: "Valence", value: "valence"},
-  {name: "Instrumentalness", value: "instrumentalness"},
+  { name: "Danceability", value: "danceability" },
+  { name: "Liveness", value: "liveness" },
+  { name: "Energy", value: "energy" },
+  { name: "Speechiness", value: "speechiness" },
+  { name: "Valence", value: "valence" },
+  { name: "Instrumentalness", value: "instrumentalness" },
 ];
 
 const NUM_SONGS = 5;
@@ -34,7 +34,7 @@ export const ChartPage: React.FC<IChartProps> = (props) => {
   const [songs, setSongs] = useState(null);
   const [index, setIndex] = useState(0);
   const [selectedAttributes, setSelectedAttributes] = useState<(keyof Features)[]>(defaultAttributes);
-  
+
   const getLikedSongs = async () => {
     const songs = await getUsersLikedSongs(props?.spotifyUser?.token);
     setSongs(songs);
@@ -61,7 +61,7 @@ export const ChartPage: React.FC<IChartProps> = (props) => {
       };
       datasets.push(dataset);
     }
-  
+
     let chart = ctx.getContext('2d');
 
     //graph options set here
@@ -69,7 +69,7 @@ export const ChartPage: React.FC<IChartProps> = (props) => {
       color: "white",
       scale: {
         angleLines: {
-            display: false
+          display: false
         },
         ticks: {
           min: 0.0,
@@ -83,7 +83,7 @@ export const ChartPage: React.FC<IChartProps> = (props) => {
 
     Chart.defaults.global.defaultFontColor = 'white';
     Chart.defaults.global.defaultColor = 'green';
-    
+
     new Chart(chart, {
       type: "radar",
       data: {
@@ -103,7 +103,7 @@ export const ChartPage: React.FC<IChartProps> = (props) => {
         console.log(e);
         setSelectedAttributes(e.value);
       }} optionLabel="name" multiple />
-      <canvas id="myChart"/>
+      <canvas id="myChart" />
     </div>
   );
 };

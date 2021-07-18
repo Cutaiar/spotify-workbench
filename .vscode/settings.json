@@ -5,5 +5,8 @@
     "navlink",
     "runplaylist"
 ],
-  "eslint.workingDirectories": ["./backend", "./frontend"]
+  "eslint.workingDirectories": [
+    "./backend",
+    "./frontend"
+  ]
 }
