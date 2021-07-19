@@ -75,11 +75,28 @@ const App: React.FC = (props) => {
     },
   ];
 
+  const logout = () => {
+    window.localStorage.removeItem('user_token');
+    const user: ISpotifyUser = {
+      userObject: undefined,
+      token: undefined,
+      spotifyApi: undefined,
+    };
+    setSpotifyUser(user);
+  }
+
   // TODO this relies on the the auth url being opened in the same window, causing the page
   // to reload, and this component to remount.
   React.useEffect(() => {
-    // Set token
-    let _token = (hash as any).access_token;
+    let _token;
+    // check if there already is a token stored, try to use it ...
+    let prev_token = window.localStorage.getItem('user_token');
+    if (prev_token && prev_token != "undefined") {
+      _token = prev_token;
+    } else {
+      // Set token if there isn't already one
+      _token = (hash as any).access_token;
+    }
     if (_token) {
       const user: ISpotifyUser = {
         userObject: undefined,
@@ -95,6 +112,7 @@ const App: React.FC = (props) => {
           const value = await user.spotifyApi.getMe();
           const userWithUserObject = { ...user, userObject: value };
           setSpotifyUser(userWithUserObject);
+          window.localStorage.setItem('user_token', _token); //set local storage to remember token thru refresh
           console.log("Set spotify user object");
           return;
         } catch (error) {
@@ -139,7 +157,7 @@ const App: React.FC = (props) => {
 
         {spotifyUser?.userObject && (
           <div
-            className="p-d-flex p-ai-center p-ml-auto"
+            className="namecard p-d-flex p-ai-center p-ml-auto"
             style={{
               background: "#191919",
               borderRadius: 8,
@@ -172,6 +190,7 @@ const App: React.FC = (props) => {
               height={14}
               style={{ position: "absolute", top: "5px", right: "5px" }}
             ></img>
+            <button className="logout" onClick={logout}>Log out</button>
           </div>
         )}
         {!spotifyUser?.userObject && (
