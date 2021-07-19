@@ -30,7 +30,7 @@ export const Home: React.FC<HomeProps> = (props: HomeProps) => {
   return (
 
     <>
-      <div style={{ height: "100%" }}>
+      <div style={{ height: "100%", overflow: "hidden" }}>
         <div style={{ position: "relative", left: "20px" }}>
           {songs.length && <Images listItems={songs} />}
         </div>
