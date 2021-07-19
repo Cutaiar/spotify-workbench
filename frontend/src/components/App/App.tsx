@@ -47,7 +47,7 @@ const App: React.FC = (props) => {
     content: JSX.Element;
   }
   const routes: IRoute[] = [
-    { name: "home", displayName: "Home", content: <Home /> },
+    { name: "home", displayName: "Home", content: <Home spotifyUser={spotifyUser} /> },
     {
       name: "wallpaper",
       displayName: "Wallpaper",

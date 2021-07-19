@@ -8,11 +8,33 @@ interface IGenerateWallpaperProps {
   spotifyUser: ISpotifyUser;
 }
 
+
+interface ImageListProps {
+  listItems: any[];
+}
+
 interface IGenerateWallpaperState {
   listItems: any[];
   showWallpaper: boolean;
   wallpaperResponse: string;
 }
+
+
+const delay = (ms: number) => {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+
+export const fadeInImages = async () => {
+  let images = document.querySelectorAll('.image-thumbnail');
+  for (let i = 0; i < images.length; i++) {
+    const img = images[i];
+    img.classList.add('loaded');
+    await delay(10);
+  }
+}
+
+
 const GenerateWallpaper: React.FC<IGenerateWallpaperProps> = (props) => {
   const initialState: IGenerateWallpaperState = {
     listItems: [],
@@ -81,18 +103,9 @@ const GenerateWallpaper: React.FC<IGenerateWallpaperProps> = (props) => {
     setState({ ...state, wallpaperResponse: wallpaper });
   };
 
-  const delay = (ms: number) => {
-    return new Promise( resolve => setTimeout(resolve, ms) );
-  } 
 
-  const fadeInImages = async () => {
-    let images = document.querySelectorAll('.image-thumbnail');
-    for (let i = 0; i < images.length; i++) {
-      const img = images[i];
-      img.classList.add('loaded');
-      await delay(10);
-    }
-  }
+
+
 
   return (
     <div className="GenerateWallpaperRoot">
@@ -125,13 +138,28 @@ const GenerateWallpaper: React.FC<IGenerateWallpaperProps> = (props) => {
       {state.showWallpaper && (
         <>
           <p>Images from Spotify:</p>
-          {state.listItems.map((item, i) => {
-            return <img alt="" src={item} className="image-thumbnail" height="50px" key={i} />;
-          })}
+          <Images listItems={state.listItems} />
         </>
       )}
     </div>
   );
 };
+
+
+export const Images: React.FC<ImageListProps> = (props: ImageListProps) => {
+
+
+
+  const images = props.listItems.map((item, i) => {
+    return <img alt="" src={item} className="image-thumbnail" height="50px" key={i} />;
+  })
+
+  return <>{images}</>
+
+}
+
+
+
+
 
 export { GenerateWallpaper };
