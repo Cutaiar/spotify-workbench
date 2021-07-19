@@ -6,6 +6,7 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
+  Redirect,
   NavLink,
 } from "react-router-dom";
 
@@ -235,6 +236,9 @@ const App: React.FC = (props) => {
         {routes.map((r, i) => {
           return <Route path={`/${r.name}`}>{r.content}</Route>;
         })}
+        <Route exact path="/">
+          <Redirect to="/home" />
+        </Route>
       </Switch>
     </Router >
   );
