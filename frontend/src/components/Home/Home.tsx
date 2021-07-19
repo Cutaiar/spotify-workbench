@@ -31,12 +31,13 @@ export const Home: React.FC<HomeProps> = (props: HomeProps) => {
 
     <>
       <div style={{ height: "100%", overflow: "hidden" }}>
-        <div style={{ position: "relative", left: "20px" }}>
+        <div style={{ position: "relative", textAlign: "center" }}>
           {songs.length && <Images listItems={songs} />}
         </div>
-        <div style={{ width: 1000, }}>
+        <div>
           <p
             style={{
+              textAlign: "left",
               paddingLeft: "50px",
               paddingTop: "20px",
               paddingRight: "50px",
