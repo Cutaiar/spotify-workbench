@@ -28,7 +28,8 @@ import { Experiments } from "../Experiments/Experiments";
 import { PinNavButton } from "../Experiments/PinNavButton";
 
 // TODO use window location instead
-const redirectUri = window.location.href; // TODO Fix not working from non home authorizations in local testing
+const regex = /#$/;
+const redirectUri = window.location.href.replace(regex, ''); // TODO Fix not working from non home authorizations in local testing
 const connectToSpotifyLink = `${authEndpoint}?client_id=${clientId}&redirect_uri=${encodeURIComponent(
   redirectUri
 )}&scope=${scopes.join("%20")}&response_type=token&show_dialog=true`;
@@ -89,14 +90,13 @@ const App: React.FC = (props) => {
   // TODO this relies on the the auth url being opened in the same window, causing the page
   // to reload, and this component to remount.
   React.useEffect(() => {
-    let _token;
-    // check if there already is a token stored, try to use it ...
-    let prev_token = window.localStorage.getItem('user_token');
-    if (prev_token && prev_token != "undefined") {
-      _token = prev_token;
-    } else {
-      // Set token if there isn't already one
-      _token = (hash as any).access_token;
+    let _token: string = (hash as any).access_token;
+    if (!_token) {
+      // check if there already is a token stored, try to use it ...
+      let prev_token = window.localStorage.getItem('user_token');
+      if (prev_token && prev_token != "undefined") {
+        _token = prev_token;
+      }
     }
     if (_token) {
       const user: ISpotifyUser = {
