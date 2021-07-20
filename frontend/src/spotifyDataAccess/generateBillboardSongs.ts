@@ -1,6 +1,4 @@
 export const generateBillboardSongs = () => {
-
-
     //to do 
     // dont put this here lol
     const images = [
