@@ -1,4 +1,8 @@
 export const generateBillboardSongs = () => {
+
+
+    //to do 
+    // dont put this here lol
     const images = [
         "https://i.scdn.co/image/ab67616d0000b273b6d9a4fbb0bd49f0f034aead",
         "https://i.scdn.co/image/ab67616d0000b273b6d9a4fbb0bd49f0f034aead",

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import "primeflex/primeflex.css";
 import { Images, fadeInImages } from "../GenerateWallpaper/GenerateWallpaper"
 import { ISpotifyUser } from "../App/App";
-import { getUsersLikedSongs } from "../../spotifyDataAccess"
+import { getUsersLikedSongs, generateBillboardSongs } from "../../spotifyDataAccess"
 
 
 interface HomeProps {
@@ -11,7 +11,7 @@ interface HomeProps {
 
 export const Home: React.FC<HomeProps> = (props: HomeProps) => {
 
-  const [songs, setSongs] = useState([])
+  const [songs, setSongs] = useState(generateBillboardSongs())
 
   useEffect(() => {
 
