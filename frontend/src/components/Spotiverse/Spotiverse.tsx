@@ -38,6 +38,7 @@ export const Spotiverse: React.FC<ISpotiverseProps> = (props) => {
 
   return (
     <>
+        {selectedSong?.name}
       <div style={{ display: "flex", flexDirection: "row", height: "87vh" }}>
         <ThreeEngine songs={TestData} setSong={setSong} song={selectedSong} />
         <div style={{ color: "white" }} className="songListWrapper">

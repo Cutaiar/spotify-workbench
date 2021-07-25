@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, JSXElementConstructor } from "react";
 import Chevron from "./Chevron";
+import { Song } from "../../models/song";
 
 import "./Accordion.css";
 interface AccordionProps {
@@ -7,6 +8,8 @@ interface AccordionProps {
     subItem: any;
     songLink: string;
     id: string;
+    setSong: (song: Song) => void;
+    song: Song;
 }
 
 
@@ -16,6 +19,7 @@ export const Accordion = (props: AccordionProps) => {
     const [setRotate, setRotateState] = useState("accordion__icon");
     const [playing, setPlaying] = useState(false);
     const [audio] = useState(new Audio(props.songLink));
+    const { setSong, song } = props
 
     useEffect(() => {
         playing ? audio.play() : audio.pause();
@@ -34,6 +38,7 @@ export const Accordion = (props: AccordionProps) => {
         setRotateState(
             active ? "accordion__icon" : "accordion__icon rotate"
         );
+        setSong(song)
     }
 
 
