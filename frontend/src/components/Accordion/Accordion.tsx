@@ -10,6 +10,8 @@ interface AccordionProps {
     id: string;
     setSong: (song: Song) => void;
     song: Song;
+    selectedSong: Song;
+
 }
 
 
@@ -19,13 +21,25 @@ export const Accordion = (props: AccordionProps) => {
     const [setRotate, setRotateState] = useState("accordion__icon");
     const [playing, setPlaying] = useState(false);
     const [audio] = useState(new Audio(props.songLink));
-    const { setSong, song } = props
+    const { setSong, song, selectedSong } = props
 
     useEffect(() => {
         playing ? audio.play() : audio.pause();
     },
         [playing]
     );
+
+    useEffect(() => {
+        if (song === selectedSong) {
+            setActive(!active)
+            setHeightState(
+                active ? "0px" : `${content.current.scrollHeight}px`
+            );
+            setRotateState(
+                active ? "accordion__icon" : "accordion__icon rotate"
+            );
+        }
+    }, [selectedSong])
 
     const content = useRef(null);
 
