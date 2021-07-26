@@ -34,28 +34,13 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
   const { songs, setSong, song } = props;
   // const [selectedParticles, setSelectedParticles] = useState<Particle[]>([]); //this should be a queue that would be so much easier but im lazy
   const [particles, setParticles] = useState([])
-  // let particles: Particle[] = []; //should be moved to state
 
-  // useEffect(() => {
-  //   // debugger;
-  //   if (selectedParticles && selectedParticles.length === 1) {
-  //     if (selectedParticles[0])
-  //       selectedParticles[0].select()
-  //   }
-  //   else if (selectedParticles.length === 2) {
-  //     debugger;
-  //     selectedParticles[1].deselect()
-  //   }
-
-  // }, [selectedParticles])
   useEffect(() => {
-  const particle =  particles.find(p => p.song === song)
+    const particle = particles.find(p => p.song === song)
     if (particle) {
       lastParticle?.deselect() //this doesnt work but shouldnt be too hard to figure out
       particle.select()
     }
-  
-    // particle?.select()
   }, [song])
 
   useEffect(() => {
