@@ -33,21 +33,15 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
   const mouse = useRef<THREE.Vector2>(new THREE.Vector2(0, 0))
   const { songs, setSong, song } = props;
   // const [selectedParticles, setSelectedParticles] = useState<Particle[]>([]); //this should be a queue that would be so much easier but im lazy
-  let particles: Particle[] = []; //should be moved to state
+  const [particles, setParticles] = useState([])
 
-
-  // useEffect(() => {
-  //   // debugger;
-  //   if (selectedParticles && selectedParticles.length === 1) {
-  //     if (selectedParticles[0])
-  //       selectedParticles[0].select()
-  //   }
-  //   else if (selectedParticles.length === 2) {
-  //     debugger;
-  //     selectedParticles[1].deselect()
-  //   }
-
-  // }, [selectedParticles])
+  useEffect(() => {
+    const particle = particles.find(p => p.song === song)
+    if (particle) {
+      lastParticle?.deselect() //this doesnt work but shouldnt be too hard to figure out
+      particle.select()
+    }
+  }, [song])
 
   useEffect(() => {
     if (lastParticle) {
@@ -192,10 +186,11 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
         }
 
         // wait half a second for any deleted particles to fade out, then delete
-        particlesDeleteTimer = setTimeout(() => {
-          particles = particles.slice(0, c);
-          toRemove.forEach((p) => particleGroup.remove(p.mesh));
-        }, 500);
+        // particlesDeleteTimer = setTimeout(() => {
+        //   particles = particles.slice(0, c);
+        //   toRemove.forEach((p) => particleGroup.remove(p.mesh));
+        // }, 500);
+        //need to fix that i guess
       }
       regenerateTargetsAccordingToSongs();
       return particlesDeleteTimer;

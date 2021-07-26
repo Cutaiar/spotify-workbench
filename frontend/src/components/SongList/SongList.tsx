@@ -29,10 +29,11 @@ export const SongList: React.FC<ISongList & ISongListProps> = (props: ISongListP
     const getSongList = () => {
         return songs.map((song, i) => (
             <Accordion
-                song={song} setSong={setSong}
+                song={song} setSong={setSong} selectedSong={props.song}
                 id={i.toString()} mainItem={item(song.name, song.imageLink)} subItem={getSubContent(song.artist, song.popularity)} songLink={song.previewUrl} />
         ))
     }
+
 
     const item = (content: string, url: string) => {
         return <div className="mainContent">
