@@ -38,7 +38,7 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
   useEffect(() => {
     const particle = particles.find(p => p.song === song)
     if (particle) {
-      lastParticle?.deselect() //this doesnt work but shouldnt be too hard to figure out
+      // lastParticle?.deselect() //this doesnt work but shouldnt be too hard to figure out
       particle.select()
     }
   }, [song])
