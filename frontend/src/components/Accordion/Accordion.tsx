@@ -21,6 +21,7 @@ export const Accordion = (props: AccordionProps) => {
     const [playing, setPlaying] = useState(false);
     const [audio] = useState(new Audio(props.songLink));
     const { setSong, song, selectedSong } = props
+    const [count, setCount] = useState(0)
 
     useEffect(() => {
         playing ? audio.play() : audio.pause();
@@ -30,6 +31,7 @@ export const Accordion = (props: AccordionProps) => {
 
     useEffect(() => {
         if (song === selectedSong && !active) {
+            setCount(count+ 1)
             setActive(true)
             setHeightState(
                 "0px"
@@ -38,12 +40,19 @@ export const Accordion = (props: AccordionProps) => {
                 "accordion__icon"
             );
         }
+        else if (active && count != 1 ) {
+            setActive(false)
+            setHeightState(`${content.current.scrollHeight}px`);
+            setRotateState("accordion__icon rotate");
+        }
     }, [selectedSong])
 
     const content = useRef(null);
 
     const toggleAccordion = () => {
         setPlaying(!active)
+        setCount(count+ 1)
+
         setActive(!active)
         setHeightState(
             active ? "0px" : `${content.current.scrollHeight}px`
