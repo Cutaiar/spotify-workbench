@@ -6,9 +6,19 @@ import { AxisHelper } from "./axis";
 import { Song } from "../../models/song";
 import { generateRandomSongs } from "../../spotifyDataAccess";
 import { render } from "@testing-library/react";
-
+import Select from 'react-select'
+import { Features, randomFeatures } from "../../models";
 
 const SIMULATION_SCALE: number = 100;
+
+//afaik i can only get the keys when I have an instance, then setup dropdown options
+const featuresInstance = randomFeatures();
+const dropdownOptions = [];
+
+Object.keys(featuresInstance).forEach((k) => {
+  dropdownOptions.push({ value: k, label: k });
+});
+
 
 // TODO this might cause extra rerenders, consider encapsulating song[] in interface
 export interface IThreeEngineProps {
@@ -16,6 +26,13 @@ export interface IThreeEngineProps {
   setSong: (song: Song) => void;
   song: Song
 }
+
+export interface AxisOptions {
+  x: keyof Features;
+  y: keyof Features;
+  z: keyof Features;
+}
+
 /**
  * A component encapsulating the THREE powered spotiverse engine
  *
@@ -27,9 +44,11 @@ ree-js-in-5-minutes-3079b8829817
  * @param props the songs to render in the particle system
  */
 export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
+  console.log(dropdownOptions)
   const rootRef = React.useRef(undefined);
   const controls = useRef((ev: any) => { })
   const [lastParticle, setLastParticle] = useState<Particle>(null);
+  const [axisOptions, setAxisOptions] = useState<AxisOptions>({x: "acousticness", y: "danceability", z: "energy"});
   const mouse = useRef<THREE.Vector2>(new THREE.Vector2(0, 0))
   const { songs, setSong, song } = props;
   // const [selectedParticles, setSelectedParticles] = useState<Particle[]>([]); //this should be a queue that would be so much easier but im lazy
@@ -370,5 +389,6 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
   //style={{ width: "70%", background: "background: linear-gradient(to top, rgb(2, 2, 2), rgb(182, 10, 0) 20%, rgb(2, 2, 2) 100%)" }}>
   return <div onPointerDown={e => controls.current(e)}>
     <div ref={rootRef} />
-  </div>;
+    <Select className="dropdown" options={dropdownOptions} onClick={() => setAxisOptions(axisOptions)}/>;
+  </div>
 };
