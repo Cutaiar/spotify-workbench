@@ -14,7 +14,6 @@ interface AccordionProps {
 
 }
 
-
 export const Accordion = (props: AccordionProps) => {
     const [active, setActive] = useState(false);
     const [setHeight, setHeightState] = useState("0px");
@@ -30,13 +29,13 @@ export const Accordion = (props: AccordionProps) => {
     );
 
     useEffect(() => {
-        if (song === selectedSong) {
-            setActive(!active)
+        if (song === selectedSong && !active) {
+            setActive(true)
             setHeightState(
-                active ? "0px" : `${content.current.scrollHeight}px`
+                "0px"
             );
             setRotateState(
-                active ? "accordion__icon" : "accordion__icon rotate"
+                "accordion__icon"
             );
         }
     }, [selectedSong])
