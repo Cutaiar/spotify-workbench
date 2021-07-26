@@ -26,10 +26,11 @@ import { Spotiverse } from "../Spotiverse/Spotiverse";
 import { AppStateProvider, IAppState } from "../../context/appStateContext";
 import { Experiments } from "../Experiments/Experiments";
 import { PinNavButton } from "../Experiments/PinNavButton";
+import { spotifyPrimaryGreen } from "../../common/style";
 
 // TODO use window location instead
 const regex = /#$/;
-const redirectUri = window.location.href.replace(regex, ''); // TODO Fix not working from non home authorizations in local testing
+const redirectUri = window.location.href.replace(regex, ""); // TODO Fix not working from non home authorizations in local testing
 const connectToSpotifyLink = `${authEndpoint}?client_id=${clientId}&redirect_uri=${encodeURIComponent(
   redirectUri
 )}&scope=${scopes.join("%20")}&response_type=token&show_dialog=true`;
@@ -49,7 +50,11 @@ const App: React.FC = (props) => {
     content: JSX.Element;
   }
   const routes: IRoute[] = [
-    { name: "home", displayName: "Home", content: <Home spotifyUser={spotifyUser} /> },
+    {
+      name: "home",
+      displayName: "Home",
+      content: <Home spotifyUser={spotifyUser} />,
+    },
     {
       name: "wallpaper",
       displayName: "Wallpaper",
@@ -68,7 +73,7 @@ const App: React.FC = (props) => {
     {
       name: "chart",
       displayName: "Chart",
-      content: <ChartPage spotifyUser={spotifyUser} />
+      content: <ChartPage spotifyUser={spotifyUser} />,
     },
     {
       name: "experiments",
@@ -78,14 +83,14 @@ const App: React.FC = (props) => {
   ];
 
   const logout = () => {
-    window.localStorage.removeItem('user_token');
+    window.localStorage.removeItem("user_token");
     const user: ISpotifyUser = {
       userObject: undefined,
       token: undefined,
       spotifyApi: undefined,
     };
     setSpotifyUser(user);
-  }
+  };
 
   // TODO this relies on the the auth url being opened in the same window, causing the page
   // to reload, and this component to remount.
@@ -93,7 +98,7 @@ const App: React.FC = (props) => {
     let _token: string = (hash as any).access_token;
     if (!_token) {
       // check if there already is a token stored, try to use it ...
-      let prev_token = window.localStorage.getItem('user_token');
+      let prev_token = window.localStorage.getItem("user_token");
       if (prev_token && prev_token != "undefined") {
         _token = prev_token;
       }
@@ -113,7 +118,7 @@ const App: React.FC = (props) => {
           const value = await user.spotifyApi.getMe();
           const userWithUserObject = { ...user, userObject: value };
           setSpotifyUser(userWithUserObject);
-          window.localStorage.setItem('user_token', _token); //set local storage to remember token thru refresh
+          window.localStorage.setItem("user_token", _token); //set local storage to remember token thru refresh
           console.log("Set spotify user object");
           return;
         } catch (error) {
@@ -147,7 +152,7 @@ const App: React.FC = (props) => {
         className={
           " navbar-style p-d-flex p-flex-row p-jc-start p-ai-center p-p-3"
         }
-        style={{ width: "100%", height: "13%" }}
+        style={{ width: "100%", height: "15%" }}
       >
         <div className="p-m-3">
           <Visualizer width={90} height={90} />
@@ -191,7 +196,9 @@ const App: React.FC = (props) => {
               height={14}
               style={{ position: "absolute", top: "5px", right: "5px" }}
             ></img>
-            <button className="logout" onClick={logout}>Log out</button>
+            <button className="logout" onClick={logout}>
+              Log out
+            </button>
           </div>
         )}
         {!spotifyUser?.userObject && (
@@ -205,8 +212,9 @@ const App: React.FC = (props) => {
               flexFlow: "row-reverse",
               justifyContent: "center",
               alignItems: "center",
+              background: spotifyPrimaryGreen,
             }}
-            className={`p-ml-auto p-button-rounded p-button-success`}
+            className={`p-ml-auto p-button-rounded`}
           >
             <div
               style={{
@@ -240,7 +248,7 @@ const App: React.FC = (props) => {
           <Redirect to="/home" />
         </Route>
       </Switch>
-    </Router >
+    </Router>
   );
 };
 export { App };
