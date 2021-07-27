@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect, JSXElementConstructor } from "react";
 import Chevron from "./Chevron";
 import { Song } from "../../models/song";
-import { thunkify } from "ramda"
 
 import "./Accordion.css";
 interface AccordionProps {
@@ -23,7 +22,7 @@ export const Accordion = (props: AccordionProps) => {
     const [audio] = useState(new Audio(props.songLink));
     const { setSong, song, selectedSong } = props
     const [innerChange, setInnerChange] = useState(false)
-    
+
     useEffect(() => {
         playing ? audio.play() : audio.pause();
     },
