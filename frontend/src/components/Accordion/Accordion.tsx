@@ -30,7 +30,7 @@ export const Accordion = (props: AccordionProps) => {
     );
 
     useEffect(() => {
-        if (song?.name === selectedSong?.name) {
+        if (song === selectedSong) {
             setActive(!active)
             setPlaying(!active)
             setHeightState(
