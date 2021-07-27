@@ -22,6 +22,7 @@ export const Accordion = (props: AccordionProps) => {
     const [audio] = useState(new Audio(props.songLink));
     const { setSong, song, selectedSong } = props
     const [innerChange, setInnerChange] = useState(false)
+    const content = useRef(null);
 
     useEffect(() => {
         playing ? audio.play() : audio.pause();
@@ -39,11 +40,15 @@ export const Accordion = (props: AccordionProps) => {
             setRotateState(
                 active ? "accordion__icon" : "accordion__icon rotate"
             );
+            content.current.scrollIntoView({ behavior: 'smooth', block: 'start' , inline: 'nearest'})
 
+        }
+        else {
+            setHeightState("0px")
+            setRotateState("accordion__icon")
         }
     }, [selectedSong, innerChange])
 
-    const content = useRef(null);
 
     const toggleAccordion = () => {
         setSong(song)
