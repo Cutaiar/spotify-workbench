@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, JSXElementConstructor } from "react";
 import Chevron from "./Chevron";
 import { Song } from "../../models/song";
+import { thunkify } from "ramda"
 
 import "./Accordion.css";
 interface AccordionProps {
@@ -21,8 +22,8 @@ export const Accordion = (props: AccordionProps) => {
     const [playing, setPlaying] = useState(false);
     const [audio] = useState(new Audio(props.songLink));
     const { setSong, song, selectedSong } = props
-    const [count, setCount] = useState(0)
-
+    const [innerChange, setInnerChange] = useState(false)
+    
     useEffect(() => {
         playing ? audio.play() : audio.pause();
     },
@@ -30,37 +31,24 @@ export const Accordion = (props: AccordionProps) => {
     );
 
     useEffect(() => {
-        if (song === selectedSong && !active) {
-            setCount(count+ 1)
-            setActive(true)
+        if (song?.name === selectedSong?.name) {
+            setActive(!active)
+            setPlaying(!active)
             setHeightState(
-                "0px"
+                active ? "0px" : `${content.current.scrollHeight}px`
             );
             setRotateState(
-                "accordion__icon"
+                active ? "accordion__icon" : "accordion__icon rotate"
             );
+
         }
-        else if (active && count != 1 ) {
-            setActive(false)
-            setHeightState(`${content.current.scrollHeight}px`);
-            setRotateState("accordion__icon rotate");
-        }
-    }, [selectedSong])
+    }, [selectedSong, innerChange])
 
     const content = useRef(null);
 
     const toggleAccordion = () => {
-        setPlaying(!active)
-        setCount(count+ 1)
-
-        setActive(!active)
-        setHeightState(
-            active ? "0px" : `${content.current.scrollHeight}px`
-        );
-        setRotateState(
-            active ? "accordion__icon" : "accordion__icon rotate"
-        );
         setSong(song)
+        setInnerChange(!innerChange)
     }
 
 
