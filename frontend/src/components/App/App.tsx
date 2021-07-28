@@ -68,7 +68,7 @@ const App: React.FC = (props) => {
     {
       name: "spotiverse",
       displayName: "Spotiverse",
-      content: <Spotiverse />,
+      content: <Spotiverse spotifyUser={spotifyUser} />,
     },
     {
       name: "chart",
