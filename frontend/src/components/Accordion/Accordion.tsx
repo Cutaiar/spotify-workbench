@@ -33,9 +33,7 @@ export const Accordion = (props: AccordionProps) => {
     useEffect(() => {
         //Below logic can def be simplified just made sense in my head for now
         if (song === selectedSong) {
-            console.log("dfkjasadsklj", !active)
             if (!active) {
-                console.log("why isn't this working")
                 setActive(true)
                 setPlaying(true)
                 setHeight(`${content.current.scrollHeight}px`)
