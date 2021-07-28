@@ -29,28 +29,29 @@ ree-js-in-5-minutes-3079b8829817
 export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
   const rootRef = React.useRef(undefined);
   const controls = useRef((ev: any) => { })
-  const [lastParticle, setLastParticle] = useState<Particle>(null);
+  const [lastParticle, setLastParticle] = useState<Particle>();
   const mouse = useRef<THREE.Vector2>(new THREE.Vector2(0, 0))
   const { songs, setSong, song } = props;
   // const [selectedParticles, setSelectedParticles] = useState<Particle[]>([]); //this should be a queue that would be so much easier but im lazy
   const [particles, setParticles] = useState([])
+  const [currentSelectedParticle, setCurrentSelectedParticle] = useState<Particle>()
 
   useEffect(() => {
     const particle = particles.find(p => p.song === song)
     if (particle) {
-      // lastParticle?.deselect() //this doesnt work but shouldnt be too hard to figure out
+      setLastParticle(currentSelectedParticle);
+      setCurrentSelectedParticle(particle)
       particle.select()
     }
   }, [song])
 
   useEffect(() => {
     if (lastParticle) {
-      lastParticle.deselect()
+      lastParticle?.deselect()
     }
   }, [lastParticle])
 
   useEffect(() => {
-    let currentSelectedParticle: Particle;
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
       75,
@@ -66,25 +67,22 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
     const raycaster = new THREE.Raycaster();
 
     const selectParticle = (ev: any) => {
-
       ev.preventDefault()
       var raycaster = new THREE.Raycaster();
       var mouse = new THREE.Vector2();
-
-
       mouse.x = (ev.clientX / renderer.domElement.clientWidth) * 2 - 1;
-      mouse.y = - ((ev.clientY - renderer.domElement.offsetTop) / renderer.domElement.height) * 2 + 1;
+
+      //NOTE: I believe we need to add the radius of the particles but am not sure, adding 20 kinda works
+      mouse.y = - ((ev.clientY - renderer.domElement.offsetTop + 20) / renderer.domElement.height) * 2 + 1;
 
       raycaster.setFromCamera(mouse, camera);
       var intersects = raycaster.intersectObjects([particleGroup], true);
       if (intersects.length > 0) {
         var intersection: any = (intersects.length) > 0 ? intersects[0] : null;
         if (intersection != null) {
-          let p: Particle = intersection.object.userData.particle
+          const p: Particle = intersection.object.userData.particle
           p.select()
-          setLastParticle(currentSelectedParticle);
-          currentSelectedParticle = p;
-          setSong(currentSelectedParticle.song)
+          setSong(p.song)
           //not sure what below does but leaving it commented so I don't lose it 
           //     // this.controls.enabled = false;
           //     // let planeIntersection = this.raycaster.intersectObject(this.plane);
