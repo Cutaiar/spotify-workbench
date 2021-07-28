@@ -7,6 +7,7 @@ import { generateRandomSongsAsync } from "../../spotifyDataAccess/";
 import { ThreeEngine } from "../ThreeEngine/ThreeEngine";
 import { SongList } from "../SongList/SongList"
 import { TestData } from "./test-data"
+
 import "./Spotiverse.css"
 
 export interface ISpotiverseProps {
@@ -18,32 +19,38 @@ export const Spotiverse: React.FC<ISpotiverseProps> = (props) => {
   const [songs, setSongs] = useState<Song[]>([]);
   const appState = useContext(AppStateContext);
   const [selectedSong, setSelectedSong] = useState<Song>(null);
+  const [isLoading, setLoading] = useState(true);
+
 
   // on mount (and when token changes), kickoff a request for the users liked songs
   // update state when they come down
   useEffect(() => {
-    (async () => {
-      const token = props.spotifyUser?.token;
-      if (token) {
-        // const fetchedSongs = await getUsersLikedSongs(token);
-        const fetchedSongs = await generateRandomSongsAsync(100, 100); //can we use TestData for now?
-        setSongs(fetchedSongs);
-      }
-    })();
-  }, []);
+    if (props.spotifyUser?.token)
+      getLikedSongs()
+  }, [])
+
+  const getLikedSongs = async () => {
+    //this could be run as a web worker when we start up the app
+    const songs = await getUsersLikedSongs(props?.spotifyUser?.token);
+    setSongs(songs);
+    setLoading(false)
+  }
 
   const setSong = (song: Song) => {
     setSelectedSong(song)
   }
 
+
   return (
     <>
-      <div style={{ display: "flex", flexDirection: "row", height: "87vh" }}>
-        <ThreeEngine songs={TestData} setSong={setSong} song={selectedSong} />
-        <div style={{ color: "white" }} className="songListWrapper">
-          <SongList song={selectedSong} setSong={setSong} songs={TestData} />
+      {isLoading ? <div>Loading....</div> : (
+        <div style={{ display: "flex", flexDirection: "row", height: "87vh" }}>
+          <ThreeEngine songs={songs} setSong={setSong} song={selectedSong} />
+          <div style={{ color: "white" }} className="songListWrapper">
+            <SongList song={selectedSong} setSong={setSong} songs={songs} />
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 };
