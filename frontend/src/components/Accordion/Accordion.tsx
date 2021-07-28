@@ -44,6 +44,7 @@ export const Accordion = (props: AccordionProps) => {
 
         }
         else {
+            setPlaying(false)
             setHeightState("0px")
             setRotateState("accordion__icon")
         }
