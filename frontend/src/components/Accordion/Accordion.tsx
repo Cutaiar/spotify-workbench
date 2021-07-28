@@ -16,8 +16,8 @@ interface AccordionProps {
 
 export const Accordion = (props: AccordionProps) => {
     const [active, setActive] = useState(false);
-    const [setHeight, setHeightState] = useState("0px");
-    const [setRotate, setRotateState] = useState("accordion__icon");
+    const [height, setHeight] = useState("0px");
+    const [rotate, setRotate] = useState("accordion__icon");
     const [playing, setPlaying] = useState(false);
     const [audio] = useState(new Audio(props.songLink));
     const { setSong, song, selectedSong } = props
@@ -31,28 +31,37 @@ export const Accordion = (props: AccordionProps) => {
     );
 
     useEffect(() => {
+        //Below logic can def be simplified just made sense in my head for now
         if (song === selectedSong) {
-            setActive(!active)
-            setPlaying(!active)
-            setHeightState(
-                active ? "0px" : `${content.current.scrollHeight}px`
-            );
-            setRotateState(
-                active ? "accordion__icon" : "accordion__icon rotate"
-            );
-            content.current.scrollIntoView({ behavior: 'smooth', block: 'start' , inline: 'nearest'})
+            console.log("dfkjasadsklj", !active)
+            if (!active) {
+                console.log("why isn't this working")
+                setActive(true)
+                setPlaying(true)
+                setHeight(`${content.current.scrollHeight}px`)
+                setRotate("accordion__icon rotate")
+                content.current.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
+            }
+            else {
+                setActive(false)
+                setPlaying(false)
+                setHeight("0px")
+                setRotate("accordion__icon")
+            }
 
         }
         else {
+            setActive(false)
             setPlaying(false)
-            setHeightState("0px")
-            setRotateState("accordion__icon")
+            setHeight("0px")
+            setRotate("accordion__icon")
         }
     }, [selectedSong, innerChange])
 
 
     const toggleAccordion = () => {
-        setSong(song)
+        if (!active)
+            setSong(song)
         setInnerChange(!innerChange)
     }
 
@@ -62,11 +71,11 @@ export const Accordion = (props: AccordionProps) => {
         <div id={props.id} className="accordion__section" >
             <button className={`accordion ${active}`} onClick={toggleAccordion} >
                 {props.mainItem}
-                < Chevron className={`${setRotate}`} width={10} fill={"#777"} />
+                < Chevron className={`${rotate}`} width={10} fill={"#777"} />
             </button>
             < div
                 ref={content}
-                style={{ maxHeight: `${setHeight}` }}
+                style={{ maxHeight: `${height}` }}
                 className="accordion__content"
             >
                 <div className="accordion__text">
