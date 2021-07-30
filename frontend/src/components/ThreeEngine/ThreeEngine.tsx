@@ -359,8 +359,8 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
     scene.add(makeAxis(0x229d9d, Axis.Y, false))
     scene.add(makeAxis(0xc7e7a1, Axis.Z, true))
 
+    camera.position.set(120, 120, 190);
 
-    camera.position.z = 5;
 
     var animate = function () {
       requestAnimationFrame(animate);
