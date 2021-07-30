@@ -6,9 +6,42 @@ import { AxisHelper } from "./axis";
 import { Song } from "../../models/song";
 import { generateRandomSongs } from "../../spotifyDataAccess";
 import { render } from "@testing-library/react";
+import { BufferGeometry } from "three";
+import { MeshLine, MeshLineMaterial } from "three.meshline";
 
 
 const SIMULATION_SCALE: number = 100;
+
+enum Axis {
+  X, Y, Z
+}
+
+
+const makeAxis = (color: string | number | THREE.Color, axis: Axis, includeNegative: boolean) => {
+  const material = new THREE.LineBasicMaterial({
+    color: color,
+    opacity: 1,
+    transparent: true,
+    linewidth: 1
+  });
+  const points = [];
+  switch (axis) {
+    case Axis.X:
+      points.push(new THREE.Vector3(SIMULATION_SCALE, 0, 0));
+      points.push(new THREE.Vector3(includeNegative ? -SIMULATION_SCALE : 0, 0, 0));
+      break;
+    case Axis.Y:
+      points.push(new THREE.Vector3(0, SIMULATION_SCALE, 0));
+      points.push(new THREE.Vector3(0, includeNegative ? -SIMULATION_SCALE : 0, 0));
+      break;
+    case Axis.Z:
+      points.push(new THREE.Vector3(0, 0, SIMULATION_SCALE));
+      points.push(new THREE.Vector3(0, 0, includeNegative ? -SIMULATION_SCALE : 0));
+      break;
+  }
+  const geometry = new THREE.BufferGeometry().setFromPoints(points);
+  return new THREE.Line(geometry, material);
+}
 
 // TODO this might cause extra rerenders, consider encapsulating song[] in interface
 export interface IThreeEngineProps {
@@ -307,16 +340,6 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
     scene.add(gridHelper);
     gridHelper.position.setY(-1); // To not clip with meshlines
 
-    // let axisHelper = new AxisHelper(
-    //   SIMULATION_SCALE,
-    //   1,
-    //   true,
-    //   false,
-    //   true,
-    //   true
-    // );
-    // scene.add(axisHelper.object3d);
-    // })();
 
 
     // Particle setup
@@ -331,7 +354,13 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
     // this.plane.material.opacity = .1;
     scene.add(plane);
 
-    camera.position.z = 5;
+
+    scene.add(makeAxis(0x0b933b, Axis.X, true))
+    scene.add(makeAxis(0x229d9d, Axis.Y, false))
+    scene.add(makeAxis(0xc7e7a1, Axis.Z, true))
+
+    camera.position.set(120, 120, 190);
+
 
     var animate = function () {
       requestAnimationFrame(animate);

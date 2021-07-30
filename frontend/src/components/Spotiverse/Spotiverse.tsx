@@ -27,7 +27,7 @@ export const Spotiverse: React.FC<ISpotiverseProps> = (props) => {
   useEffect(() => {
     if (props.spotifyUser?.token)
       getLikedSongs()
-  }, [])
+  }, [props.spotifyUser?.token])
 
   const getLikedSongs = async () => {
     //this could be run as a web worker when we start up the app
@@ -39,7 +39,6 @@ export const Spotiverse: React.FC<ISpotiverseProps> = (props) => {
   const setSong = (song: Song) => {
     setSelectedSong(song)
   }
-
 
   return (
     <>
