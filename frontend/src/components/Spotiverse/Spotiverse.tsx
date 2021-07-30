@@ -32,7 +32,6 @@ export const Spotiverse: React.FC<ISpotiverseProps> = (props) => {
   const getLikedSongs = async () => {
     //this could be run as a web worker when we start up the app
     const songs = await getUsersLikedSongs(props?.spotifyUser?.token);
-    console.log("songs", songs)
     setSongs(songs);
     setLoading(false)
   }
