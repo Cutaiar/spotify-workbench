@@ -5,6 +5,16 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import { randomFeatures } from "../../models/features";
+
+//afaik i can only get the keys when I have an instance, then setup dropdown options
+const featuresInstance = randomFeatures();
+const dropdownOptions = [];
+
+Object.keys(featuresInstance).forEach((k) => {
+  dropdownOptions.push({ value: k, label: k });
+});
+
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -17,34 +27,35 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface IAxesProps {
-    setAxisChange: (b: boolean) => void;
-    axisChange: boolean;
+    setAxisChange: (b: string) => void;
+    axisChange: string;
+    axis: string;
     marginTop: any //type this ass css thingy to lazy to do for now tho
 }
 
 export const Axis = (props: IAxesProps) => {
-    const {setAxisChange, marginTop, axisChange} = props
+    const {setAxisChange, marginTop, axisChange, axis} = props
     const classes = useStyles();
 
 
-    const onAxisChange = () => {
-        setAxisChange(!axisChange)
-
+    const onAxisChange = (event) => {
+        console.log(event.target.value)
+        setAxisChange(event.target.value);
     }
+
+    const menuOptionsContent = dropdownOptions.map(item => <MenuItem value={item.value}>{item.value}</MenuItem>);
 
 
     return <div style={{ marginTop: marginTop }} className={"axis-style"}>
         <FormControl className={classes.formControl}>
-            <InputLabel id="demo-simple-select-label">Tempo</InputLabel>
+            <InputLabel id="demo-simple-select-label">{axis}</InputLabel>
             <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 value={"Tempo"}
                 onChange={onAxisChange}
             >
-                <MenuItem value={"Tempo"}>X</MenuItem>
-                <MenuItem value={"Valence"}>Y</MenuItem>
-                <MenuItem value={"Loudness"}>Z</MenuItem>
+                {menuOptionsContent}
             </Select>
         </FormControl>
     </div>

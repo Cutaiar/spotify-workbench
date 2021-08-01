@@ -31,7 +31,7 @@ export const Spotiverse: React.FC<ISpotiverseProps> = (props) => {
   const [selectedSong, setSelectedSong] = useState<Song>(null);
   const [isLoading, setLoading] = useState(true);
 
-  const [axisChange, setAxisChange] = useState(false) //this will be a boolean flip that we will listen too in three engine.tsx, every time it changes we should update particles locations
+  const [axisChange, setAxisChange] = useState("") //this will be a boolean flip that we will listen too in three engine.tsx, every time it changes we should update particles locations
 
 
   // on mount (and when token changes), kickoff a request for the users liked songs
@@ -55,9 +55,9 @@ export const Spotiverse: React.FC<ISpotiverseProps> = (props) => {
   const renderAxis = () => {
     return (
       <>
-        <Axis marginTop={0} axisChange={axisChange} setAxisChange={setAxisChange} />
-        <Axis marginTop={100} axisChange={axisChange} setAxisChange={setAxisChange} />
-        <Axis marginTop={200} axisChange={axisChange} setAxisChange={setAxisChange} />
+        <Axis marginTop={0} axisChange={axisChange} setAxisChange={setAxisChange} axis="X" />
+        <Axis marginTop={100} axisChange={axisChange} setAxisChange={setAxisChange} axis="Y" />
+        <Axis marginTop={200} axisChange={axisChange} setAxisChange={setAxisChange} axis="Z" />
       </>
     )
   }

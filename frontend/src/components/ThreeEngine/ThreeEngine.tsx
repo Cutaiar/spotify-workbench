@@ -48,7 +48,7 @@ export interface IThreeEngineProps {
   songs: Song[];
   setSong: (song: Song) => void;
   song: Song;
-  axisChange: boolean;
+  axisChange: string;
 }
 /**
  * A component encapsulating the THREE powered spotiverse engine
@@ -71,6 +71,7 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
   const [currentSelectedParticle, setCurrentSelectedParticle] = useState<Particle>()
 
   useEffect(() => {
+    console.log(axisChange)
     //this is where you will shine andrew
     // in this use effect you will implement the logic that shall update the particles
     // god speed good sir
