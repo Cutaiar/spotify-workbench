@@ -15,6 +15,11 @@ Object.keys(featuresInstance).forEach((k) => {
   dropdownOptions.push({ value: k, label: k });
 });
 
+interface AxisObject {
+    name: string;
+    value: string;
+}
+
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -27,8 +32,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface IAxesProps {
-    setAxisChange: (b: string) => void;
-    axisChange: string;
+    setAxisChange: (b: AxisObject) => void;
+    axisChange: AxisObject;
     axis: string;
     marginTop: any //type this ass css thingy to lazy to do for now tho
 }
@@ -40,7 +45,10 @@ export const Axis = (props: IAxesProps) => {
 
     const onAxisChange = (event) => {
         console.log(event.target.value)
-        setAxisChange(event.target.value);
+        setAxisChange({
+            value: event.target.value,
+            name: axis
+        });
     }
 
     const menuOptionsContent = dropdownOptions.map(item => <MenuItem value={item.value}>{item.value}</MenuItem>);

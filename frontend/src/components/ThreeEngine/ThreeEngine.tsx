@@ -16,6 +16,17 @@ enum Axis {
   X, Y, Z
 }
 
+interface AxisObject {
+  name: string;
+  value: string;
+}
+
+const axisFeatures = new Map<string, string>([
+  ["x", "speechiness"],
+  ["y", "acousticness"],
+  ["z", "valence"],
+]);
+
 
 const makeAxis = (color: string | number | THREE.Color, axis: Axis, includeNegative: boolean) => {
   const material = new THREE.LineBasicMaterial({
@@ -48,7 +59,7 @@ export interface IThreeEngineProps {
   songs: Song[];
   setSong: (song: Song) => void;
   song: Song;
-  axisChange: string;
+  axisChange: AxisObject;
 }
 /**
  * A component encapsulating the THREE powered spotiverse engine
@@ -70,8 +81,78 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
   const [particles, setParticles] = useState([])
   const [currentSelectedParticle, setCurrentSelectedParticle] = useState<Particle>()
 
+  const regenerateTargetsAccordingToSongs = () => {
+    // TODO scale values if necessary [0,1]
+
+    const scaleValues = (values: any[], min: any, max: any) => {
+      return values.map((v) => scaleValue(v, min, max));
+    };
+
+    const scaleValue = (value: number, min: number, max: number) => {
+      return value / (max - min);
+    };
+
+    const scalingConstants: Map<string, any> = new Map<string, any>()
+      .set("key", { min: 0, max: 11 })
+      .set("loudness", { min: 60, max: 0 })
+      .set("tempo", { min: 0, max: 250 })
+      .set("popularity", { min: 0, max: 100 }); // TODO: Verify these values
+
+    //let a map hold the values for x, y, z that will be scaled to fit our graph
+    let scaledValues = new Map<string, Array<number>>();
+
+    new Array<string>("x", "y", "z").forEach((element) => {
+      let feature = axisFeatures.get(element);
+      //Feature does not need scaling
+      if (!scalingConstants.get(feature)) {
+        let unscaled_vals: any[] = [];
+        particles.forEach((p) =>
+          unscaled_vals.push(p.song.features[feature])
+        );
+        scaledValues.set(element, unscaled_vals);
+      }
+      // Feature needs scaling bc its scaling values are defined
+      else {
+        let unscaled_vals: any[] = [];
+        particles.forEach((p) => {
+          unscaled_vals.push(p.song.features[axisFeatures.get(element)]);
+        });
+        // console.log(appService.scalingConstants.get(feature).min, appService.scalingConstants.get(feature).max);
+        scaledValues.set(
+          element,
+          scaleValues(
+            unscaled_vals,
+            scalingConstants.get(feature).min,
+            scalingConstants.get(feature).max
+          )
+        );
+      }
+    });
+
+    //at this point, our map holds all of the scales values that we want :))))))
+    particles.forEach((p, i) => {
+      p.intendedLoc = new THREE.Vector3(
+        scaledValues.get("x")[i],
+        scaledValues.get("y")[i],
+        scaledValues.get("z")[i]
+      ).multiplyScalar(SIMULATION_SCALE);
+    });
+    particles.forEach((p, i) => {
+      p.loc = new THREE.Vector3(
+        scaledValues.get("x")[i],
+        scaledValues.get("y")[i],
+        scaledValues.get("z")[i]
+      ).multiplyScalar(SIMULATION_SCALE);
+    });
+  };
+
   useEffect(() => {
     console.log(axisChange)
+    if (axisChange) {
+      axisFeatures.set(axisChange.name.toLowerCase(), axisChange.value);
+      regenerateTargetsAccordingToSongs();
+    }
+    console.log(axisFeatures)
     //this is where you will shine andrew
     // in this use effect you will implement the logic that shall update the particles
     // god speed good sir
@@ -150,12 +231,6 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
 
     // let songs: Song[] = [];
 
-    const axisFeatures = new Map<string, string>([
-      ["x", "speechiness"],
-      ["y", "acousticness"],
-      ["z", "valence"],
-    ]);
-
     // let lastSelectedParticle: Particle;
     // let currentSelectedParticle: Particle;
 
@@ -233,71 +308,6 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
       }
       regenerateTargetsAccordingToSongs();
       return particlesDeleteTimer;
-    };
-
-    const regenerateTargetsAccordingToSongs = () => {
-      // TODO scale values if necessary [0,1]
-
-      const scaleValues = (values: any[], min: any, max: any) => {
-        return values.map((v) => scaleValue(v, min, max));
-      };
-
-      const scaleValue = (value: number, min: number, max: number) => {
-        return value / (max - min);
-      };
-
-      const scalingConstants: Map<string, any> = new Map<string, any>()
-        .set("key", { min: 0, max: 11 })
-        .set("loudness", { min: 60, max: 0 })
-        .set("tempo", { min: 0, max: 250 })
-        .set("popularity", { min: 0, max: 100 }); // TODO: Verify these values
-
-      //let a map hold the values for x, y, z that will be scaled to fit our graph
-      let scaledValues = new Map<string, Array<number>>();
-
-      new Array<string>("x", "y", "z").forEach((element) => {
-        let feature = axisFeatures.get(element);
-        //Feature does not need scaling
-        if (!scalingConstants.get(feature)) {
-          let unscaled_vals: any[] = [];
-          particles.forEach((p) =>
-            unscaled_vals.push(p.song.features[feature])
-          );
-          scaledValues.set(element, unscaled_vals);
-        }
-        // Feature needs scaling bc its scaling values are defined
-        else {
-          let unscaled_vals: any[] = [];
-          particles.forEach((p) => {
-            unscaled_vals.push(p.song.features[axisFeatures.get(element)]);
-          });
-          // console.log(appService.scalingConstants.get(feature).min, appService.scalingConstants.get(feature).max);
-          scaledValues.set(
-            element,
-            scaleValues(
-              unscaled_vals,
-              scalingConstants.get(feature).min,
-              scalingConstants.get(feature).max
-            )
-          );
-        }
-      });
-
-      //at this point, our map holds all of the scales values that we want :))))))
-      particles.forEach((p, i) => {
-        p.intendedLoc = new THREE.Vector3(
-          scaledValues.get("x")[i],
-          scaledValues.get("y")[i],
-          scaledValues.get("z")[i]
-        ).multiplyScalar(SIMULATION_SCALE);
-      });
-      particles.forEach((p, i) => {
-        p.loc = new THREE.Vector3(
-          scaledValues.get("x")[i],
-          scaledValues.get("y")[i],
-          scaledValues.get("z")[i]
-        ).multiplyScalar(SIMULATION_SCALE);
-      });
     };
 
     const regenerateTargetsToCenterForLoading = () => {

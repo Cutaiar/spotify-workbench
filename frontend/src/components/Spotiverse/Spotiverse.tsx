@@ -14,7 +14,6 @@ export interface ISpotiverseProps {
   spotifyUser?: ISpotifyUser;
 }
 
-
 interface Axes {
   //these should be a type of all the options we have for graphing
   // i.e. valence, loudness, tempo, etc...
@@ -31,7 +30,7 @@ export const Spotiverse: React.FC<ISpotiverseProps> = (props) => {
   const [selectedSong, setSelectedSong] = useState<Song>(null);
   const [isLoading, setLoading] = useState(true);
 
-  const [axisChange, setAxisChange] = useState("") //this will be a boolean flip that we will listen too in three engine.tsx, every time it changes we should update particles locations
+  const [axisChange, setAxisChange] = useState(null) //this will be a boolean flip that we will listen too in three engine.tsx, every time it changes we should update particles locations
 
 
   // on mount (and when token changes), kickoff a request for the users liked songs
