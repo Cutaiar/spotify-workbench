@@ -35,11 +35,11 @@ interface IAxesProps {
     setAxisChange: (b: AxisObject) => void;
     axisChange: AxisObject;
     axis: string;
-    marginTop: any //type this ass css thingy to lazy to do for now tho
+    defaultValue;
 }
 
 export const Axis = (props: IAxesProps) => {
-    const {setAxisChange, marginTop, axisChange, axis} = props
+    const {setAxisChange, axisChange, axis, defaultValue} = props
     const classes = useStyles();
 
 
@@ -54,13 +54,13 @@ export const Axis = (props: IAxesProps) => {
     const menuOptionsContent = dropdownOptions.map(item => <MenuItem value={item.value}>{item.value}</MenuItem>);
 
 
-    return <div style={{ marginTop: marginTop }} className={"axis-style"}>
+    return <div className={"axis-style"}>
         <FormControl className={classes.formControl}>
             <InputLabel id="demo-simple-select-label">{axis}</InputLabel>
             <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
-                value={"Tempo"}
+                defaultValue={defaultValue}
                 onChange={onAxisChange}
             >
                 {menuOptionsContent}

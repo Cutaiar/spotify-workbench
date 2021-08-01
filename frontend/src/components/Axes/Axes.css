@@ -1,5 +1,11 @@
-.axis-style {
+.AxesWrapper {
     position: absolute;
-    color: white;
-    background-color: white;
+    padding: 16px;
+    margin: 16px;
+    border-radius: 20px;
+    background-color: #1D8954;
+}
+
+.axis-style {
+
 }
