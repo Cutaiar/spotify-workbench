@@ -7,11 +7,21 @@ import { generateRandomSongsAsync } from "../../spotifyDataAccess/";
 import { ThreeEngine } from "../ThreeEngine/ThreeEngine";
 import { SongList } from "../SongList/SongList"
 import { TestData } from "./test-data"
-
+import { Axis } from "../Axes/Axes"
 import "./Spotiverse.css"
 
 export interface ISpotiverseProps {
   spotifyUser?: ISpotifyUser;
+}
+
+
+interface Axes {
+  //these should be a type of all the options we have for graphing
+  // i.e. valence, loudness, tempo, etc...
+  X: any;
+  Y: any;
+  Z: any;
+
 }
 
 
@@ -20,6 +30,8 @@ export const Spotiverse: React.FC<ISpotiverseProps> = (props) => {
   const appState = useContext(AppStateContext);
   const [selectedSong, setSelectedSong] = useState<Song>(null);
   const [isLoading, setLoading] = useState(true);
+
+  const [axisChange, setAxisChange] = useState(false) //this will be a boolean flip that we will listen too in three engine.tsx, every time it changes we should update particles locations
 
 
   // on mount (and when token changes), kickoff a request for the users liked songs
@@ -40,11 +52,22 @@ export const Spotiverse: React.FC<ISpotiverseProps> = (props) => {
     setSelectedSong(song)
   }
 
+  const renderAxis = () => {
+    return (
+      <>
+        <Axis marginTop={0} axisChange={axisChange} setAxisChange={setAxisChange} />
+        <Axis marginTop={100} axisChange={axisChange} setAxisChange={setAxisChange} />
+        <Axis marginTop={200} axisChange={axisChange} setAxisChange={setAxisChange} />
+      </>
+    )
+  }
+
   return (
     <>
       {isLoading ? <div>Loading....</div> : (
         <div style={{ display: "flex", flexDirection: "row", height: "87vh" }}>
-          <ThreeEngine songs={songs} setSong={setSong} song={selectedSong} />
+          {renderAxis()}
+          <ThreeEngine axisChange={axisChange} songs={songs} setSong={setSong} song={selectedSong} />
           <div style={{ color: "white" }} className="songListWrapper">
             <SongList song={selectedSong} setSong={setSong} songs={songs} />
           </div>

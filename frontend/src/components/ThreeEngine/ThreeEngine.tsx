@@ -47,7 +47,8 @@ const makeAxis = (color: string | number | THREE.Color, axis: Axis, includeNegat
 export interface IThreeEngineProps {
   songs: Song[];
   setSong: (song: Song) => void;
-  song: Song
+  song: Song;
+  axisChange: boolean;
 }
 /**
  * A component encapsulating the THREE powered spotiverse engine
@@ -64,10 +65,16 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
   const controls = useRef((ev: any) => { })
   const [lastParticle, setLastParticle] = useState<Particle>();
   const mouse = useRef<THREE.Vector2>(new THREE.Vector2(0, 0))
-  const { songs, setSong, song } = props;
+  const { songs, setSong, song, axisChange } = props;
   // const [selectedParticles, setSelectedParticles] = useState<Particle[]>([]); //this should be a queue that would be so much easier but im lazy
   const [particles, setParticles] = useState([])
   const [currentSelectedParticle, setCurrentSelectedParticle] = useState<Particle>()
+
+  useEffect(() => {
+    //this is where you will shine andrew
+    // in this use effect you will implement the logic that shall update the particles
+    // god speed good sir
+  }, [axisChange])
 
   useEffect(() => {
     const particle = particles.find(p => p.song === song)
