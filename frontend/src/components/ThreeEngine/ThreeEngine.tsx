@@ -165,6 +165,9 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
       setCurrentSelectedParticle(particle)
       particle.select()
     }
+    else {
+      currentSelectedParticle?.deselect()
+    }
   }, [song])
 
   useEffect(() => {
