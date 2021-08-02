@@ -42,11 +42,11 @@ export const Accordion = (props: AccordionProps) => {
             }
             else {
                 setActive(false)
+                setSong(null)
                 setPlaying(false)
                 setHeight("0px")
                 setRotate("accordion__icon")
             }
-
         }
         else {
             setActive(false)
