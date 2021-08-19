@@ -8,7 +8,7 @@ import { generateRandomSongs } from "../../spotifyDataAccess";
 import { render } from "@testing-library/react";
 import { BufferGeometry } from "three";
 import { MeshLine, MeshLineMaterial } from "three.meshline";
-import useDoubleClick from 'use-double-click';
+// import useDoubleClick from 'use-double-click';
 
 const SIMULATION_SCALE: number = 100;
 
@@ -81,14 +81,14 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
   const [particles, setParticles] = useState([])
   const [currentSelectedParticle, setCurrentSelectedParticle] = useState<Particle>()
 
-  useDoubleClick({
-    onDoubleClick: e => {
-      currentSelectedParticle?.deselect()
-      setSong(null)
-    },
-    ref: rootRef,
-    latency: 250
-  });
+  // useDoubleClick({
+  //   onDoubleClick: e => {
+  //     currentSelectedParticle?.deselect()
+  //     setSong(null)
+  //   },
+  //   ref: rootRef,
+  //   latency: 250
+  // });
 
   const regenerateTargetsAccordingToSongs = () => {
     // TODO scale values if necessary [0,1]
