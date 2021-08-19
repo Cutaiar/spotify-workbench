@@ -26,10 +26,6 @@ export const Home: React.FC<HomeProps> = (props: HomeProps) => {
     fadeInImages();
   }, [props.spotifyUser, songs]);
 
-  useEffect(() => {
-    console.log(songs)
-  }, [])
-
   return (
     <>
       <div style={{ height: "100%", overflow: "hidden" }}>
