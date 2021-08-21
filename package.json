@@ -21,7 +21,5 @@
         "eslint": "^7.19.0",
         "eslint-plugin-react": "^7.22.0"
     },
-    "dependencies": {
-        "use-double-click": "^1.0.5"
-    }
+    "dependencies": {}
 }
