@@ -42,8 +42,6 @@ export const Accordion = (props: AccordionProps) => {
                 setPlaying(true)
                 setHeight(`${content.current.scrollHeight}px`)
                 setRotate("accordion__icon rotate")
-                const y = content.current.getBoundingClientRect().top + window.pageYOffset - 10;
-
                 content.current.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
             }
             else {
