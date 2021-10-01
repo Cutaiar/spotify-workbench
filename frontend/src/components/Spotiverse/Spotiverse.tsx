@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AppStateContext } from "../../context/appStateContext";
 import { Song } from "../../models/song";
-import { getUsersLikedSongs } from "../../spotifyDataAccess";
+import { getUsersLikedSongs, getTopGlobalSongs } from "../../spotifyDataAccess";
 import { ISpotifyUser } from "../App/App";
 import { generateRandomSongsAsync } from "../../spotifyDataAccess/";
 import { ThreeEngine } from "../ThreeEngine/ThreeEngine";
@@ -24,8 +24,8 @@ interface Axes {
 }
 
 
-export const Spotiverse: React.FC<ISpotiverseProps> = (props) => {
-  const [songs, setSongs] = useState<Song[]>([]);
+export const Spotiverse: React.FC<ISpotiverseProps> = (props) => { 
+  const [songs, setSongs] = useState<Song[]>(getTopGlobalSongs);
   const appState = useContext(AppStateContext);
   const [selectedSong, setSelectedSong] = useState<Song>(null);
   const [isLoading, setLoading] = useState(true);
@@ -63,7 +63,6 @@ export const Spotiverse: React.FC<ISpotiverseProps> = (props) => {
 
   return (
     <>
-      {isLoading ? <div>Loading....</div> : (
         <div style={{ display: "flex", flexDirection: "row", height: "87vh" }}>
           {renderAxis()}
           <ThreeEngine axisChange={axisChange} songs={songs} setSong={setSong} song={selectedSong} />
@@ -71,7 +70,7 @@ export const Spotiverse: React.FC<ISpotiverseProps> = (props) => {
             <SongList song={selectedSong} setSong={setSong} songs={songs} />
           </div>
         </div>
-      )}
+      
     </>
   );
 };

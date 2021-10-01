@@ -10,3 +10,5 @@ from "./generateRandomSongs";
 
 export { generateBillboardSongs }
 from "./generateBillboardSongs"
+
+export { getTopGlobalSongs} from "./getTopGlobalSongs"

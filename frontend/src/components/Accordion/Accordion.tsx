@@ -19,10 +19,14 @@ export const Accordion = (props: AccordionProps) => {
     const [height, setHeight] = useState("0px");
     const [rotate, setRotate] = useState("accordion__icon");
     const [playing, setPlaying] = useState(false);
-    const [audio] = useState(new Audio(props.songLink));
+    const [audio, setAudio] = useState(new Audio(props.songLink));
     const { setSong, song, selectedSong } = props
     const [innerChange, setInnerChange] = useState(false)
     const content = useRef(null);
+
+    useEffect(() => {
+        setAudio(new Audio(props.songLink))
+    }, [props.song])
 
     useEffect(() => {
         playing ? audio.play() : audio.pause();
