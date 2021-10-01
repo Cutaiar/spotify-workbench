@@ -25,9 +25,7 @@ export const Accordion = (props: AccordionProps) => {
     const content = useRef(null);
 
     useEffect(() => {
-        console.log("dis happening")
-        if (playing)
-            setAudio(new Audio(props.songLink))
+        setAudio(new Audio(props.songLink))
     }, [props.song])
 
     useEffect(() => {
@@ -44,6 +42,7 @@ export const Accordion = (props: AccordionProps) => {
                 setPlaying(true)
                 setHeight(`${content.current.scrollHeight}px`)
                 setRotate("accordion__icon rotate")
+                const y = content.current.getBoundingClientRect().top + window.pageYOffset - 10;
 
                 content.current.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
             }

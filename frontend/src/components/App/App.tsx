@@ -236,7 +236,6 @@ const App: React.FC = (props) => {
       </div>
     );
   };
-
   return (
     <Router>
       {getNavbar()}
