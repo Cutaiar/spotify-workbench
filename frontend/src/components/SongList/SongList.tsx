@@ -26,6 +26,10 @@ export const SongList: React.FC<ISongList & ISongListProps> = (props: ISongListP
     const [showList, setShowList] = useState(false);//???????
     const { setSong } = props
 
+    useEffect(() => {
+        setSongs(props.songs)
+    }, [props.songs])
+
     const getSongList = () => {
         return songs.map((song, i) => (
             <Accordion

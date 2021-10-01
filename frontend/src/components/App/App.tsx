@@ -56,6 +56,11 @@ const App: React.FC = (props) => {
       content: <Home spotifyUser={spotifyUser} />,
     },
     {
+      name: "spotiverse",
+      displayName: "Spotiverse",
+      content: <Spotiverse spotifyUser={spotifyUser} />,
+    },
+    {
       name: "wallpaper",
       displayName: "Wallpaper",
       content: <GenerateWallpaper spotifyUser={spotifyUser} />,
@@ -64,11 +69,6 @@ const App: React.FC = (props) => {
       name: "runplaylist",
       displayName: "Running Playlists",
       content: <RunPlaylist spotifyUser={spotifyUser} />,
-    },
-    {
-      name: "spotiverse",
-      displayName: "Spotiverse",
-      content: <Spotiverse spotifyUser={spotifyUser} />,
     },
     {
       name: "chart",

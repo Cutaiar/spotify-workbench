@@ -146,6 +146,75 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
     });
   };
 
+
+  const addParticle = (particle: Particle) => {
+    particles.push(particle);
+    particleGroup.add(particle.mesh);
+  };
+
+
+  const smartRegenerateSongParticleRelations = ():
+  | NodeJS.Timeout
+  | undefined => {
+  let c = 0;
+  let particlesDeleteTimer: NodeJS.Timeout | undefined = undefined;
+  // Reassign current particles new songs
+  for (let p of particles) {
+    p.song = songs[c];
+    //p.color = s.color(255, 0, 0) // Debug colors
+    c++;
+    if (c === songs.length) {
+      break; // If there are less new songs than points
+    }
+  }
+
+  // There are more new songs than points
+  if (c < songs.length) {
+    // console.log("Smart Regenerate: adding new songs...")
+    for (let i = c; i < songs.length; i++) {
+      let n = new Particle(
+        1,
+        Array(3).fill(SIMULATION_SCALE / 2),
+        songs[i]
+      );
+      //n.color = new THREE.Color(0,255,0) // Debug colors
+      addParticle(n);
+    }
+  } else {
+    // Fade out any remaining particles
+    // console.log("Smart Regenerate: removing old songs...")
+    let toRemove = new Array<Particle>();
+    for (let i = c; i < particles.length; i++) {
+      let p = particles[i];
+      toRemove.push(p);
+      p.intendedSize = 0;
+    }
+
+    // wait half a second for any deleted particles to fade out, then delete
+    // particlesDeleteTimer = setTimeout(() => {
+    //   particles = particles.slice(0, c);
+    //   toRemove.forEach((p) => particleGroup.remove(p.mesh));
+    // }, 500);
+    //need to fix that i guess
+  }
+  regenerateTargetsAccordingToSongs();
+  return particlesDeleteTimer;
+};
+
+  const [scene, setScene] = useState(new THREE.Scene());
+  const [particleGroup, setParticleGroup] = useState(new THREE.Object3D()); //should be moved to state
+
+  const [camera, setCamera] = useState(new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
+  ));
+
+  useEffect(() => {
+    smartRegenerateSongParticleRelations()
+  }, [songs])
+
   useEffect(() => {
     console.log(axisChange)
     if (axisChange) {
@@ -177,15 +246,7 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
   }, [lastParticle])
 
   useEffect(() => {
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000
-    );
 
-    let particleGroup = new THREE.Object3D(); //should be moved to state
     // let canvas: HTMLCanvasElement;
 
     // let raycaster: THREE.Raycaster;
@@ -259,59 +320,6 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
     orbitControls.maxDistance = 500;
     orbitControls.maxPolarAngle = Math.PI / 2;
     //this.controls.update(); //controls.update() must be called after any manual changes to the camera's transform
-
-    const addParticle = (particle: Particle) => {
-      particles.push(particle);
-      particleGroup.add(particle.mesh);
-    };
-
-    const smartRegenerateSongParticleRelations = ():
-      | NodeJS.Timeout
-      | undefined => {
-      let c = 0;
-      let particlesDeleteTimer: NodeJS.Timeout | undefined = undefined;
-      // Reassign current particles new songs
-      for (let p of particles) {
-        p.song = songs[c];
-        //p.color = s.color(255, 0, 0) // Debug colors
-        c++;
-        if (c === songs.length) {
-          break; // If there are less new songs than points
-        }
-      }
-
-      // There are more new songs than points
-      if (c < songs.length) {
-        // console.log("Smart Regenerate: adding new songs...")
-        for (let i = c; i < songs.length; i++) {
-          let n = new Particle(
-            1,
-            Array(3).fill(SIMULATION_SCALE / 2),
-            songs[i]
-          );
-          //n.color = new THREE.Color(0,255,0) // Debug colors
-          addParticle(n);
-        }
-      } else {
-        // Fade out any remaining particles
-        // console.log("Smart Regenerate: removing old songs...")
-        let toRemove = new Array<Particle>();
-        for (let i = c; i < particles.length; i++) {
-          let p = particles[i];
-          toRemove.push(p);
-          p.intendedSize = 0;
-        }
-
-        // wait half a second for any deleted particles to fade out, then delete
-        // particlesDeleteTimer = setTimeout(() => {
-        //   particles = particles.slice(0, c);
-        //   toRemove.forEach((p) => particleGroup.remove(p.mesh));
-        // }, 500);
-        //need to fix that i guess
-      }
-      regenerateTargetsAccordingToSongs();
-      return particlesDeleteTimer;
-    };
 
     const regenerateTargetsToCenterForLoading = () => {
       let pad = SIMULATION_SCALE * 0.1;
@@ -406,7 +414,7 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
       window.removeEventListener("keydown", keydownHandler);
     };
 
-  }, [songs]);
+  }, []);
 
   // const handleMouseMove = (e: React.PointerEvent<HTMLDivElement>) => {
   //   // e.preventDefault()
