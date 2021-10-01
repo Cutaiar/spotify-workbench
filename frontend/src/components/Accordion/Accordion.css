@@ -22,6 +22,28 @@
     transition: background-color 100ms;
 }
 
+@keyframes border-pulsate {
+    0% {
+        border-color: coral;
+        ;
+    }
+    50% {
+        border-color: rgba(255, 127, 80, 0.282);
+    }
+    100% {
+        border-color: coral;
+        ;
+    }
+}
+
+.true {
+    /* border-image: linear-gradient(45deg, turquoise, greenyellow) 1;
+    border: 1px solid;
+    border-color: coral */
+    border: 1px solid coral;
+    animation: border-pulsate 2s infinite;
+}
+
 
 /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
 
