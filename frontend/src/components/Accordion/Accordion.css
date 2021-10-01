@@ -17,9 +17,32 @@
     padding: 18px;
     display: flex;
     align-items: center;
+    scroll-margin-top: 10px;
     border: none;
     outline: none;
     transition: background-color 100ms;
+}
+
+@keyframes border-pulsate {
+    0% {
+        border-color: coral;
+        ;
+    }
+    50% {
+        border-color: rgba(255, 127, 80, 0.597);
+    }
+    100% {
+        border-color: coral;
+        ;
+    }
+}
+
+.true {
+    /* border-image: linear-gradient(45deg, turquoise, greenyellow) 1;
+    border: 1px solid;
+    border-color: coral */
+    border: 1px solid coral;
+    animation: border-pulsate 2s infinite;
 }
 
 
