@@ -17,7 +17,6 @@
     padding: 18px;
     display: flex;
     align-items: center;
-    scroll-margin-top: 10px;
     border: none;
     outline: none;
     transition: background-color 100ms;
