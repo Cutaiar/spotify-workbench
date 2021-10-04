@@ -28,6 +28,13 @@ import { Experiments } from "../Experiments/Experiments";
 import { PinNavButton } from "../Experiments/PinNavButton";
 import { spotifyPrimaryGreen } from "../../common/style";
 
+// TODO use window location instead
+const regex = /#$/;
+const redirectUri = window.location.href.replace(regex, ""); // TODO Fix not working from non home authorizations in local testing
+const connectToSpotifyLink = `${authEndpoint}?client_id=${clientId}&redirect_uri=${encodeURIComponent(
+  redirectUri
+)}&scope=${scopes.join("%20")}&response_type=token&show_dialog=true`;
+
 export interface ISpotifyUser {
   userObject?: SpotifyApi.CurrentUsersProfileResponse;
   token: string;
@@ -197,10 +204,6 @@ const App: React.FC = (props) => {
         {!spotifyUser?.userObject && (
           <Button
             onClick={() => {
-              const redirectUri = window.location.href;
-              const connectToSpotifyLink = `${authEndpoint}?client_id=${clientId}&redirect_uri=${encodeURIComponent(
-                redirectUri
-              )}&scope=${scopes.join("%20")}&response_type=token&show_dialog=true`;
               window.location.href = connectToSpotifyLink;
             }}
             label={"Connect to spotify"}
