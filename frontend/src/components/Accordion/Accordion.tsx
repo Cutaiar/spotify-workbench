@@ -42,7 +42,9 @@ export const Accordion = (props: AccordionProps) => {
                 setPlaying(true)
                 setHeight(`${content.current.scrollHeight}px`)
                 setRotate("accordion__icon rotate")
-                content.current.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
+                setTimeout(() => {
+                     content.current.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' }) }
+                     , 100)
             }
             else {
                 setActive(false)
@@ -70,7 +72,7 @@ export const Accordion = (props: AccordionProps) => {
 
 
     return (
-        <div ref={content} id={props.id} className="accordion__section" >
+        <div ref={content} id={props.id} className={`accordion__section sec${active}`} >
             <button className={`accordion ${active}`} onClick={toggleAccordion} >
                 {props.mainItem}
                 < Chevron className={`${rotate}`} width={10} fill={"#777"} />
