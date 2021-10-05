@@ -23,6 +23,7 @@ export const Accordion = (props: AccordionProps) => {
     const { setSong, song, selectedSong } = props
     const [innerChange, setInnerChange] = useState(false)
     const content = useRef(null);
+    const ref = useRef(null)
 
     useEffect(() => {
         setAudio(new Audio(props.songLink))
@@ -43,8 +44,9 @@ export const Accordion = (props: AccordionProps) => {
                 setHeight(`${content.current.scrollHeight}px`)
                 setRotate("accordion__icon rotate")
                 setTimeout(() => {
-                     content.current.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' }) }
-                     , 100)
+                     ref.current.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' }) 
+                    }
+                     , 150)
             }
             else {
                 setActive(false)
@@ -72,6 +74,8 @@ export const Accordion = (props: AccordionProps) => {
 
 
     return (
+        <>
+        {active ?  <div ref={ref} style={{paddingBottom: 1}}></div> : null}
         <div ref={content} id={props.id} className={`accordion__section sec${active}`} >
             <button className={`accordion ${active}`} onClick={toggleAccordion} >
                 {props.mainItem}
@@ -86,6 +90,7 @@ export const Accordion = (props: AccordionProps) => {
                 </div>
             </div>
         </div>
+        </>
     );
 }
 
