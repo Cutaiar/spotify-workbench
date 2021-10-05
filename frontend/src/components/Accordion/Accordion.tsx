@@ -75,7 +75,7 @@ export const Accordion = (props: AccordionProps) => {
 
     return (
         <>
-        {active ?  <div ref={ref} style={{paddingBottom: 1}}></div> : null}
+        {active ?  <div ref={ref} style={{paddingBottom: 2}}></div> : null}
         <div ref={content} id={props.id} className={`accordion__section sec${active}`} >
             <button className={`accordion ${active}`} onClick={toggleAccordion} >
                 {props.mainItem}
