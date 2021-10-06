@@ -1,15 +1,38 @@
 .trackTitle {
     color: white;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    margin-bottom: 0px;
+    text-align: left;
+}
+
+.trackArtist {
+    margin-top: 5px;
+    color: gray;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-align: left;
+    font-style: italic;
+    padding-top: 0px;
+}
+
+.subcontentText {
+    color: white
 }
 
 .trackImage {
     width: 50px
 }
 
+.songInfo {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding-left: 15px;
+}
+
 .mainContent {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
     width: 80%;
 }
 

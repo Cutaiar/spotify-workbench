@@ -34,20 +34,23 @@ export const SongList: React.FC<ISongList & ISongListProps> = (props: ISongListP
         return songs.map((song, i) => (
             <Accordion
                 song={song} setSong={setSong} selectedSong={props.song}
-                id={i.toString()} mainItem={item(song.name, song.imageLink)} subItem={getSubContent(song.artist, song.popularity)} songLink={song.previewUrl} />
+                id={i.toString()} mainItem={item(song.name, song.artist, song.imageLink)} subItem={getSubContent(song.artist, song.popularity)} songLink={song.previewUrl} />
         ))
     }
 
 
-    const item = (content: string, url: string) => {
+    const item = (name: string, artist: string, url: string) => {
         return <div className="mainContent">
-            <p className="trackTitle">{content}</p>
             <img className="trackImage" src={url} />
+            <div className="songInfo" >
+                <p className="trackTitle">{name}</p>
+                <p className="trackArtist">{artist}</p>
+            </div>
         </div>
     }
 
     const getSubContent = (artist: string, popularity: number) => {
-        return <p className="trackTitle">{artist + " has a populatiry of " + popularity}</p>
+        return <p className="subcontentText">{artist + " has a populatiry of " + popularity}</p>
     }
     return (
         <>

@@ -302,7 +302,7 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
 
     // setup renderer
     var renderer = new THREE.WebGLRenderer() //.setSize(window.innerWidth / 10 * 7, window.innerHeight / 100 * 87);
-    renderer.setSize(window.innerWidth / 10 * 7, window.innerHeight / 100 * 87);
+    renderer.setSize(window.innerWidth / 10 * 7.5, window.innerHeight / 100 * 87);
     rootRef.current.appendChild(renderer.domElement);
 
 

@@ -14,8 +14,9 @@
     background-color: black;
     color: #444;
     cursor: pointer;
-    padding: 18px;
+    /* padding: 18px; */
     display: flex;
+    padding-left: 0px;
     align-items: center;
     border: none;
     outline: none;
