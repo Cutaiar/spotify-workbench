@@ -59,9 +59,9 @@ export const Spotiverse: React.FC<ISpotiverseProps> = (props) => {
   const renderAxis = () => {
     return (
       <div className="AxesWrapper">
-        <Axis axisChange={axisChange} setAxisChange={setAxisChange} axis="X" defaultValue="speechiness" />
-        <Axis axisChange={axisChange} setAxisChange={setAxisChange} axis="Y" defaultValue="acousticness" />
-        <Axis axisChange={axisChange} setAxisChange={setAxisChange} axis="Z" defaultValue="valence" />
+        <Axis axisChange={axisChange} color="#0b933b" setAxisChange={setAxisChange} axis="X" defaultValue="speechiness" />
+        <Axis axisChange={axisChange} color="#229d9d" setAxisChange={setAxisChange} axis="Y" defaultValue="acousticness" />
+        <Axis axisChange={axisChange} color="#c7e7a1" setAxisChange={setAxisChange} axis="Z" defaultValue="valence" />
       </div>
     )
   }

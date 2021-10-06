@@ -12,7 +12,7 @@ const featuresInstance = randomFeatures();
 const dropdownOptions = [];
 
 Object.keys(featuresInstance).forEach((k) => {
-  dropdownOptions.push({ value: k, label: k });
+    dropdownOptions.push({ value: k, label: k });
 });
 
 interface AxisObject {
@@ -36,10 +36,12 @@ interface IAxesProps {
     axisChange: AxisObject;
     axis: string;
     defaultValue;
+    color: string
 }
 
+
 export const Axis = (props: IAxesProps) => {
-    const {setAxisChange, axisChange, axis, defaultValue} = props
+    const { setAxisChange, axisChange, axis, defaultValue } = props
     const classes = useStyles();
 
 
@@ -52,19 +54,17 @@ export const Axis = (props: IAxesProps) => {
     }
 
     const menuOptionsContent = dropdownOptions.map(item => <MenuItem value={item.value}>{item.value}</MenuItem>);
-
-
-    return <div className={"axis-style"}>
-        <FormControl className={classes.formControl}>
-            <InputLabel id="demo-simple-select-label">{axis}</InputLabel>
-            <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                defaultValue={defaultValue}
-                onChange={onAxisChange}
-            >
-                {menuOptionsContent}
-            </Select>
+    return <div style={{backgroundColor: props.color }} className={"axis-style"}>
+        <FormControl fullWidth>
+                <Select
+                    disableUnderline
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    defaultValue={defaultValue}
+                    onChange={onAxisChange}
+                >
+                    {menuOptionsContent}
+                </Select>
         </FormControl>
     </div>
 }
