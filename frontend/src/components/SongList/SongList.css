@@ -8,7 +8,6 @@
 
 .trackArtist {
     margin-top: 5px;
-    color: gray;
     text-overflow: ellipsis;
     overflow: hidden;
     text-align: left;
