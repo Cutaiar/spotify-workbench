@@ -72,7 +72,6 @@ export const Accordion = (props: AccordionProps) => {
     }
 
 
-
     return (
         <>
         {active ?  <div ref={ref} style={{paddingBottom: 2}}></div> : null}
