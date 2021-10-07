@@ -259,7 +259,7 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
       mouse.x = (ev.clientX / renderer.domElement.clientWidth) * 2 - 1;
 
       //NOTE: I believe we need to add the radius of the particles but am not sure, adding 20 kinda works
-      mouse.y = - ((ev.clientY - renderer.domElement.offsetTop + 20) / renderer.domElement.height) * 2 + 1;
+      mouse.y = - ((ev.clientY - renderer.domElement.offsetTop + 17) / renderer.domElement.height) * 2 + 1;
 
       raycaster.setFromCamera(mouse, camera);
       var intersects = raycaster.intersectObjects([particleGroup], true);
