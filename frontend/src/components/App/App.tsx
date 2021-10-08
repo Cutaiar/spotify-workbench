@@ -92,6 +92,15 @@ const App: React.FC = (props) => {
     setSpotifyUser(user);
   };
 
+  const configureScroll = (str) => {
+    if (str === "spotiverse") {
+      document.body.style.overflow = "hidden"
+    }
+    else {
+      document.body.style.overflow = ""
+    }
+  }
+
   // TODO this relies on the the auth url being opened in the same window, causing the page
   // to reload, and this component to remount.
   React.useEffect(() => {
@@ -139,7 +148,7 @@ const App: React.FC = (props) => {
             </PinNavButton>
           ) : (
             <NavLink key={i} className="navlink-style p-p-1" to={`/${r.name}`}>
-              <Button className={"p-button-info"}>{r.displayName}</Button>
+              <Button onClick={configureScroll} className={"p-button-info"}>{r.displayName}</Button>
             </NavLink>
           );
         })}
