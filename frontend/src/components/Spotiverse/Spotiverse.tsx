@@ -32,12 +32,6 @@ export const Spotiverse: React.FC<ISpotiverseProps> = (props) => {
 
   const [axisChange, setAxisChange] = useState(null) //this will be a boolean flip that we will listen too in three engine.tsx, every time it changes we should update particles locations
 
-  useEffect(() => {
-    //TO-DO make overlflow not hidden when leaving spotiverse
-    document.body.style.overflow = "hidden"
-
-  }, [])
-
   // on mount (and when token changes), kickoff a request for the users liked songs
   // update state when they come down
   useEffect(() => {
