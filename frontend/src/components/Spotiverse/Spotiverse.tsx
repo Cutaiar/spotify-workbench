@@ -50,6 +50,7 @@ export const Spotiverse: React.FC<ISpotiverseProps> = (props) => {
     setSelectedSong(song)
   }
 
+
   const renderAxis = () => {
     return (
       <div className="AxesWrapper">
@@ -62,7 +63,7 @@ export const Spotiverse: React.FC<ISpotiverseProps> = (props) => {
 
   return (
     <>
-        <div style={{ display: "flex", flexDirection: "row", height: "87vh" }}>
+        <div style={{ display: "flex", flexDirection: "row", height: "92vh" }}>
           {renderAxis()}
           <ThreeEngine axisChange={axisChange} songs={songs} setSong={setSong} song={selectedSong} />
           <div style={{ color: "white" }} className="songListWrapper">
