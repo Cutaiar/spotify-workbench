@@ -37,7 +37,7 @@ export const Home: React.FC<HomeProps> = (props: HomeProps) => {
         >
           {songs.length && <Images listItems={songs} />}
         </div>
-        <div className={"fadeIn"} style={{ position: "absolute", top: 100 }}>
+        <div className={"fadeIn"} style={{ position: "absolute", top: 50 }}>
           <p
             style={{
               ...style.titleBox,

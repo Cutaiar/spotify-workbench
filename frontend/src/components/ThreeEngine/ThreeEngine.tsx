@@ -8,7 +8,7 @@ import { generateRandomSongs } from "../../spotifyDataAccess";
 import { render } from "@testing-library/react";
 import { BufferGeometry } from "three";
 import { MeshLine, MeshLineMaterial } from "three.meshline";
-
+import "./ThreeEngine.css"
 
 const SIMULATION_SCALE: number = 100;
 
@@ -301,9 +301,10 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
     // setup scene and camera
 
     // setup renderer
-    var renderer = new THREE.WebGLRenderer() //.setSize(window.innerWidth / 10 * 7, window.innerHeight / 100 * 87);
+    var renderer = new THREE.WebGLRenderer({alpha: true}) //.setSize(window.innerWidth / 10 * 7, window.innerHeight / 100 * 87);
     renderer.setSize(window.innerWidth / 10 * 7.5, window.innerHeight / 100 * 87);
     rootRef.current.appendChild(renderer.domElement);
+    renderer.setClearColor( 0x000000, 0 ); // the default
 
 
     // soft white light
@@ -424,7 +425,7 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
 
   // (
   //style={{ width: "70%", background: "background: linear-gradient(to top, rgb(2, 2, 2), rgb(182, 10, 0) 20%, rgb(2, 2, 2) 100%)" }}>
-  return <div onPointerDown={e => controls.current(e)}>
+  return <div className="canvasBackground" onPointerDown={e => controls.current(e)}>
     <div ref={rootRef} />
   </div>;
 };

@@ -148,7 +148,7 @@ const App: React.FC = (props) => {
             </PinNavButton>
           ) : (
             <NavLink key={i} className="navlink-style p-p-1" to={`/${r.name}`}>
-              <Button onClick={configureScroll} className={"p-button-info"}>{r.displayName}</Button>
+              <Button onClick={() => configureScroll(r.name)} className={"p-button-info"}>{r.displayName}</Button>
             </NavLink>
           );
         })}
@@ -161,7 +161,7 @@ const App: React.FC = (props) => {
         className={
           " navbar-style p-d-flex p-flex-row p-jc-start p-ai-center p-p-3"
         }
-        style={{ width: "100%", height: "15%" }}
+        style={{ width: "100%", height: "8%" }}
       >
         <div className="p-m-3">
           <Visualizer width={90} height={90} />
