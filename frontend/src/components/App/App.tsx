@@ -23,10 +23,11 @@ import { Visualizer } from "../Visualizer/Visualizer";
 import { ChartPage } from "../ChartPage/ChartPage";
 import { Spotiverse } from "../Spotiverse/Spotiverse";
 
-import { AppStateProvider, IAppState } from "../../context/appStateContext";
 import { Experiments } from "../Experiments/Experiments";
 import { PinNavButton } from "../Experiments/PinNavButton";
 import { spotifyPrimaryGreen } from "../../common/style";
+import { StravaPage } from "../Strava/StravaPage";
+import { AuthProvider } from "../../context/authContext";
 
 // TODO use window location instead
 const regex = /#$/;
@@ -79,6 +80,11 @@ const App: React.FC = (props) => {
       name: "experiments",
       displayName: "Experiments",
       content: <Experiments />,
+    },
+    {
+      name: "strava",
+      displayName: "Strava",
+      content: <StravaPage />,
     },
   ];
 
@@ -246,17 +252,19 @@ const App: React.FC = (props) => {
     );
   };
   return (
-    <Router>
-      {getNavbar()}
-      <Switch>
-        {routes.map((r, i) => {
-          return <Route path={`/${r.name}`}>{r.content}</Route>;
-        })}
-        <Route exact path="/">
-          <Redirect to="/home" />
-        </Route>
-      </Switch>
-    </Router>
+    <AuthProvider>
+      <Router>
+        {getNavbar()}
+        <Switch>
+          {routes.map((r, i) => {
+            return <Route path={`/${r.name}`}>{r.content}</Route>;
+          })}
+          <Route exact path="/">
+            <Redirect to="/home" />
+          </Route>
+        </Switch>
+      </Router>
+    </AuthProvider>
   );
 };
 export { App };
