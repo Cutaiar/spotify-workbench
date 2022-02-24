@@ -1,4 +1,5 @@
-const { REACT_APP_CLIENT_ID, REACT_APP_CLIENT_SECRET } = process.env;
+const { REACT_APP_STRAVA_CLIENT_ID, REACT_APP_STRAVA_CLIENT_SECRET } =
+  process.env;
 
 export const getParamValues = (url) => {
   return url
@@ -15,10 +16,13 @@ export const cleanUpAuthToken = (str) => {
   return str.split("&")[1].slice(5);
 };
 
-export const testAuthGetter = async (authTok) => {
+/**
+ * Trade the strava API an auth token for an access and refresh token
+ */
+export const getAccessAndRefreshTokens = async (authToken: string) => {
   try {
     const response = await fetch(
-      `https://www.strava.com/api/v3/oauth/token?client_id=${REACT_APP_CLIENT_ID}&client_secret=${REACT_APP_CLIENT_SECRET}&code=${authTok}&grant_type=authorization_code`,
+      `https://www.strava.com/api/v3/oauth/token?client_id=${REACT_APP_STRAVA_CLIENT_ID}&client_secret=${REACT_APP_STRAVA_CLIENT_SECRET}&code=${authToken}&grant_type=authorization_code`,
       { method: "POST" }
     );
     return response;
