@@ -4,7 +4,7 @@
     "sourceMap": true,
     "strictNullChecks": false,
     "module": "esnext",
-    "jsx": "react",
+    "jsx": "react-jsx",
     "target": "es5",
     "allowJs": true,
     "moduleResolution": "node",

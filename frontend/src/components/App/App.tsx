@@ -23,10 +23,14 @@ import { Visualizer } from "../Visualizer/Visualizer";
 import { ChartPage } from "../ChartPage/ChartPage";
 import { Spotiverse } from "../Spotiverse/Spotiverse";
 
-import { AppStateProvider, IAppState } from "../../context/appStateContext";
 import { Experiments } from "../Experiments/Experiments";
 import { PinNavButton } from "../Experiments/PinNavButton";
 import { spotifyPrimaryGreen } from "../../common/style";
+import { StravaPage } from "../Strava/StravaPage";
+import { AuthProvider } from "../../context/authContext";
+
+import { StravaRedirect } from "../Strava/StravaRedirect";
+import { AccountBadge } from "../AccountBadge";
 
 // TODO use window location instead
 const regex = /#$/;
@@ -80,6 +84,11 @@ const App: React.FC = (props) => {
       displayName: "Experiments",
       content: <Experiments />,
     },
+    {
+      name: "strava",
+      displayName: "Strava",
+      content: <StravaPage />,
+    },
   ];
 
   const logout = () => {
@@ -94,12 +103,11 @@ const App: React.FC = (props) => {
 
   const configureScroll = (str) => {
     if (str === "spotiverse") {
-      document.body.style.overflow = "hidden"
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
     }
-    else {
-      document.body.style.overflow = ""
-    }
-  }
+  };
 
   // TODO this relies on the the auth url being opened in the same window, causing the page
   // to reload, and this component to remount.
@@ -148,7 +156,12 @@ const App: React.FC = (props) => {
             </PinNavButton>
           ) : (
             <NavLink key={i} className="navlink-style p-p-1" to={`/${r.name}`}>
-              <Button onClick={() => configureScroll(r.name)} className={"p-button-info"}>{r.displayName}</Button>
+              <Button
+                onClick={() => configureScroll(r.name)}
+                className={"p-button-info"}
+              >
+                {r.displayName}
+              </Button>
             </NavLink>
           );
         })}
@@ -171,44 +184,12 @@ const App: React.FC = (props) => {
         {getNavigation()}
 
         {spotifyUser?.userObject && (
-          <div
-            className="namecard p-d-flex p-ai-center p-ml-auto"
-            style={{
-              background: "#191919",
-              borderRadius: 8,
-              position: "relative",
-            }}
-          >
-            <img
-              alt=""
-              src={spotifyUser.userObject.images[0].url}
-              width={50}
-              height={50}
-              style={{ borderTopLeftRadius: 8, borderBottomLeftRadius: 8 }}
-            ></img>
-            <p
-              style={{
-                fontSize: 12,
-                color: "#dcdfe1",
-                overflow: "hidden",
-                whiteSpace: "nowrap",
-                paddingLeft: 14,
-                paddingRight: 30,
-              }}
-            >
-              {spotifyUser.userObject.display_name}
-            </p>
-            <img
-              alt=""
-              src={"/Spotify_Icon_RGB_Green.png"}
-              width={14}
-              height={14}
-              style={{ position: "absolute", top: "5px", right: "5px" }}
-            ></img>
-            <button className="logout" onClick={logout}>
-              Log out
-            </button>
-          </div>
+          <AccountBadge
+            imageUrl={spotifyUser.userObject.images[0].url}
+            name={spotifyUser.userObject.display_name}
+            onClickLogout={logout}
+            accountType="spotify"
+          />
         )}
         {!spotifyUser?.userObject && (
           <Button
@@ -246,17 +227,23 @@ const App: React.FC = (props) => {
     );
   };
   return (
-    <Router>
-      {getNavbar()}
-      <Switch>
-        {routes.map((r, i) => {
-          return <Route path={`/${r.name}`}>{r.content}</Route>;
-        })}
-        <Route exact path="/">
-          <Redirect to="/home" />
-        </Route>
-      </Switch>
-    </Router>
+    <AuthProvider>
+      <Router>
+        {getNavbar()}
+        <Switch>
+          {routes.map((r, i) => {
+            return <Route path={`/${r.name}`}>{r.content}</Route>;
+          })}
+          <Route path="/redirect">
+            <StravaRedirect redirectPageName="strava" />
+          </Route>
+
+          <Route exact path="/">
+            <Redirect to="/home" />
+          </Route>
+        </Switch>
+      </Router>
+    </AuthProvider>
   );
 };
 export { App };

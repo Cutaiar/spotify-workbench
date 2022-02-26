@@ -11,4 +11,3 @@ const defaultAppState: IAppState = {
 export const AppStateContext = React.createContext(defaultAppState);
 
 export const AppStateProvider = AppStateContext.Provider;
-export const AppStateConsumer = AppStateContext.Consumer;
