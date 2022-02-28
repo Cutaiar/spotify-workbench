@@ -4,15 +4,11 @@
     "sourceMap": true,
     "strictNullChecks": false,
     "module": "esnext",
-    "jsx": "react-jsx",
-    "target": "es5",
+    "jsx": "react",
+    "target": "es6",
     "allowJs": true,
     "moduleResolution": "node",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -23,8 +19,5 @@
     "noEmit": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": [
-    "./src/",
-    "webpack.config.js"
-  ]
+  "include": ["./src/", "webpack.config.js"]
 }

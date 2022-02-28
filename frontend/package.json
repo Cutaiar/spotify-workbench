@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@mapbox/polyline": "^1.1.1",
     "@material-ui/core": "^4.12.3",
+    "@react-leaflet/core": "*",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
@@ -14,16 +16,18 @@
     "chart.js": "^2.9.4",
     "classnames": "^2.2.6",
     "eslint-plugin-react-hooks": "^4.2.0",
-    "grommet": "^2.19.1",
+    "grommet": "^2.21.0",
     "jquery": "^3.5.1",
+    "leaflet": "^1.7.1",
     "merge-images": "^2.0.0",
     "primeflex": "*",
     "primeicons": "*",
-    "primereact": "*",
+    "primereact": "^7.2.1",
     "query-string": "^6.13.6",
-    "react": "^16.14.0",
+    "react": "^17",
     "react-beautiful-dnd": "^13.0.0",
-    "react-dom": "^16.14.0",
+    "react-dom": "^17",
+    "react-leaflet": "*",
     "react-pin-input": "^1.0.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^4",
@@ -36,6 +40,7 @@
   "devDependencies": {
     "@types/chart.js": "^2.9.30",
     "@types/jest": "^26.0.15",
+    "@types/leaflet": "^1.7.9",
     "@types/react": "^16.14.11",
     "css-loader": "^4.3.0",
     "source-map-loader": "^1.1.2",
@@ -55,16 +60,9 @@
       "react-app"
     ]
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not op_mini all"
+  ]
 }
