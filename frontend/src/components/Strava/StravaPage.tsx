@@ -1,8 +1,9 @@
-import { Button, Grid } from "grommet";
+import { Box, Button } from "grommet";
 import * as React from "react";
 import { AthleteResponse, default as stravaApi, Strava } from "strava-v3";
 import { useAuth } from "../../context/authContext";
 import { AccountBadge } from "../AccountBadge";
+import { style } from "./StravaPage.style";
 
 export const StravaPage: React.FC = () => {
   const [athlete, setAthlete] = React.useState<AthleteResponse>();
@@ -48,11 +49,15 @@ export const StravaPage: React.FC = () => {
   }
 
   return (
-    <Grid>
-      <Button label="Connect to Strava" onClick={handleConnectClick} />
-      <div style={{ color: "white" }}>
-        {JSON.stringify(athlete ?? "Loading Athlete", undefined, 2)}
-      </div>
+    <Box align="center" justify="center" fill style={style.root}>
+      {!athlete && (
+        <Button
+          primary
+          label="Connect to Strava"
+          onClick={handleConnectClick}
+        />
+      )}
+
       {athlete && (
         <AccountBadge
           name={athlete.firstname + " " + athlete.lastname}
@@ -61,7 +66,7 @@ export const StravaPage: React.FC = () => {
           onClickLogout={() => {}}
         />
       )}
-    </Grid>
+    </Box>
   );
 };
 
