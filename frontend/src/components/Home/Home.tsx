@@ -1,30 +1,31 @@
 import React, { useEffect, useState } from "react";
 import "primeflex/primeflex.css";
 import { Images, fadeInImages } from "../GenerateWallpaper/GenerateWallpaper";
-import { ISpotifyUser } from "../App/App";
 import {
   getUsersLikedSongs,
   generateBillboardSongs,
 } from "../../spotifyDataAccess";
 import * as style from "./Home.style";
+import { useAuth } from "../../context/authContext";
 
-interface HomeProps {
-  spotifyUser: ISpotifyUser;
-}
+interface HomeProps {}
 
 export const Home: React.FC<HomeProps> = (props: HomeProps) => {
   const [songs, setSongs] = useState(generateBillboardSongs());
 
+  const [auth, setToken] = useAuth();
+  const spotifyToken = auth.tokens.spotify;
+
   useEffect(() => {
     (async () => {
-      const songs = await getUsersLikedSongs(props?.spotifyUser?.token, 500);
+      const songs = await getUsersLikedSongs(spotifyToken, 500);
       const imageList = songs.map((song) => {
         return song.imageLink;
       });
       setSongs(imageList);
     })();
     fadeInImages();
-  }, [props.spotifyUser, songs]);
+  }, [spotifyToken, songs]);
 
   return (
     <>
