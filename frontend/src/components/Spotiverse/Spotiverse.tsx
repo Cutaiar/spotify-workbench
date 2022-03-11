@@ -1,18 +1,16 @@
-import React, { useContext, useEffect, useState } from "react";
-import { AppStateContext } from "../../context/appStateContext";
+import React, { useEffect, useState } from "react";
+
 import { Song } from "../../models/song";
-import { getUsersLikedSongs, getTopGlobalSongs } from "../../spotifyDataAccess";
-import { ISpotifyUser } from "../App/App";
-import { generateRandomSongsAsync } from "../../spotifyDataAccess/";
+import { getUsersLikedSongs } from "../../spotifyDataAccess";
+
 import { ThreeEngine } from "../ThreeEngine/ThreeEngine";
 import { SongList } from "../SongList/SongList";
-import { TestData } from "./test-data";
+
 import { Axis } from "../Axes/Axes";
 import "./Spotiverse.css";
+import { useAuth } from "../../context/authContext";
 
-export interface ISpotiverseProps {
-  spotifyUser?: ISpotifyUser;
-}
+export interface ISpotiverseProps {}
 
 export const Spotiverse: React.FC<ISpotiverseProps> = (props) => {
   const [songs, setSongs] = useState<Song[]>([]);
@@ -21,18 +19,21 @@ export const Spotiverse: React.FC<ISpotiverseProps> = (props) => {
 
   const [axisChange, setAxisChange] = useState(null); //this will be a boolean flip that we will listen too in three engine.tsx, every time it changes we should update particles locations
 
+  const [auth, setToken] = useAuth();
+  const spotifyToken = auth.tokens.spotify;
+
   // on mount (and when token changes), kickoff a request for the users liked songs
   // update state when they come down
   useEffect(() => {
-    if (props.spotifyUser?.token) getLikedSongs();
-  }, [props.spotifyUser?.token]);
+    const getLikedSongs = async () => {
+      //this could be run as a web worker when we start up the app
+      const songs = await getUsersLikedSongs(spotifyToken);
+      setSongs(songs);
+      setLoading(false);
+    };
 
-  const getLikedSongs = async () => {
-    //this could be run as a web worker when we start up the app
-    const songs = await getUsersLikedSongs(props?.spotifyUser?.token);
-    setSongs(songs);
-    setLoading(false);
-  };
+    if (spotifyToken) getLikedSongs();
+  }, [spotifyToken]);
 
   const setSong = (song: Song) => {
     setSelectedSong(song);

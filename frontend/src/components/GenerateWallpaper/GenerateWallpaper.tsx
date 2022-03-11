@@ -2,12 +2,9 @@ import React from "react";
 import "./GenerateWallpaper.css";
 import axios from "axios";
 import { Button } from "primereact/button";
-import { ISpotifyUser } from "../App/App";
+import { useAuth } from "../../context/authContext";
 
-interface IGenerateWallpaperProps {
-  spotifyUser: ISpotifyUser;
-}
-
+interface IGenerateWallpaperProps {}
 
 interface ImageListProps {
   listItems: any[];
@@ -19,21 +16,18 @@ interface IGenerateWallpaperState {
   wallpaperResponse: string;
 }
 
-
 const delay = (ms: number) => {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};
 
 export const fadeInImages = async () => {
-  let images = document.querySelectorAll('.image-thumbnail');
+  let images = document.querySelectorAll(".image-thumbnail");
   for (let i = 0; i < images.length; i++) {
     const img = images[i];
-    img.classList.add('loaded');
+    img.classList.add("loaded");
     await delay(10);
   }
-}
-
+};
 
 const GenerateWallpaper: React.FC<IGenerateWallpaperProps> = (props) => {
   const initialState: IGenerateWallpaperState = {
@@ -41,9 +35,11 @@ const GenerateWallpaper: React.FC<IGenerateWallpaperProps> = (props) => {
     showWallpaper: false,
     wallpaperResponse: undefined,
   };
-  const [state, setState] = React.useState<IGenerateWallpaperState>(
-    initialState
-  );
+  const [state, setState] =
+    React.useState<IGenerateWallpaperState>(initialState);
+
+  const [auth, setToken] = useAuth();
+  const spotifyToken = auth.tokens.spotify;
 
   const onGenerateClick = () => {
     let promises = [];
@@ -53,7 +49,7 @@ const GenerateWallpaper: React.FC<IGenerateWallpaperProps> = (props) => {
     for (let i = responseLength; i < 10; i++) {
       promises.push(
         axios.get("https://api.spotify.com/v1/me/tracks", {
-          headers: { Authorization: "Bearer " + props.spotifyUser?.token },
+          headers: { Authorization: "Bearer " + spotifyToken },
           params: {
             offset: i * 50,
             limit: 50,
@@ -103,10 +99,6 @@ const GenerateWallpaper: React.FC<IGenerateWallpaperProps> = (props) => {
     setState({ ...state, wallpaperResponse: wallpaper });
   };
 
-
-
-
-
   return (
     <div className="GenerateWallpaperRoot">
       <h1>Album Cover Wallpaper Generator</h1>
@@ -114,7 +106,7 @@ const GenerateWallpaper: React.FC<IGenerateWallpaperProps> = (props) => {
         <Button
           className="p-button-primary p-m-2"
           onClick={onGenerateClick}
-          disabled={!props.spotifyUser?.token}
+          disabled={!spotifyToken}
           icon="pi pi-images"
           label="Get Images from Spotify"
         ></Button>
@@ -145,21 +137,20 @@ const GenerateWallpaper: React.FC<IGenerateWallpaperProps> = (props) => {
   );
 };
 
-
 export const Images: React.FC<ImageListProps> = (props: ImageListProps) => {
-
-
-
   const images = props.listItems.map((item, i) => {
-    return <img alt="" src={item} className="image-thumbnail" height="50px" key={i} />;
-  })
+    return (
+      <img
+        alt=""
+        src={item}
+        className="image-thumbnail"
+        height="50px"
+        key={i}
+      />
+    );
+  });
 
-  return <>{images}</>
-
-}
-
-
-
-
+  return <>{images}</>;
+};
 
 export { GenerateWallpaper };

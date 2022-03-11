@@ -1,62 +1,72 @@
-import { Song } from "../../models/song"
-import { ISpotifyUser } from "../App/App";
+import { Song } from "../../models/song";
+import { ISpotifyUser } from "../SpotifyConnectButton/SpotifyConnectButton";
 import React, { useEffect, useState } from "react";
-// import { ProgressBar } from '@bit/primefaces.primereact.progressbar'
-import { Button } from "primereact/button";
-import { Accordion } from "../Accordion/Accordion"
-import "./SongList.css"
+
+import { Accordion } from "../Accordion/Accordion";
+import "./SongList.css";
 
 interface ISongListProps {
-    songs: Song[];
-    song: Song;
-    setSong: (song: Song) => void;
+  songs: Song[];
+  song: Song;
+  setSong: (song: Song) => void;
 }
 
 interface ISongList {
-    spotifyUser?: ISpotifyUser;
+  spotifyUser?: ISpotifyUser;
 }
 interface ISongListState {
-    songs: Song[];
-    showList: boolean;
+  songs: Song[];
+  showList: boolean;
 }
 
-export const SongList: React.FC<ISongList & ISongListProps> = (props: ISongListProps) => {
-    const [songs, setSongs] = useState(props.songs);
-    // const [song, setSong] = useState(props.song)
-    const [showList, setShowList] = useState(false);//???????
-    const { setSong } = props
+export const SongList: React.FC<ISongList & ISongListProps> = (
+  props: ISongListProps
+) => {
+  const [songs, setSongs] = useState(props.songs);
+  // const [song, setSong] = useState(props.song)
+  const [showList, setShowList] = useState(false); //???????
+  const { setSong } = props;
 
-    useEffect(() => {
-        setSongs(props.songs)
-    }, [props.songs])
+  useEffect(() => {
+    setSongs(props.songs);
+  }, [props.songs]);
 
-    const getSongList = () => {
-        return songs.map((song, i) => (
-            <Accordion
-                song={song} setSong={setSong} selectedSong={props.song}
-                id={i.toString()} mainItem={item(song.name, song.artist, song.imageLink)} subItem={getSubContent(song.artist, song.popularity)} songLink={song.previewUrl} />
-        ))
-    }
+  const getSongList = () => {
+    return songs.map((song, i) => (
+      <Accordion
+        song={song}
+        setSong={setSong}
+        selectedSong={props.song}
+        id={i.toString()}
+        mainItem={item(song.name, song.artist, song.imageLink)}
+        subItem={getSubContent(song.artist, song.popularity)}
+        songLink={song.previewUrl}
+      />
+    ));
+  };
 
-
-    const item = (name: string, artist: string, url: string) => {
-        return <div className="mainContent">
-            <img className="trackImage" src={url} />
-            <div className="songInfo" >
-                <p className="trackTitle">{name}</p>
-                <p className="trackArtist">{artist}</p>
-            </div>
-        </div>
-    }
-
-    const getSubContent = (artist: string, popularity: number) => {
-        return <p className="subcontentText">{artist + " has a populatiry of " + popularity}</p>
-    }
+  const item = (name: string, artist: string, url: string) => {
     return (
-        <>
-            <div >
-                {getSongList()}
-            </div>
-        </>
-    )
-}
+      <div className="mainContent">
+        <img className="trackImage" src={url} />
+        <div className="songInfo">
+          <p className="trackTitle">{name}</p>
+          <p className="trackArtist">{artist}</p>
+        </div>
+      </div>
+    );
+  };
+
+  const getSubContent = (artist: string, popularity: number) => {
+    return (
+      <p className="subcontentText">
+        {artist + " has a populatiry of " + popularity}
+      </p>
+    );
+  };
+  return (
+    <>
+      <div>{getSongList()}</div>
+    </>
+  );
+};
