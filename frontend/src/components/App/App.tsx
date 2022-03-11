@@ -10,10 +10,6 @@ import {
   NavLink,
 } from "react-router-dom";
 
-import hash from "../../common/hash";
-import { authEndpoint, clientId, scopes } from "../../common/config";
-import SpotifyWebApi from "spotify-web-api-js";
-
 import { Button } from "primereact/button";
 
 import { Home } from "../Home/Home";
@@ -25,25 +21,15 @@ import { Spotiverse } from "../Spotiverse/Spotiverse";
 
 import { Experiments } from "../Experiments/Experiments";
 import { PinNavButton } from "../Experiments/PinNavButton";
-import { spotifyPrimaryGreen } from "../../common/style";
 import { StravaPage } from "../Strava/StravaPage";
 import { AuthProvider } from "../../context/authContext";
 
 import { StravaRedirect } from "../Strava/StravaRedirect";
 import { AccountBadge } from "../AccountBadge";
-
-// TODO use window location instead
-const regex = /#$/;
-const redirectUri = window.location.href.replace(regex, ""); // TODO Fix not working from non home authorizations in local testing
-const connectToSpotifyLink = `${authEndpoint}?client_id=${clientId}&redirect_uri=${encodeURIComponent(
-  redirectUri
-)}&scope=${scopes.join("%20")}&response_type=token&show_dialog=true`;
-
-export interface ISpotifyUser {
-  userObject?: SpotifyApi.CurrentUsersProfileResponse;
-  token: string;
-  spotifyApi: SpotifyWebApi.SpotifyWebApiJs;
-}
+import {
+  ConnectButton,
+  ISpotifyUser,
+} from "../SpotifyConnectButton/SpotifyConnectButton";
 
 const App: React.FC = (props) => {
   const [spotifyUser, setSpotifyUser] = React.useState<ISpotifyUser>(undefined);
@@ -57,17 +43,17 @@ const App: React.FC = (props) => {
     {
       name: "home",
       displayName: "Home",
-      content: <Home spotifyUser={spotifyUser} />,
+      content: <Home />,
     },
     {
       name: "spotiverse",
       displayName: "Spotiverse",
-      content: <Spotiverse spotifyUser={spotifyUser} />,
+      content: <Spotiverse />,
     },
     {
       name: "wallpaper",
       displayName: "Wallpaper",
-      content: <GenerateWallpaper spotifyUser={spotifyUser} />,
+      content: <GenerateWallpaper />,
     },
     {
       name: "runplaylist",
@@ -77,7 +63,7 @@ const App: React.FC = (props) => {
     {
       name: "chart",
       displayName: "Chart",
-      content: <ChartPage spotifyUser={spotifyUser} />,
+      content: <ChartPage />,
     },
     {
       name: "experiments",
@@ -108,43 +94,6 @@ const App: React.FC = (props) => {
       document.body.style.overflow = "";
     }
   };
-
-  // TODO this relies on the the auth url being opened in the same window, causing the page
-  // to reload, and this component to remount.
-  React.useEffect(() => {
-    let _token: string = (hash as any).access_token;
-    if (!_token) {
-      // check if there already is a token stored, try to use it ...
-      let prev_token = window.localStorage.getItem("user_token");
-      if (prev_token && prev_token != "undefined") {
-        _token = prev_token;
-      }
-    }
-    if (_token) {
-      const user: ISpotifyUser = {
-        userObject: undefined,
-        token: _token,
-        spotifyApi: new SpotifyWebApi(),
-      };
-      user.spotifyApi.setAccessToken(_token);
-      setSpotifyUser(user);
-
-      // kickoff me request
-      (async () => {
-        try {
-          const value = await user.spotifyApi.getMe();
-          const userWithUserObject = { ...user, userObject: value };
-          setSpotifyUser(userWithUserObject);
-          window.localStorage.setItem("user_token", _token); //set local storage to remember token thru refresh
-          console.log("Set spotify user object");
-          return;
-        } catch (error) {
-          console.error("Issue fetching user object from spotify api. ", error);
-          return;
-        }
-      })();
-    }
-  }, []);
 
   const getNavigation = () => {
     return (
@@ -192,36 +141,11 @@ const App: React.FC = (props) => {
           />
         )}
         {!spotifyUser?.userObject && (
-          <Button
-            onClick={() => {
-              window.location.href = connectToSpotifyLink;
+          <ConnectButton
+            onConnect={(user) => {
+              setSpotifyUser(user);
             }}
-            label={"Connect to spotify"}
-            style={{
-              display: "flex",
-              flexFlow: "row-reverse",
-              justifyContent: "center",
-              alignItems: "center",
-              background: spotifyPrimaryGreen,
-            }}
-            className={`p-ml-auto p-button-rounded`}
-          >
-            <div
-              style={{
-                paddingRight: 10,
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <img
-                alt=""
-                src={"/Spotify_Icon_RGB_Black.png"}
-                width={20}
-                height={20}
-              ></img>
-            </div>
-          </Button>
+          />
         )}
       </div>
     );

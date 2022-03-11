@@ -2,7 +2,7 @@ import { Button } from "primereact/button";
 import { ListBox } from "primereact/listbox";
 import * as React from "react";
 import { getImageForSpotifyTracks } from "../../common/util";
-import { ISpotifyUser } from "../App/App";
+import { ISpotifyUser } from "../SpotifyConnectButton/SpotifyConnectButton";
 import "primeflex/primeflex.css";
 import { Slider } from "primereact/slider";
 import { InputText } from "primereact/inputtext";
