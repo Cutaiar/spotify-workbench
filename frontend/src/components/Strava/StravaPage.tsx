@@ -1,4 +1,4 @@
-import { Box, Button, Spinner } from "grommet";
+import { Box, Button, Select, Spinner } from "grommet";
 import * as React from "react";
 import {
   AthleteResponse,
@@ -12,11 +12,37 @@ import { style } from "./StravaPage.style";
 import * as polylineUtil from "@mapbox/polyline";
 import { MapContainer, TileLayer, Polyline } from "react-leaflet";
 
+import {
+  LineChart,
+  Line,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  ResponsiveContainer,
+} from "recharts";
+
 export const StravaPage: React.FC = () => {
   const [athlete, setAthlete] = React.useState<AthleteResponse>();
   const [polyline, setPolyline] = React.useState<any>();
+  const [data, setData] = React.useState<any>();
   const [error, setError] = React.useState(false);
   const [authState, setTokens] = useAuth();
+
+  const [value, setValue] = React.useState("distance");
+
+  const streamOptions = [
+    "time",
+    "distance",
+    "heartrate",
+    "altitude",
+    "latlng",
+    "velocity_smooth",
+    "cadence",
+    "watts",
+    "temp",
+    "moving",
+    "grade_smooth",
+  ];
 
   const strava = React.useMemo(() => {
     if (authState.tokens.strava) {
@@ -57,6 +83,44 @@ export const StravaPage: React.FC = () => {
           const firstActivity = await strava.activities.get({ id: firstId });
           const encodedPolyline = firstActivity.map.polyline;
           const decodedPolyLine = polylineUtil.decode(encodedPolyline);
+          //--
+          //todo: how to use this stream against spotify timestamps
+          const llstream = await strava.streams.activity({
+            types: streamOptions,
+            id: firstId,
+          });
+
+          // const data = [
+          //   {
+          //     name: "index",
+          //     time: 400,
+          //     distance: 2400,
+          //     altitude: 2400,
+          //     heartrate: 100,
+          //   },
+          // ];
+          const mapData = (streams: any[]) => {
+            const final = [];
+
+            const firstStream = streams[0];
+
+            firstStream.data.forEach((element, i) => {
+              const obj = { name: i, [firstStream["type"]]: element };
+              for (let j = 1; j < streams.length; j++) {
+                obj[streams[j]["type"]] = streams[j]["data"][i];
+              }
+              final.push(obj);
+            });
+            return final;
+          };
+
+          const data = mapData(llstream);
+
+          setData(data);
+          console.log("llstrameam:");
+          console.dir(llstream);
+
+          //--
           setPolyline(decodedPolyLine);
         } catch (error) {
           console.log(error);
@@ -96,13 +160,32 @@ export const StravaPage: React.FC = () => {
     // todo calc zoom based on size of poly line
 
     return (
-      <MapContainer center={center} zoom={13} style={{ height: "100%" }}>
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      // <MapContainer center={center} zoom={13} style={{ height: "100%" }}>
+      //   <TileLayer
+      //     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      //     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      //   />
+      //   {polyline && <Polyline positions={polyline} />}
+      // </MapContainer>
+
+      <Box align="center" justify="center" fill style={style.root}>
+        <ResponsiveContainer width={"80%"} height="80%">
+          <LineChart data={data}>
+            <XAxis label={"time"} stroke="darkgray" tick={false} />
+            <YAxis label={value} dataKey={value} stroke="darkgray" />
+            <Line type="monotone" dataKey={value} stroke="red" dot={false} />
+          </LineChart>
+        </ResponsiveContainer>
+
+        <Select
+          options={streamOptions}
+          disabled={streamOptions.filter((option) => {
+            return !Object.keys(data[0]).includes(option);
+          })}
+          value={value}
+          onChange={({ option }) => setValue(option)}
         />
-        {polyline && <Polyline positions={polyline} />}
-      </MapContainer>
+      </Box>
     );
   };
 

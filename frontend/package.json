@@ -32,6 +32,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "^4",
     "react-transition-group": "^4.4.1",
+    "recharts": "^2.1.9",
     "spotify-web-api-js": "^1.5.1",
     "strava-v3": "^2.1.0",
     "three": "^0.125.2",
