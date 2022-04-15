@@ -36,7 +36,6 @@ export const StravaPage: React.FC = () => {
       const fetchAthelete = async () => {
         try {
           const payload = await strava.athlete.get({});
-          console.log(payload);
           setAthlete(payload);
           setError(false);
         } catch (error) {
@@ -120,12 +119,24 @@ export const StravaPage: React.FC = () => {
 
       {athlete && (
         <>
-          <AccountBadge
-            name={athlete.firstname + " " + athlete.lastname}
-            imageUrl={athlete.profile}
-            accountType="strava"
-            onClickLogout={() => {}}
-          />
+          {/* todo: pointer events none makes the account badge not clickable */}
+          <Box
+            fill
+            align="end"
+            style={{
+              position: "absolute",
+              zIndex: 10000,
+              pointerEvents: "none",
+            }}
+            pad="medium"
+          >
+            <AccountBadge
+              name={athlete.firstname + " " + athlete.lastname}
+              imageUrl={athlete.profile}
+              accountType="strava"
+              onClickLogout={() => {}}
+            />
+          </Box>
           {Map()}
         </>
       )}

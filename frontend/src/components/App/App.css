@@ -12,14 +12,3 @@ body {
   background-color: black;
   color: white;
 }
-
-.logout {
-  display: none;
-  position: absolute;
-  bottom: -12px;
-  width: 100%;
-}
-
-.namecard:hover .logout {
-  display: block;
-}

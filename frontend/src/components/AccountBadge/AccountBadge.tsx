@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Avatar, Box, Button, Drop, Text } from "grommet";
 
 export interface IAccountBadgeProps {
   imageUrl: string;
@@ -19,44 +20,49 @@ const iconUrls: Record<AccountType, string> = {
  */
 export const AccountBadge: React.FC<IAccountBadgeProps> = (props) => {
   const { imageUrl, name, accountType, onClickLogout } = props;
+
+  const [showDrop, setShowDrop] = React.useState(false);
+  const targetRef = React.useRef();
+
+  const ServiceTag = () => (
+    <img
+      alt={iconUrls[accountType]}
+      src={iconUrls[accountType]}
+      width={14}
+      height={14}
+      style={{ position: "relative", bottom: 15, left: 35 }}
+    ></img>
+  );
+
   return (
-    <div
-      className="namecard p-d-flex p-ai-center p-ml-auto"
-      style={{
-        background: "#191919",
-        borderRadius: 8,
-        position: "relative",
-      }}
-    >
-      <img
-        alt=""
-        src={imageUrl}
-        width={50}
-        height={50}
-        style={{ borderTopLeftRadius: 8, borderBottomLeftRadius: 8 }}
-      ></img>
-      <p
-        style={{
-          fontSize: 12,
-          color: "#dcdfe1",
-          overflow: "hidden",
-          whiteSpace: "nowrap",
-          paddingLeft: 14,
-          paddingRight: 30,
-        }}
+    <>
+      <div
+        style={{ height: 48 }}
+        onClick={() => setShowDrop(!showDrop)}
+        ref={targetRef}
       >
-        {name}
-      </p>
-      <img
-        alt=""
-        src={iconUrls[accountType]}
-        width={14}
-        height={14}
-        style={{ position: "absolute", top: "5px", right: "5px" }}
-      ></img>
-      <button className="logout" onClick={onClickLogout}>
-        Log out
-      </button>
-    </div>
+        <Avatar src={imageUrl}></Avatar>
+        {ServiceTag()}
+      </div>
+      {showDrop && (
+        <Drop
+          target={targetRef.current}
+          onClickOutside={() => setShowDrop(false)}
+        >
+          <Box pad="small">
+            <Box align="center" justify="center" fill={false}>
+              <div style={{ height: 48 }}>
+                <Avatar src={imageUrl}></Avatar>
+                {ServiceTag()}
+              </div>
+              <Text size="small">{name}</Text>
+              <Button size="small" onClick={onClickLogout}>
+                Log out
+              </Button>
+            </Box>
+          </Box>
+        </Drop>
+      )}
+    </>
   );
 };
