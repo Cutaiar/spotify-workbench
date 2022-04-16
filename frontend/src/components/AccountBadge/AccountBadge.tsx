@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Avatar, Box, Button, Drop, Text } from "grommet";
+import { Logout } from "grommet-icons";
 
 export interface IAccountBadgeProps {
   imageUrl?: string;
@@ -48,18 +49,41 @@ export const AccountBadge: React.FC<IAccountBadgeProps> = (props) => {
         <Drop
           target={targetRef.current ?? undefined}
           onClickOutside={() => setShowDrop(false)}
+          align={{ top: "bottom" }}
         >
-          <Box pad="small">
-            <Box align="center" justify="center" fill={false}>
+          <Box
+            align="center"
+            justify="center"
+            fill={false}
+            pad="small"
+            round="xsmall"
+            background="dark-1"
+            gap="medium"
+          >
+            <Box align="start" justify="start" direction="row" gap="small">
               <div style={{ height: 48 }}>
                 <Avatar src={imageUrl}></Avatar>
                 {ServiceTag()}
               </div>
-              <Text size="small">{name}</Text>
-              <Button size="small" onClick={onClickLogout}>
-                Log out
-              </Button>
+              <Box
+                align="start"
+                justify="start"
+                direction="column"
+                gap="xxsmall"
+              >
+                <Text size="medium">{name}</Text>
+                <Text size="small" color="dark-4">
+                  {accountType}
+                </Text>
+              </Box>
             </Box>
+            <Button
+              size="medium"
+              label="Log out"
+              icon={<Logout size="medium" />}
+              onClick={onClickLogout}
+              fill
+            />
           </Box>
         </Drop>
       )}
