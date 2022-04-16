@@ -11,7 +11,7 @@ export type Song = {
   popularity: number;
   imageLink: string;
   id: string;
-  previewUrl: string;
+  previewUrl: string | null;
   features: Features;
   artistInfo: Artist;
 };

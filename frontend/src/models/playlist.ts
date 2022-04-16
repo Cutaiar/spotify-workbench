@@ -1,6 +1,6 @@
 import { Song } from "./song";
 
-export class Playlist {
+export interface Playlist {
   id: string;
   name: string;
   description: string;

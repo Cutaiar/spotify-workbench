@@ -1,16 +1,13 @@
 import { Box, Button, Spinner } from "grommet";
 import * as React from "react";
-import {
-  AthleteResponse,
-  ActivitiesRoutes,
-  default as stravaApi,
-  Strava,
-} from "strava-v3";
+import { AthleteResponse } from "strava-v3";
 import { useAuth } from "../../context/authContext";
 import { AccountBadge } from "../AccountBadge";
 import { style } from "./StravaPage.style";
 import * as polylineUtil from "@mapbox/polyline";
 import { MapContainer, TileLayer, Polyline } from "react-leaflet";
+
+const StravaAPI = require("strava-v3");
 
 export const StravaPage: React.FC = () => {
   const [athlete, setAthlete] = React.useState<AthleteResponse>();
@@ -26,7 +23,7 @@ export const StravaPage: React.FC = () => {
         client_secret: process.env.REACT_APP_STRAVA_CLIENT_SECRET,
         redirect_uri: "http://localhost:3000/redirect",
       };
-      const strava = new stravaApi.client(config.access_token);
+      const strava = new StravaAPI.client(config.access_token);
       return strava;
     }
   }, [authState.tokens.strava]);

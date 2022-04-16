@@ -2,7 +2,7 @@ import * as React from "react";
 import { Avatar, Box, Button, Drop, Text } from "grommet";
 
 export interface IAccountBadgeProps {
-  imageUrl: string;
+  imageUrl?: string;
   name: string;
   accountType: AccountType;
   onClickLogout: () => void;

@@ -38,7 +38,7 @@ export const StravaRedirect: React.FC<IStravaRedirectProps> = (props) => {
 
           // Post Request to Strava (with AuthToken) which returns Refresh Token and and Access Token
           const response = await getAccessAndRefreshTokens(stravaAuthToken);
-          const responseJson = await response.json();
+          const responseJson = await response?.json();
           const accessToken = responseJson.access_token;
 
           // TODO exchange gives us more than just an access token.

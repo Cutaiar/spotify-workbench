@@ -1,3 +1,6 @@
+// This file is the wild wild west. Tried to enable strict but don't feel like fix it yet
+// @ts-nocheck
+
 import React, { useRef, useState, useMemo, useEffect } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
@@ -8,12 +11,14 @@ import { generateRandomSongs } from "../../spotifyDataAccess";
 import { render } from "@testing-library/react";
 import { BufferGeometry } from "three";
 import { MeshLine, MeshLineMaterial } from "three.meshline";
-import "./ThreeEngine.css"
+import "./ThreeEngine.css";
 
 const SIMULATION_SCALE: number = 100;
 
 enum Axis {
-  X, Y, Z
+  X,
+  Y,
+  Z,
 }
 
 interface AxisObject {
@@ -27,32 +32,41 @@ const axisFeatures = new Map<string, string>([
   ["z", "valence"],
 ]);
 
-
-const makeAxis = (color: string | number | THREE.Color, axis: Axis, includeNegative: boolean) => {
+const makeAxis = (
+  color: string | number | THREE.Color,
+  axis: Axis,
+  includeNegative: boolean
+) => {
   const material = new THREE.LineBasicMaterial({
     color: color,
     opacity: 1,
     transparent: true,
-    linewidth: 1
+    linewidth: 1,
   });
   const points = [];
   switch (axis) {
     case Axis.X:
       points.push(new THREE.Vector3(SIMULATION_SCALE, 0, 0));
-      points.push(new THREE.Vector3(includeNegative ? -SIMULATION_SCALE : 0, 0, 0));
+      points.push(
+        new THREE.Vector3(includeNegative ? -SIMULATION_SCALE : 0, 0, 0)
+      );
       break;
     case Axis.Y:
       points.push(new THREE.Vector3(0, SIMULATION_SCALE, 0));
-      points.push(new THREE.Vector3(0, includeNegative ? -SIMULATION_SCALE : 0, 0));
+      points.push(
+        new THREE.Vector3(0, includeNegative ? -SIMULATION_SCALE : 0, 0)
+      );
       break;
     case Axis.Z:
       points.push(new THREE.Vector3(0, 0, SIMULATION_SCALE));
-      points.push(new THREE.Vector3(0, 0, includeNegative ? -SIMULATION_SCALE : 0));
+      points.push(
+        new THREE.Vector3(0, 0, includeNegative ? -SIMULATION_SCALE : 0)
+      );
       break;
   }
   const geometry = new THREE.BufferGeometry().setFromPoints(points);
   return new THREE.Line(geometry, material);
-}
+};
 
 // TODO this might cause extra rerenders, consider encapsulating song[] in interface
 export interface IThreeEngineProps {
@@ -73,13 +87,14 @@ ree-js-in-5-minutes-3079b8829817
  */
 export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
   const rootRef = React.useRef(undefined);
-  const controls = useRef((ev: any) => { })
+  const controls = useRef((ev: any) => {});
   const [lastParticle, setLastParticle] = useState<Particle>();
-  const mouse = useRef<THREE.Vector2>(new THREE.Vector2(0, 0))
+  const mouse = useRef<THREE.Vector2>(new THREE.Vector2(0, 0));
   const { songs, setSong, song, axisChange } = props;
   // const [selectedParticles, setSelectedParticles] = useState<Particle[]>([]); //this should be a queue that would be so much easier but im lazy
-  const [particles, setParticles] = useState([])
-  const [currentSelectedParticle, setCurrentSelectedParticle] = useState<Particle>()
+  const [particles, setParticles] = useState([]);
+  const [currentSelectedParticle, setCurrentSelectedParticle] =
+    useState<Particle>();
 
   const regenerateTargetsAccordingToSongs = () => {
     // TODO scale values if necessary [0,1]
@@ -106,9 +121,7 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
       //Feature does not need scaling
       if (!scalingConstants.get(feature)) {
         let unscaled_vals: any[] = [];
-        particles.forEach((p) =>
-          unscaled_vals.push(p.song.features[feature])
-        );
+        particles.forEach((p) => unscaled_vals.push(p.song.features[feature]));
         scaledValues.set(element, unscaled_vals);
       }
       // Feature needs scaling bc its scaling values are defined
@@ -146,148 +159,142 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
     });
   };
 
-
   const addParticle = (particle: Particle) => {
     particles.push(particle);
     particleGroup.add(particle.mesh);
   };
 
-
   const smartRegenerateSongParticleRelations = ():
-  | NodeJS.Timeout
-  | undefined => {
-  let c = 0;
-  let particlesDeleteTimer: NodeJS.Timeout | undefined = undefined;
-  // Reassign current particles new songs
-  for (let p of particles) {
-    p.song = songs[c];
-    //p.color = s.color(255, 0, 0) // Debug colors
-    c++;
-    if (c === songs.length) {
-      break; // If there are less new songs than points
-    }
-  }
-
-  // There are more new songs than points
-  if (c < songs.length) {
-    // console.log("Smart Regenerate: adding new songs...")
-    for (let i = c; i < songs.length; i++) {
-      let n = new Particle(
-        1,
-        Array(3).fill(SIMULATION_SCALE / 2),
-        songs[i]
-      );
-      //n.color = new THREE.Color(0,255,0) // Debug colors
-      addParticle(n);
-    }
-  } else {
-    // Fade out any remaining particles
-    // console.log("Smart Regenerate: removing old songs...")
-    let toRemove = new Array<Particle>();
-    for (let i = c; i < particles.length; i++) {
-      let p = particles[i];
-      toRemove.push(p);
-      p.intendedSize = 0;
+    | NodeJS.Timeout
+    | undefined => {
+    let c = 0;
+    let particlesDeleteTimer: NodeJS.Timeout | undefined = undefined;
+    // Reassign current particles new songs
+    for (let p of particles) {
+      p.song = songs[c];
+      //p.color = s.color(255, 0, 0) // Debug colors
+      c++;
+      if (c === songs.length) {
+        break; // If there are less new songs than points
+      }
     }
 
-    // wait half a second for any deleted particles to fade out, then delete
-    // particlesDeleteTimer = setTimeout(() => {
-    //   particles = particles.slice(0, c);
-    //   toRemove.forEach((p) => particleGroup.remove(p.mesh));
-    // }, 500);
-    //need to fix that i guess
-  }
-  regenerateTargetsAccordingToSongs();
-  return particlesDeleteTimer;
-};
+    // There are more new songs than points
+    if (c < songs.length) {
+      // console.log("Smart Regenerate: adding new songs...")
+      for (let i = c; i < songs.length; i++) {
+        let n = new Particle(1, Array(3).fill(SIMULATION_SCALE / 2), songs[i]);
+        //n.color = new THREE.Color(0,255,0) // Debug colors
+        addParticle(n);
+      }
+    } else {
+      // Fade out any remaining particles
+      // console.log("Smart Regenerate: removing old songs...")
+      let toRemove = new Array<Particle>();
+      for (let i = c; i < particles.length; i++) {
+        let p = particles[i];
+        toRemove.push(p);
+        p.intendedSize = 0;
+      }
+
+      // wait half a second for any deleted particles to fade out, then delete
+      // particlesDeleteTimer = setTimeout(() => {
+      //   particles = particles.slice(0, c);
+      //   toRemove.forEach((p) => particleGroup.remove(p.mesh));
+      // }, 500);
+      //need to fix that i guess
+    }
+    regenerateTargetsAccordingToSongs();
+    return particlesDeleteTimer;
+  };
 
   const [scene, setScene] = useState(new THREE.Scene());
   const [particleGroup, setParticleGroup] = useState(new THREE.Object3D()); //should be moved to state
 
-  const [camera, setCamera] = useState(new THREE.PerspectiveCamera(
-    75,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    1000
-  ));
+  const [camera, setCamera] = useState(
+    new THREE.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    )
+  );
 
   useEffect(() => {
-    smartRegenerateSongParticleRelations()
-  }, [songs])
+    smartRegenerateSongParticleRelations();
+  }, [songs]);
 
   useEffect(() => {
-    console.log(axisChange)
+    console.log(axisChange);
     if (axisChange) {
       axisFeatures.set(axisChange.name.toLowerCase(), axisChange.value);
       regenerateTargetsAccordingToSongs();
     }
-    console.log(axisFeatures)
+    console.log(axisFeatures);
     //this is where you will shine andrew
     // in this use effect you will implement the logic that shall update the particles
     // god speed good sir
-  }, [axisChange])
+  }, [axisChange]);
 
   useEffect(() => {
-    const particle = particles.find(p => p.song === song)
+    const particle = particles.find((p) => p.song === song);
     if (particle) {
       setLastParticle(currentSelectedParticle);
-      setCurrentSelectedParticle(particle)
-      particle.select()
+      setCurrentSelectedParticle(particle);
+      particle.select();
+    } else {
+      currentSelectedParticle?.deselect();
     }
-    else {
-      currentSelectedParticle?.deselect()
-    }
-  }, [song])
+  }, [song]);
 
   useEffect(() => {
     if (lastParticle) {
-      lastParticle?.deselect()
+      lastParticle?.deselect();
     }
-  }, [lastParticle])
+  }, [lastParticle]);
 
   useEffect(() => {
-
     // let canvas: HTMLCanvasElement;
 
     // let raycaster: THREE.Raycaster;
     const raycaster = new THREE.Raycaster();
 
     const selectParticle = (ev: any) => {
-      ev.preventDefault()
+      ev.preventDefault();
       var raycaster = new THREE.Raycaster();
       var mouse = new THREE.Vector2();
       mouse.x = (ev.clientX / renderer.domElement.clientWidth) * 2 - 1;
 
       //NOTE: I believe we need to add the radius of the particles but am not sure, adding 20 kinda works
-      mouse.y = - ((ev.clientY - renderer.domElement.offsetTop + 17) / renderer.domElement.height) * 2 + 1;
+      mouse.y =
+        -(
+          (ev.clientY - renderer.domElement.offsetTop + 17) /
+          renderer.domElement.height
+        ) *
+          2 +
+        1;
 
       raycaster.setFromCamera(mouse, camera);
       var intersects = raycaster.intersectObjects([particleGroup], true);
       if (intersects.length > 0) {
-        var intersection: any = (intersects.length) > 0 ? intersects[0] : null;
+        var intersection: any = intersects.length > 0 ? intersects[0] : null;
         if (intersection != null) {
-          const p: Particle = intersection.object.userData.particle
-          p.select()
-          setSong(p.song)
-          //not sure what below does but leaving it commented so I don't lose it 
+          const p: Particle = intersection.object.userData.particle;
+          p.select();
+          setSong(p.song);
+          //not sure what below does but leaving it commented so I don't lose it
           //     // this.controls.enabled = false;
           //     // let planeIntersection = this.raycaster.intersectObject(this.plane);
           //     // // this.offset.copy(planeIntersection[0].point).sub(this.plane.osition)
           //     // this.lerpVec.copy(p.intendedLoc)
-
         }
-
-
       }
-    }
-    controls.current = selectParticle
-
+    };
+    controls.current = selectParticle;
 
     // let mouse: THREE.Vector2;
 
-
     // let frameId: number = null;
-
 
     // let dragging: boolean = false;
     // let offset: THREE.Vector3;
@@ -301,11 +308,13 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
     // setup scene and camera
 
     // setup renderer
-    var renderer = new THREE.WebGLRenderer({alpha: true}) //.setSize(window.innerWidth / 10 * 7, window.innerHeight / 100 * 87);
-    renderer.setSize(window.innerWidth / 10 * 7.5, window.innerHeight / 100 * 87);
+    var renderer = new THREE.WebGLRenderer({ alpha: true }); //.setSize(window.innerWidth / 10 * 7, window.innerHeight / 100 * 87);
+    renderer.setSize(
+      (window.innerWidth / 10) * 7.5,
+      (window.innerHeight / 100) * 87
+    );
     rootRef.current.appendChild(renderer.domElement);
-    renderer.setClearColor( 0x000000, 0 ); // the default
-
+    renderer.setClearColor(0x000000, 0); // the default
 
     // soft white light
     const light = new THREE.AmbientLight(0x404040);
@@ -357,7 +366,7 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
 
     window.addEventListener("keydown", keydownHandler);
 
-    // (() => { // this is an effort to make things functional 
+    // (() => { // this is an effort to make things functional
     let gridHelper = new THREE.GridHelper(
       SIMULATION_SCALE * 2,
       50,
@@ -369,8 +378,6 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
     mat.opacity = 0.1;
     scene.add(gridHelper);
     gridHelper.position.setY(-1); // To not clip with meshlines
-
-
 
     // Particle setup
     scene.add(particleGroup);
@@ -384,17 +391,15 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
     // this.plane.material.opacity = .1;
     scene.add(plane);
 
-
-    scene.add(makeAxis(0x0b933b, Axis.X, true))
-    scene.add(makeAxis(0x229d9d, Axis.Y, false))
-    scene.add(makeAxis(0xc7e7a1, Axis.Z, true))
+    scene.add(makeAxis(0x0b933b, Axis.X, true));
+    scene.add(makeAxis(0x229d9d, Axis.Y, false));
+    scene.add(makeAxis(0xc7e7a1, Axis.Z, true));
 
     camera.position.set(120, 120, 190);
 
-
     var animate = function () {
       requestAnimationFrame(animate);
-      raycaster.setFromCamera(mouse.current, camera)
+      raycaster.setFromCamera(mouse.current, camera);
       orbitControls.update(); // required if controls.enableDamping or controls.autoRotate are set to true
       particles.forEach((p) => {
         p.update();
@@ -414,7 +419,6 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
       }
       window.removeEventListener("keydown", keydownHandler);
     };
-
   }, []);
 
   // const handleMouseMove = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -425,7 +429,12 @@ export const ThreeEngine: React.FC<IThreeEngineProps> = (props) => {
 
   // (
   //style={{ width: "70%", background: "background: linear-gradient(to top, rgb(2, 2, 2), rgb(182, 10, 0) 20%, rgb(2, 2, 2) 100%)" }}>
-  return <div className="canvasBackground" onPointerDown={e => controls.current(e)}>
-    <div ref={rootRef} />
-  </div>;
+  return (
+    <div
+      className="canvasBackground"
+      onPointerDown={(e) => controls.current(e)}
+    >
+      <div ref={rootRef} />
+    </div>
+  );
 };

@@ -1,7 +1,5 @@
 import { Song } from "../../../models/song";
 
-// @ts-nocheck
-
 export const TestData: Song[] = [
   {
     name: "4u",

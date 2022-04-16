@@ -40,7 +40,7 @@ export const SongList: React.FC<ISongList & ISongListProps> = (
         id={i.toString()}
         mainItem={item(song.name, song.artist, song.imageLink)}
         subItem={getSubContent(song.artist, song.popularity)}
-        songLink={song.previewUrl}
+        songLink={song.previewUrl ?? ""}
       />
     ));
   };

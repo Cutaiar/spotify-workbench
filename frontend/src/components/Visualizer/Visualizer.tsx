@@ -34,7 +34,7 @@ interface IVisualizerProps {
 
 export const Visualizer: React.FC<IVisualizerProps> = (props) => {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
-  const requestRef = React.useRef<number>(null);
+  const requestRef = React.useRef<number | null>(null);
 
   // Get the canvas animation from the visual engine and kick it off
   // Thanks to https://css-tricks.com/using-requestanimationframe-with-react-hooks/
@@ -43,7 +43,9 @@ export const Visualizer: React.FC<IVisualizerProps> = (props) => {
       const loop = await canvasAnimationLoop(canvasRef.current, requestRef);
       requestRef.current = requestAnimationFrame(loop);
     })();
-    return () => cancelAnimationFrame(requestRef.current);
+    return () => {
+      requestRef.current && cancelAnimationFrame(requestRef.current);
+    };
   }, []);
   return (
     <div
