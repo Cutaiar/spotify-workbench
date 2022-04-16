@@ -98,7 +98,7 @@ export const Header: React.VFC<HeaderProps> = (props) => {
       <nav className="p-pl-3">
         {routes.map((r, i) => {
           return r.name === "experiments" ? (
-            <PinNavButton pin={"BOOL"} to={r.name}>
+            <PinNavButton key={i} pin={"BOOL"} to={r.name}>
               {r.displayName}
             </PinNavButton>
           ) : (
@@ -157,7 +157,11 @@ export const Header: React.VFC<HeaderProps> = (props) => {
       {getNavbar()}
       <Switch>
         {routes.map((r, i) => {
-          return <Route path={`/${r.name}`}>{r.content}</Route>;
+          return (
+            <Route key={i} path={`/${r.name}`}>
+              {r.content}
+            </Route>
+          );
         })}
         <Route path="/redirect">
           <StravaRedirect redirectPageName="strava" />
