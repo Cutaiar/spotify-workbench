@@ -27,10 +27,21 @@ type IAuthContextProviderValue = [
   logout: (name: keyof ITokens, forget?: boolean) => void
 ];
 
+const tokenCacheKeys: Record<keyof ITokens, string> = {
+  spotify: "spotify-token",
+  strava: "strava-token",
+};
+
 // Default state is based on the cache (could these be expired? If so, refresh?)
 const generateDefaultState = (): IAuthState => {
-  const spotifyToken = window.localStorage.getItem("user_token");
-  return { tokens: { spotify: spotifyToken ?? undefined } };
+  const spotifyToken = window.localStorage.getItem(tokenCacheKeys["spotify"]);
+  const stravaToken = window.localStorage.getItem(tokenCacheKeys["strava"]);
+  return {
+    tokens: {
+      spotify: spotifyToken ?? undefined,
+      strava: stravaToken ?? undefined,
+    },
+  };
 };
 
 const defaultContextValue: IAuthContextProviderValue = [
@@ -61,7 +72,7 @@ export const AuthProvider: React.FC = ({ children }) => {
 
     // Todo allow exclusion of just single options. But there's only 1 rn
     (options ?? defaultSetTokenOptions).cache &&
-      window.localStorage.setItem("user_token", token); //set local storage to remember token thru refresh
+      window.localStorage.setItem(tokenCacheKeys[name], token); //set local storage to remember token thru refresh
   };
 
   const logout = (name: keyof ITokens, forget?: boolean) => {
@@ -69,7 +80,7 @@ export const AuthProvider: React.FC = ({ children }) => {
       ...authState,
       tokens: { ...authState.tokens, [name]: undefined },
     });
-    (forget ?? true) && window.localStorage.removeItem("user_token");
+    (forget ?? true) && window.localStorage.removeItem(tokenCacheKeys[name]);
   };
 
   return (
