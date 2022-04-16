@@ -17,14 +17,16 @@ export const Home: React.FC<HomeProps> = (props: HomeProps) => {
   const spotifyToken = auth.tokens.spotify;
 
   useEffect(() => {
-    (async () => {
-      const songs = await getUsersLikedSongs(spotifyToken, 500);
-      const imageList = songs.map((song) => {
-        return song.imageLink;
-      });
-      setSongs(imageList);
-    })();
-    fadeInImages();
+    if (spotifyToken) {
+      (async () => {
+        const songs = await getUsersLikedSongs(spotifyToken, 500);
+        const imageList = songs.map((song) => {
+          return song.imageLink;
+        });
+        setSongs(imageList);
+      })();
+      fadeInImages();
+    }
   }, [spotifyToken, songs]);
 
   return (

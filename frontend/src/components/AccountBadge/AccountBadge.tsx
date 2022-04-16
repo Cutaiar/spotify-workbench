@@ -22,7 +22,7 @@ export const AccountBadge: React.FC<IAccountBadgeProps> = (props) => {
   const { imageUrl, name, accountType, onClickLogout } = props;
 
   const [showDrop, setShowDrop] = React.useState(false);
-  const targetRef = React.useRef();
+  const targetRef = React.useRef<HTMLDivElement>(null);
 
   const ServiceTag = () => (
     <img
@@ -46,7 +46,7 @@ export const AccountBadge: React.FC<IAccountBadgeProps> = (props) => {
       </div>
       {showDrop && (
         <Drop
-          target={targetRef.current}
+          target={targetRef.current ?? undefined}
           onClickOutside={() => setShowDrop(false)}
         >
           <Box pad="small">

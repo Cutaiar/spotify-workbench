@@ -1,70 +1,71 @@
 import React from "react";
-import "./Axes.css"
-import { makeStyles } from '@material-ui/core/styles';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
+import "./Axes.css";
+import { makeStyles } from "@material-ui/core/styles";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
 import { randomFeatures } from "../../models/features";
 
 //afaik i can only get the keys when I have an instance, then setup dropdown options
 const featuresInstance = randomFeatures();
-const dropdownOptions = [];
+const dropdownOptions: any[] = [];
 
 Object.keys(featuresInstance).forEach((k) => {
-    dropdownOptions.push({ value: k, label: k });
+  dropdownOptions.push({ value: k, label: k });
 });
 
 interface AxisObject {
-    name: string;
-    value: string;
+  name: string;
+  value: string;
 }
 
-
 const useStyles = makeStyles((theme) => ({
-    formControl: {
-        margin: theme.spacing(1),
-        minWidth: 120,
-    },
-    selectEmpty: {
-        marginTop: theme.spacing(2),
-    },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2),
+  },
 }));
 
 interface IAxesProps {
-    setAxisChange: (b: AxisObject) => void;
-    axisChange: AxisObject;
-    axis: string;
-    defaultValue;
-    color: string
+  setAxisChange: (b: AxisObject) => void;
+  axisChange: AxisObject;
+  axis: string;
+  defaultValue: any;
+  color: string;
 }
-
 
 export const Axis = (props: IAxesProps) => {
-    const { setAxisChange, axisChange, axis, defaultValue } = props
-    const classes = useStyles();
+  const { setAxisChange, axisChange, axis, defaultValue } = props;
+  const classes = useStyles();
 
+  const onAxisChange = (event: any) => {
+    console.log(event.target.value);
+    setAxisChange({
+      value: event.target.value,
+      name: axis,
+    });
+  };
 
-    const onAxisChange = (event) => {
-        console.log(event.target.value)
-        setAxisChange({
-            value: event.target.value,
-            name: axis
-        });
-    }
-
-    const menuOptionsContent = dropdownOptions.map(item => <MenuItem value={item.value}>{item.value}</MenuItem>);
-    return <div style={{backgroundColor: props.color }} className={"axis-style"}>
-        <FormControl fullWidth>
-                <Select
-                    disableUnderline
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    defaultValue={defaultValue}
-                    onChange={onAxisChange}
-                >
-                    {menuOptionsContent}
-                </Select>
-        </FormControl>
+  const menuOptionsContent = dropdownOptions.map((item) => (
+    <MenuItem value={item.value}>{item.value}</MenuItem>
+  ));
+  return (
+    <div style={{ backgroundColor: props.color }} className={"axis-style"}>
+      <FormControl fullWidth>
+        <Select
+          disableUnderline
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          defaultValue={defaultValue}
+          onChange={onAxisChange}
+        >
+          {menuOptionsContent}
+        </Select>
+      </FormControl>
     </div>
-}
+  );
+};

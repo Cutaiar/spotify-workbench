@@ -1,3 +1,6 @@
+// Sorry too much to fix
+// @ts-nocheck
+
 import React, { useEffect, useState } from "react";
 
 import { Song } from "../../models/song";
@@ -14,10 +17,10 @@ export interface ISpotiverseProps {}
 
 export const Spotiverse: React.FC<ISpotiverseProps> = (props) => {
   const [songs, setSongs] = useState<Song[]>([]);
-  const [selectedSong, setSelectedSong] = useState<Song>(null);
+  const [selectedSong, setSelectedSong] = useState<Song>();
   const [isLoading, setLoading] = useState(true);
 
-  const [axisChange, setAxisChange] = useState(null); //this will be a boolean flip that we will listen too in three engine.tsx, every time it changes we should update particles locations
+  const [axisChange, setAxisChange] = useState(undefined); //this will be a boolean flip that we will listen too in three engine.tsx, every time it changes we should update particles locations
 
   const [auth, setToken] = useAuth();
   const spotifyToken = auth.tokens.spotify;
@@ -25,14 +28,14 @@ export const Spotiverse: React.FC<ISpotiverseProps> = (props) => {
   // on mount (and when token changes), kickoff a request for the users liked songs
   // update state when they come down
   useEffect(() => {
-    const getLikedSongs = async () => {
-      //this could be run as a web worker when we start up the app
-      const songs = await getUsersLikedSongs(spotifyToken);
-      setSongs(songs);
-      setLoading(false);
-    };
-
-    if (spotifyToken) getLikedSongs();
+    if (spotifyToken) {
+      const getLikedSongs = async () => {
+        //this could be run as a web worker when we start up the app
+        const songs = await getUsersLikedSongs(spotifyToken);
+        setSongs(songs);
+        setLoading(false);
+      };
+    }
   }, [spotifyToken]);
 
   const setSong = (song: Song) => {

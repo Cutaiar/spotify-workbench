@@ -13,7 +13,7 @@ interface ImageListProps {
 interface IGenerateWallpaperState {
   listItems: any[];
   showWallpaper: boolean;
-  wallpaperResponse: string;
+  wallpaperResponse?: string;
 }
 
 const delay = (ms: number) => {

@@ -2,22 +2,29 @@
   "compilerOptions": {
     "outDir": "./dist/",
     "sourceMap": true,
-    "strictNullChecks": false,
+    "strictNullChecks": true,
     "module": "esnext",
-    "jsx": "react",
+    "jsx": "react-jsx",
     "target": "es6",
     "allowJs": true,
     "moduleResolution": "node",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "strict": false,
+    "strict": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["./src/", "webpack.config.js"]
+  "include": [
+    "./src/",
+    "webpack.config.js"
+  ]
 }

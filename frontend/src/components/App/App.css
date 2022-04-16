@@ -3,12 +3,3 @@ body {
   height: 100%;
   overflow: scroll;
 }
-
-.navlink-style {
-  text-decoration: none;
-}
-
-.navbar-style {
-  background-color: black;
-  color: white;
-}

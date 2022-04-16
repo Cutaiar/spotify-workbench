@@ -12,7 +12,7 @@ export const PinNavButton: React.FC<IPinNavButtonProps> = (props) => {
   const [started, setStarted] = useState<boolean>(false);
   const [passed, setPassed] = useState<boolean>(false);
   const [index, setIndex] = useState<number>(0);
-  const pinRef = useRef(null);
+  const pinRef = useRef<PinInput>(null);
   const history = useHistory();
 
   return (

@@ -1,14 +1,14 @@
 import { Song } from "../../models/song";
-import { ISpotifyUser } from "../SpotifyConnectButton/SpotifyConnectButton";
 import React, { useEffect, useState } from "react";
 
 import { Accordion } from "../Accordion/Accordion";
 import "./SongList.css";
+import { ISpotifyUser } from "../../context/spotifyUserContext";
 
 interface ISongListProps {
   songs: Song[];
   song: Song;
-  setSong: (song: Song) => void;
+  setSong: (song: Song | null) => void;
 }
 
 interface ISongList {

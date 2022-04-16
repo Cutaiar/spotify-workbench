@@ -2,7 +2,6 @@ import { Button } from "primereact/button";
 import { ListBox } from "primereact/listbox";
 import * as React from "react";
 import { getImageForSpotifyTracks } from "../../common/util";
-import { ISpotifyUser } from "../SpotifyConnectButton/SpotifyConnectButton";
 import "primeflex/primeflex.css";
 import { Slider } from "primereact/slider";
 import { InputText } from "primereact/inputtext";
@@ -10,10 +9,9 @@ import "./RunPlaylist.css";
 import { Toast, ToastMessage } from "primereact/toast";
 import { SongListItem } from "./SongListItem";
 import { useMemo } from "react";
+import { useSpotifyUser } from "../../context/spotifyUserContext";
 
-interface IRunPlaylistProps {
-  spotifyUser?: ISpotifyUser;
-}
+interface IRunPlaylistProps {}
 export interface ISongItem {
   name: string;
   image: string;
@@ -30,33 +28,40 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
   props
 ) => {
   const [numberOfSongsToFetch, setNumberOfSongsToFetch] = React.useState(10);
-  const [playlistName, setPlaylistName] = React.useState<string>("sw-recents");
+  const [playlistName, setPlaylistName] = React.useState<string | undefined>(
+    "sw-recents"
+  );
 
+  const { spotifyUser } = useSpotifyUser();
   // const [activeIndex, setActiveIndex] = React.useState(-1);
   // const [progressState, setProgressState] = React.useState<ProgressState>(
   //   "not started"
   // );
 
   const getRecentSongs = async () => {
+    if (!spotifyUser) {
+      return;
+    }
+
     const options: SpotifyApi.RecentlyPlayedParameterObject = {
       limit: numberOfSongsToFetch,
     };
 
-    const songs = await props.spotifyUser.spotifyApi.getMyRecentlyPlayedTracks(
+    const songs = await spotifyUser.spotifyApi.getMyRecentlyPlayedTracks(
       options
     );
-    const songIds = songs.items.map((song) => {
+    const songIds = songs.items.map((song: any) => {
       return song.track.id;
     });
 
     // Temporarily get the images manually cause SpotifyWebApi don't have em
     const songImageUris = await getImageForSpotifyTracks(
-      props.spotifyUser.spotifyApi,
+      spotifyUser.spotifyApi,
       songIds
     );
 
     // The data entities which back the options for the listbox
-    const songItems = songs.items.map((song, i) => {
+    const songItems = songs.items.map((song: any, i: number) => {
       return {
         name: song.track.name,
         image: (songImageUris as any[])[i],
@@ -71,7 +76,7 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
 
   const [selectedSongItems, setSelectedSongItems] = React.useState(undefined);
   const [songItems, setSongItems] = React.useState<ISongItem[]>([]);
-  const songAudio = React.useRef<HTMLAudioElement>(undefined);
+  const songAudio = React.useRef<HTMLAudioElement | null>(null);
   const saveToPlaylistSuccessToast = React.createRef<Toast>();
   const createPlaylistToast = React.createRef<Toast>();
 
@@ -92,38 +97,41 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
 
   const saveToPlaylist = React.useCallback(async () => {
     // setProgressState("in progress");
-    const id = (await props.spotifyUser.spotifyApi.getMe()).id;
-    const playlist = await props.spotifyUser.spotifyApi
+    if (!spotifyUser) {
+      return;
+    }
+    const id = (await spotifyUser.spotifyApi.getMe()).id;
+    const playlist = await spotifyUser.spotifyApi
       .createPlaylist(id, {
         name: playlistName,
         public: false,
       })
-      .catch((e) => {
+      .catch((e: unknown) => {
         console.error("Encountered an error saving playlist");
         console.log(e);
         // setProgressState("error");
       });
 
     if (playlist) {
-      const addTracksResp = await props.spotifyUser.spotifyApi
+      const addTracksResp = await spotifyUser.spotifyApi
         .addTracksToPlaylist(
           playlist.id,
           songItems.map((s) => {
             return s.uri;
           })
         )
-        .catch((e) => {
+        .catch((e: unknown) => {
           console.error("Encountered an error saving playlist");
           console.log(e);
           // setProgressState("error");
         });
 
       if (addTracksResp) {
-        setPlaylistName(null);
+        setPlaylistName(undefined);
         // setProgressState("success");
       }
     }
-  }, [playlistName, props.spotifyUser, songItems]);
+  }, [playlistName, spotifyUser, songItems]);
 
   const toastMessage: ToastMessage = useMemo(() => {
     return {
@@ -212,14 +220,14 @@ export const RunPlaylist: React.FunctionComponent<IRunPlaylistProps> = (
 
         <Button
           onClick={() => getRecentSongs()}
-          disabled={!props.spotifyUser || !isInputValid()}
+          disabled={!spotifyUser || !isInputValid()}
           className="p-m-2"
         >
           Get Recent Songs
         </Button>
         <Button
           onClick={() => showCreatePlaylistToast()}
-          disabled={!props.spotifyUser || songItems.length <= 0}
+          disabled={!spotifyUser || songItems.length <= 0}
           className="p-m-2"
         >
           Save to Playlist

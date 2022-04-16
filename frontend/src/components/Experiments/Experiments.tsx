@@ -35,7 +35,7 @@ const getListStyle = (isDraggingOver: boolean) => ({
 
 const getItemStyle = (
   isDragging: boolean,
-  draggableStyle: DraggingStyle | NotDraggingStyle
+  draggableStyle?: DraggingStyle | NotDraggingStyle
 ): React.CSSProperties => ({
   // some basic styles to make the items look a bit nicer
   userSelect: "none",

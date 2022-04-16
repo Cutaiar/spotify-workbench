@@ -28,7 +28,7 @@ const multiSelectOptions = [
 const NUM_SONGS = 5;
 
 export const ChartPage: React.FC<IChartProps> = (props) => {
-  const [songs, setSongs] = useState(null);
+  const [songs, setSongs] = useState<Song[]>([]);
   const [index, setIndex] = useState(0);
   const [selectedAttributes, setSelectedAttributes] =
     useState<(keyof Features)[]>(defaultAttributes);
@@ -37,6 +37,10 @@ export const ChartPage: React.FC<IChartProps> = (props) => {
   const spotifyToken = auth.tokens.spotify;
 
   const getLikedSongs = async () => {
+    if (!spotifyToken) {
+      return;
+    }
+
     const songs = await getUsersLikedSongs(spotifyToken);
     setSongs(songs);
   };
@@ -91,15 +95,17 @@ export const ChartPage: React.FC<IChartProps> = (props) => {
     Chart.defaults.global.defaultFontColor = "white";
     Chart.defaults.global.defaultColor = "green";
 
-    new Chart(chart, {
-      type: "radar",
-      data: {
-        //Bring in data
-        labels: selectedAttributes,
-        datasets: datasets,
-      },
-      options: options,
-    });
+    if (chart) {
+      new Chart(chart, {
+        type: "radar",
+        data: {
+          //Bring in data
+          labels: selectedAttributes,
+          datasets: datasets,
+        },
+        options: options,
+      });
+    }
   }
 
   return (
