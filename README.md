@@ -10,7 +10,11 @@
 
 # Spotify Workbench
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/1a9ec675-5f24-47f6-9541-bb85277f1e43/deploy-status)](https://app.netlify.com/sites/spotify-workbench/deploys)
+
 The Spotify Workbench is a collection of services built on top of Spotify and other apps which provide the user with advanced musical functionality the the creation and discovery domains.
+
+[Demo](https://spotify-workbench.netlify.app)
 
 Services include:
 
